@@ -1,0 +1,176 @@
+.activities-container{
+
+    width: 95%;
+    background-color: white;
+    border: 1px solid #9A9A9A;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 30px;
+
+}
+
+.activities-header{
+
+    width: 100%;
+    height: max-content;
+
+}
+
+.activities-header h1{margin: 0; padding: 0; color: #132F43;}
+
+.search-toolbar{
+
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: max-content;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-toolbar .searchbar{
+
+    height: 3.5rem;
+    width: 85%;
+    border-radius: 10px;
+    border: 1px solid #9A9A9A;
+    padding: 5px 10px;
+
+}
+
+.searchbar:focus{
+
+    border-color: #005FA1; 
+    outline: none;
+}
+
+.search-toolbar .role{
+
+       height: 3rem;
+        width: max-content;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 5px;
+        border: 1px solid #9A9A9A;
+
+    &:focus{
+
+        border-color: #005FA1;
+        outline: none;
+    }
+}
+
+.search-toolbar .result-container{
+
+        width: 5%;
+        display: flex;
+        flex-direction: row;
+        height: 1.5rem;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        color: #9A9A9A;
+        
+}
+
+.result-container p{
+
+    font-size: 14px;
+}
+
+.activity-table{
+
+    width: 100%;
+    border: none;
+    border-radius: 20px;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.activity-table tr,
+.activity-table th{
+
+    text-align: center;
+    padding: 10px;
+}
+
+.activity-table tr{
+
+    border: 1px solid #9A9A9A;
+}
+
+.activity-table .table-header{
+
+    background: linear-gradient(to right, #005FA1, #0090FF);
+    color: white;
+    text-align: center;
+    border: 1px solid #9A9A9A;
+}
+
+.activity-table .tbl-name-container{
+
+    display: flex;
+        flex-direction: row;
+        padding: 5px;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+}
+
+.tbl-name-container .tbl-name{
+
+    background: linear-gradient(360deg,#005FA1, #0090FF);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            height: 1.5rem;
+            width:  1.5rem;
+}
+
+.tbl-name h4{
+
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-size: 10px;
+}
+
+.activity-table .role-span.compliance{
+
+    border: 1px solid #DDD6FF;
+        background-color: #F5F3FF;
+        padding: 5px 10px;
+        color: #7008E7;
+        font-weight: 600;
+        border-radius: 20px;
+}
+
+.activity-table .role-span.bd{
+
+    border: 1px solid #5EB7FF;
+        background-color: #F5F3FF;
+        padding: 5px 10px;
+        color: #1F6DE3;
+        font-weight: 600;
+        border-radius: 20px;
+}
+
+.activity-table .role-span.merchant{
+
+    border: 1px solid #DDD6FF;
+    background-color: #F5F3FF;
+    padding: 5px 10px;
+    color: #4A5565;
+    font-weight: 600;
+    border-radius: 20px;
+}

@@ -1,0 +1,353 @@
+body{
+
+  margin: 0;
+  padding: 0;
+  font-family: var(--main-font);
+}
+
+*{
+
+  box-sizing: border-box;
+}
+
+:root {
+
+  --main-font: Arial, Helvetica, sans-serif;
+}
+
+/* Log In & Register Page------------------------------------------------------------------------------------------- */
+
+.LoginContainer, .login-container{
+
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../../images/Background.png');
+  background-size: cover;
+}
+
+.LoginCard, .login-card{
+
+  border: 1px solid gray;
+  height: 95vh;
+  width: 80%; 
+  display: flex;
+  flex-direction: row;
+  border-top-left-radius: 60px;
+  border-bottom-right-radius: 60px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.LoginCard .ImageContainer,
+.login-card .image-container{
+
+  width: 50%;
+  height: 95vh;
+  background-image: url('../../images/Business.jpg');
+  background-size: cover;
+
+}
+
+.LogFormContainer, .form-container{
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+
+}
+
+.form-container .logo-container{
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: max-content;
+  margin: 10px 0 0 0;
+
+}
+
+.LogInLogo img,.login-logo img {
+
+  height: 40px;
+  width: max-content;
+}
+
+.LogInName img, .login-name img{
+
+  height: 40px;
+  width: max-content;
+}
+
+.MerchantLogForm, .merchant-register-form, .merchant-register-form{
+
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.MerchantLogForm .LogInputContainer{
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  width: 100%;
+
+}
+
+.merchant-register-form .name-container{
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+
+.LogInputContainer input{
+
+  height: 2rem;
+  width: 75%;
+  border-radius: 50px;
+  border: 1px solid gray;
+  padding: 10px 20px;
+  
+}
+
+.name-container input{
+
+  height: 2.5rem;
+  width: 50%;
+  border-radius: 50px;
+  border: 1px solid gray;
+  padding: 3px 20px;
+}
+
+.merchant-register-form .register-input,
+.merchant-register-form .register-input{
+
+  height: 2.5rem;
+  width: 100%;
+  border-radius: 50px;
+  border: 1px solid gray;
+  padding: 3px 20px;
+
+}
+
+.merchant-register-form .label-container{
+
+  width: 100%;
+  font-size: 14px;
+
+}
+
+.merchant-register-form .phone-container{
+
+  width:100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.phone-container select{
+
+  width: 15%;
+  height: 2.5rem;
+  border-radius: 50px;
+  padding: 5px 5px;
+}
+
+.phone-container input{
+
+  width: 85%;
+  height: 2.5rem;
+  border-radius: 50px;
+  padding: 5px 10px;
+  border: 1px solid gray;
+}
+
+.merchant-register-form .BdayContainer,
+.merchant-register-form .birthday-container{
+
+  width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.BdayContainer select,
+.birthday-container select{
+
+  width: 35%;
+  height: 2.5rem;
+  border-radius: 50px;
+  padding: 5px 10px;
+
+}
+
+.merchant-register-form .TermsContainer, .merchant-register-form .terms-container{
+
+  width: 100%;
+  height: max-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+
+}
+
+.TermsContainer label,
+.terms-container label{
+
+  font-size: 12px;
+
+  input{
+
+    height: max-content;
+  }
+
+  button{
+
+    border: none;
+    color: #005FA1;
+    background: transparent;
+
+    &:hover{
+
+      text-decoration: underline;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+  }
+}
+
+.ForgotContainer{
+
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding-right: 100px;
+}
+
+.ForgotContainer a{
+
+  color: black;
+  opacity: 0.5;
+  font-size: 12px;
+  text-decoration: none;
+  font-family: var(--main-font);
+
+  &:hover{
+
+    text-decoration: underline;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+}
+
+.CaptchaContainer{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.MerchantLogBtn{
+
+  height: 3.5rem;
+  width: 80%;
+  padding: 5px 10px;
+  text-align: center;
+  background-color: #005FA1;
+  border: 1px solid #005FA1;
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover{
+
+    background-color: #0476c7;
+    border: 1px solid #0476c7;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+}
+
+.MerchantRegisterBtn, .register-btn{
+
+  height: 2.8rem;
+  width: 100%;
+  padding: 5px 10px;
+  text-align: center;
+  background-color: #005FA1;
+  border: 1px solid #005FA1;
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+
+   &:hover{
+
+    background-color: #0476c7;
+    border: 1px solid #0476c7;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+}
+
+.RegisterContainer, .log-container{
+
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.RegisterContainer p, .log-container p{
+
+  color: black;
+  opacity: 0.8;
+  font-family: var(--main-font);
+  font-size: 12px;
+}
+
+.RegisterContainer a, .log-container a{
+
+  text-decoration: none;
+  font-family: var(--main-font);
+  color: #005FA1;
+
+  &:hover{
+
+    text-decoration: underline;
+
+  }
+}
+
+
+

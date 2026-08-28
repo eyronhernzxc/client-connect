@@ -1,0 +1,12 @@
+stages:
+  - build
+  - deploy
+include:
+  - component: $CI_SERVER_FQDN/infrastructure/ci-components/image-builder/build@main
+    inputs:
+      image: harbor.pisopay.com.ph/base-image/podman-builder:main
+      deployment-branch: alpine-v2
+  - component: $CI_SERVER_FQDN/infrastructure/ci-components/deployment/deploy@main
+    inputs:
+      image: harbor.pisopay.com.ph/base-image/kubectl:latest
+      deployment-branch: alpine-v2

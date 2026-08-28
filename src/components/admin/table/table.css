@@ -1,0 +1,102 @@
+.table-header{
+
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.table-header h1{
+
+    font-size: 1.5rem;
+    color: #132F43;
+}
+
+.table-content-container{
+
+    width: 100%;
+}
+
+.table-content{
+
+    width: 100%;
+    border: none;
+    border-radius: 20px;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.table-content th,
+.table-content td{
+
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+.table-content tr{
+
+    border: 1px solid #9A9A9A;
+}
+
+.table-content .tbl-header{
+
+    background: linear-gradient(to right, #005FA1, #0090FF);
+    color: white;
+    text-align: center;
+    border: 1px solid #9A9A9A;
+}
+
+.table-content .category-span{
+
+    border: 1px solid #DDD6FF;
+    background-color: #F5F3FF;
+    padding: 5px 10px;
+    color: #4A5565;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.table-content .status-span{
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1px;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.table-content .status-span.review{
+
+    background-color: #fdf6d8;
+    border-radius: 20px;
+    color: #92400E;
+}
+
+.table-content .status-span.sent{
+
+    background-color: #F0FDF4;
+    border-radius: 20px;
+    color: #15803D;
+}
+
+.table-content .status-span.sent{
+
+    background-color: #F0FDF4;
+    border-radius: 20px;
+    color: #15803D;
+}
+
+.table-content .status-span.reviewed{
+
+    background-color: #EFF6FF;
+    border-radius: 20px;
+    color: #1A6BC4;
+}
+
+.table-content .status-span.rejected{
+
+    background-color: #FEF2F2;
+    border-radius: 20px;
+    color: #B91C1C;
+}

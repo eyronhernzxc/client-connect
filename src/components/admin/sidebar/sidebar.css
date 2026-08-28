@@ -1,0 +1,364 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-repeat: no-repeat;
+}
+
+.sidebar-main {
+  background: linear-gradient(
+    to bottom,
+    #0276c9 0%,
+    #0090ff 50%,
+    white 50%,
+    white 50%
+  );
+
+  position: fixed;
+  z-index: 998;
+
+  height: 100vh;
+  width: 50px;
+}
+
+
+.sidebar-container {
+  position: fixed;
+  z-index: 1000;
+  width: 50px;
+  border: 1px solid #919191;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(250, 248, 248);
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 30px;
+  padding: 20px 0px;
+  transition: all 0.3s ease-out;
+  overflow: hidden;
+}
+
+.sidebar-container .menu-container img{
+
+  display: none;
+}
+
+.sidebar-container .menu-container .logo{
+
+  height: 40px;
+  width: 20px;
+}
+
+.sidebar-container .menu-container .name{
+
+  height: 60px;
+  width: 110px;
+}
+
+.sidebar-container .menu-container {
+  width: 100%;
+  height: max-content;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  
+
+  .menu-btn {
+    height: max-content;
+    width: max-content;
+    padding: none;
+    background-color: transparent;
+    border: none;
+
+    svg {
+      height: 24px;
+      width: 24px;
+      color: #1c1b1f;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      svg {
+        color: #0090ff;
+        transition: all 0.3s ease;
+      }
+    }
+  }
+}
+
+.menu-container .menu-btn{
+
+    height: max-content;
+    width: max-content;
+    padding: none;
+    background-color: transparent;
+    border: none; 
+}
+
+.menu-btn svg{
+
+  height: 24px;
+  width: 24px;
+  color: #1c1b1f;
+}
+
+.sidebar-container .navbar{
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.navbar ul,
+.navbar li{
+
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul{
+
+    list-style: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; 
+}
+
+.navbar .navlink{
+
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
+  width: max-content;
+  height: max-content;
+  align-items: center;
+  padding: 0px;
+  
+}
+
+.navlink svg{
+
+    color: #1c1b1f;
+    flex-shrink: 0;
+    height: 24px;
+    width: 24px;
+}
+
+.navlink:hover{
+
+ cursor: pointer;
+ color: #0090ff;
+ transition: all 0.3s ease;
+
+ svg{
+
+  color: #0090ff;
+ }
+}
+
+.navlink span{
+
+  display: none;
+}
+
+.navlink.active{
+
+  background-color: #0090ff;
+  padding: 7px;
+  border-radius: 50%;
+}
+
+.navlink.active svg{
+
+  color: white;
+}
+
+.flex {
+  flex: 1;
+}
+
+.sidebar-container .logout-container{
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.logout-container .logout-btn{
+
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    width: max-content;
+    height: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 1rem;
+    
+
+    &:hover {
+      cursor: pointer;
+
+
+      svg {
+        color: #0090ff;
+        transition: all 0.3s ease;
+      }
+
+    }
+
+}
+
+.logout-btn svg{
+
+    color: #1c1b1f;
+}
+
+.logout-btn span{
+
+  display: none;
+
+}
+
+
+/* Collapse */
+
+.sidebar-container.collapsed{
+
+  width: 180px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  transition: all 0.3s ease-in;
+}
+
+.sidebar-container.collapsed .menu-container .menu-btn{
+
+  display: none;
+  transition: all 0.3s ease-out;
+}
+
+.sidebar-container.collapsed .menu-container img{
+
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.sidebar-container.collapsed .navbar{
+
+  display: flex;
+  justify-content: flex-start;
+
+}
+
+.sidebar-container.collapsed .navbar ul,
+.sidebar-container.collapsed .navbar li{
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: left;
+  width: 100%;
+}
+
+.sidebar-container.collapsed .navbar ul{
+
+  gap: 10px;
+}
+
+
+.sidebar-container.collapsed .navbar .navlink{
+
+  gap: 10px;
+  padding: 10px 20px;
+  width: 100%;
+
+  &:hover{
+
+   svg, span{
+
+    cursor: pointer;
+    color: #0090ff;
+    transition: all 0.3s ease;
+   }
+  }
+}
+
+.sidebar-container.collapsed .navbar .navlink.active{
+
+  border-radius: 0;
+  padding: 10px 20px;
+
+  &:hover{
+
+    svg,span {
+
+    cursor: pointer;
+    color: white;
+
+    }
+  }
+}
+
+.sidebar-container.collapsed .navbar .navlink span{
+
+  display: block;
+  text-decoration: none;
+  color: black;
+
+  &:hover{
+
+    color: #0090ff;
+    transition: all 0.3s ease;
+  }
+}
+
+.sidebar-container.collapsed .navbar .navlink.active span{
+
+  display: block;
+  text-decoration: none;
+  color: white;
+}
+
+.sidebar-overlay{
+
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.178);
+  position: fixed;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  
+}
+
+.sidebar-container.collapsed .logout-container .logout-btn{
+
+  background-color: #0090ff;
+  border-radius: 3px;
+  padding: 10px;
+  width: 90%;
+}
+
+.sidebar-container.collapsed .logout-container .logout-btn span,
+.sidebar-container.collapsed .logout-container .logout-btn svg{
+
+  display: block;
+  color: white;
+  
+}

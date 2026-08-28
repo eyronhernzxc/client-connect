@@ -1,0 +1,119 @@
+.dashboard-stat{
+
+    height: max-content;
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.dashboard-metrics{
+
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin: 5px;
+    gap: 10px;
+    height: max-content;
+
+}
+
+.dashboard-metrics .metric-card{
+
+    width: 90%;
+    height: max-content;
+    padding: 20px 20px;
+    background-color: #bccbe925;
+    border-radius: 20px;
+    border: 1px solid #BCCBE9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.metric-card h4,
+.metric-card h1{
+
+    margin: 0;
+    padding: 0;
+}
+
+.metric-card h4{
+
+    color: #005FA1;
+}
+
+.metric-card h1{
+
+        color: #132F43;
+        font-size: 2.5rem;
+}
+
+.main-progress-container{
+
+    width: 40%;
+    border: 1px solid #BCCBE9;
+    margin: 5px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 20px;
+    overflow: hidden;
+
+}
+
+.main-progress-container .progress-container{
+
+    width: 100%;
+    height:80%;
+}
+
+.progress-container .ring-progress{
+
+    height: 100%;
+    width: 100%;
+}
+
+.ring-progress h1{
+
+    margin: 0;
+    padding: 0;
+}
+
+.main-progress-container .line-container{
+
+    display: flex;
+    width: 100%;
+    height: 50%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    margin: 0;
+}
+
+.line-container p{
+
+        margin: 0;
+        padding: 0;
+        font-weight: 600;
+        color: black;
+        font-size: 12px;
+        padding-top: 5px;
+}
+
+.line-container .line-wrapper{
+
+        height: 0.5rem;
+        border-radius: 20px;
+        background-color: white;
+        overflow: hidden;
+}
+
+.line-wrapper .complete-progress{ height: 100%; width: 30%; background-color: #34AA59;}
+.line-wrapper .pending-progress{ height: 100%; width: 50%; background-color: #E98F45;}
+.line-wrapper .declined-progress{ height: 100%; width: 60%; background-color: #e01f1f;}

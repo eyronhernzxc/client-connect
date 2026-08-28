@@ -1,0 +1,551 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body{
+
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    font-family: "Inter", sans-serif;
+}
+
+.AdminContainer{
+
+    width: 96.4%;
+    height: max-content;
+    height: max-content;
+    display: flex;
+    margin-left: 50px;
+    justify-content: flex-end;
+
+}
+
+
+
+.PageContainer {
+
+    background-color: white;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    background-color: #F6F6F6;
+    height: max-content;
+    padding-bottom: 20px;
+
+}
+
+.gap{
+
+    height: 25vh;
+
+}
+
+.DashboardHeader{
+
+    height: max-content;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 96.4%;
+    background: linear-gradient(to bottom, #0276c9,#0090FF);
+    border-bottom-left-radius: 80px;
+    border-bottom-right-radius: 80px;
+    justify-content: center;
+    align-items: center;
+}
+
+.IconContainer{
+
+    margin: 10px 5px 0px 5px;
+    height: max-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+    padding: 0px 40px;
+    width: 90%;
+
+    .Notification{
+
+        margin: 0;
+        padding: 0;
+        height: max-content;
+        width: max-content;
+        background-color: transparent;
+        border: none;
+
+        svg{
+
+            color: white;
+            height: 24px;
+            width: 24px;
+        }
+
+        &:hover{
+
+            cursor: pointer;
+        }
+    }
+
+    
+        .ProfileBtn{
+
+            background-color: white;
+            border-radius: 50%;
+            height: 3rem;
+            width: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+
+
+            h2{
+
+                margin: 0;
+                padding: 0;
+                font-size: 1rem;
+                color:#055d9b;
+
+            }
+
+            &:hover{
+
+                cursor: pointer;
+            }
+        }
+}
+
+.HeaderGreeting{
+
+    margin: 0px 5px 25px 2px;
+    height: max-content;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    p{
+
+        color: white;
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+    }
+
+    .NameContainer{
+    
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 10px;
+        align-items: center;
+        height: max-content;
+        
+        h1{
+
+            font-size: 2.8rem;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+    }
+
+}
+
+.PageHeader{
+
+    height: max-content;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 96.4%;
+    background: linear-gradient(to bottom, #0276c9,#0090FF);
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+
+}
+
+.PageHeader .TitleContainer{
+
+    width: 50%;
+    margin: 10px 0px 10px 10px;
+    padding: 10px 20px;
+    color: white;
+
+    .PageTitle{
+
+        margin: 0;
+        padding: 0;
+    }
+
+    .PageDesc{
+
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.PageHeader .IconContainer2{
+
+    margin: 10px 10px 10px 0px;
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 10px 20px;
+
+    .Notification{
+
+        margin: 0;
+        padding: 0;
+        height: max-content;
+        width: max-content;
+        background-color: transparent;
+        border: none;
+        svg{
+
+            color: white;
+            height: 24px;
+            width: 24px;
+        }
+
+        &:hover{
+
+            cursor: pointer;
+        }
+    }
+
+    
+        .ProfileBtn{
+
+            background-color: white;
+            border-radius: 50%;
+            height: 3rem;
+            width: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+
+
+            h2{
+
+                margin: 0;
+                padding: 0;
+                font-size: 1rem;
+                color:#055d9b;
+
+            }
+
+            &:hover{
+
+                cursor: pointer;
+            }
+        }
+}
+
+.DashboardStat{
+    height: max-content;
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+
+    h4, h1{
+
+        margin: 0;
+        padding: 0;
+    }
+
+}
+
+.DashboardMetrics{
+
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin: 5px;
+    gap: 10px;
+}
+
+.MetricCard{
+
+    width: 85%;
+    height: max-content;
+    padding: 25px;
+    background-color: #bccbe925;
+    border-radius: 20px;
+    border: 1px solid #BCCBE9;
+
+    h4{
+
+        color: #005FA1;
+    }
+
+    h1{
+
+        color: #132F43;
+        font-size: 2.5rem;
+    }
+}
+
+.MainProgressContainer{
+
+    width: 40%;
+    border: 1px solid #BCCBE9;
+    margin: 5px;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #bccbe925;
+    border-radius: 30px;
+    overflow: hidden;
+
+}
+
+.ProgressContainer{
+
+    width: 100%;
+    height:80%;
+
+    .RingProgress{
+
+        height: 100%;
+        width: 100%;
+
+        h1{
+
+            margin: 0;
+            height: 0;
+        }
+    }
+}
+
+.LineContainer{
+
+    display: flex;
+    width: 100%;
+    height: 50%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    margin: 0;
+
+    p{
+
+        margin: 0;
+        padding: 0;
+        font-weight: 600;
+        color: black;
+        font-size: 12px;
+    }
+
+    .LineWrapper{
+
+        height: 0.5rem;
+        border-radius: 20px;
+        border: 1px solid #BCCBE9;
+        background-color: white;
+        overflow: hidden;
+
+        .CompleteProgress{
+
+            height: 100%;
+            width: 30%;
+            background-color: #34AA59;
+        }
+
+        .PendingProgress{
+
+            height: 100%;
+            width: 40%;
+            background-color: #E98F45;
+        }
+
+        .DeclinedProgress{
+
+            height: 100%;
+            width: 30%;
+            background-color: #e01f1f;
+        }
+        
+    }
+}
+
+.ActivitiesContainer{
+
+    width: 96.4%;
+    background-color: white;
+    border: 1px solid #9A9A9A;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.ActivitiesHeader{
+
+    width: 95%;
+    height: max-content;
+    margin: 20px 0 0px 0px;
+
+    h1{
+
+        margin: 0;
+        padding: 0;
+        color: #132F43;
+    }
+}
+
+.SearchToolbar{
+
+    display: flex;
+    flex-direction: row;
+    width: 95%;
+    height: max-content;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+
+    .Searchbar{
+
+        height: 2rem;
+        width: 80%;
+        border-radius: 10px;
+        border: 1px solid #9A9A9A;
+        padding: 5px 10px;
+    }
+
+    .Role{
+
+        height: 2.5rem;
+        width: 10%;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 5px;
+    }
+
+    .ResultContainer{
+
+        width: 5%;
+        display: flex;
+        flex-direction: row;
+        height: 2rem;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        color: #9A9A9A;
+    }
+}
+
+.ActivityTable{
+
+    width: 95%;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    border-collapse: collapse;
+    font-size: 12px;
+
+    tr, th{
+
+        text-align: center;
+        padding: 10px;
+    }
+
+    tr{
+
+    border: 1px solid #9a9a9a3d;
+    }
+
+    .Tspan{
+
+        display: flex;
+        flex-direction: row;
+        padding: 5px;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+
+        .Tname{
+
+            background: linear-gradient(360deg,#005FA1, #0090FF);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            height: 1.5rem;
+            width:  1.5rem;
+
+            h4{
+
+                margin: 0;
+                padding: 0;
+                color: white;
+                font-size: 10px;
+                
+            }
+        }
+    }
+
+    .Trole.compliance{
+
+        border: 1px solid #DDD6FF;
+        background-color: #F5F3FF;
+        padding: 5px 10px;
+        color: #7008E7;
+        font-weight: 600;
+        border-radius: 20px;
+    }
+
+    .Trole.bd{
+
+        border: 1px solid #5EB7FF;
+        background-color: #F5F3FF;
+        padding: 5px 10px;
+        color: #1F6DE3;
+        font-weight: 600;
+        border-radius: 20px;
+    }
+
+    .Trole.merchant{
+
+        border: 1px solid #DDD6FF;
+        background-color: #F5F3FF;
+        padding: 5px 10px;
+        color: #4A5565;
+        font-weight: 600;
+        border-radius: 20px;
+    }
+
+    .TableHeader{
+
+        background: linear-gradient(to right, #005FA1, #0090FF);
+        color: white;
+        text-align: center;
+        border: 1px solid #9A9A9A;
+    }
+
+
+}
+ */
