@@ -1,13 +1,74 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import Header from "../header/header";
+import { getPersonalDetailType } from "../../../../api/getPersonalDetailType";
 import "../form-style.css";
 
 export default function SignatoryDetails() {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
+
+  const [personalDetailType, setpersonalDetailType] = useState([]);
+
+  useEffect(() => {
+
+    const fetchPersonalDetailTypes = async () => {
+
+      try{
+
+        const types = await getPersonalDetailType();
+        setpersonalDetailType(types);
+
+      } catch(error) {
+
+        console.log("Failed tp fetch personal detail type")
+      }
+    }
+  })
+
+  const submitSignatory = async (event) => {
+    event.preventDefault();
+
+    const formData = new formData(event.currentTraget);
+
+    const data = {
+
+      first_name: formData.get("firstname"),
+      middle_name: formData.get("middlename"),
+      last_name: formData.get("lastname"),
+      e_signature: formData.get("esignature"),
+      present_address: formData.get("present_address"),
+      present_zip_code: formData.get("present_zip_code"),
+      permanent_address: formData.get("permanent_address"),
+      permanent_zip_code: formData.get("permanent_zip_code"),
+      birthdate: formDta.get("birthdate"),
+      birth_place: formData.get("birth_place"),
+      civil_status: formData.get("civil_status"),
+      gender: formData.get("gender"),
+      contact_number: formData.get("contact_number"),
+      email: formData.get("email"),
+      valid_id_1: formData.get("valid_id_1"),
+      valid_id_number_1: formData.get("valid_id_number_1"),
+      id_expiration_1: formData.get("id_expiration_1"),
+      valid_id_2: formData.get("valid_id_2"),
+      valid_id_number_2: formData.get("valid_id_number_2"),
+      id_expiration_2: formData.get("id_expiration_2"),
+      mother_name: formData.get("mother_name"),
+      mother_birthday: formData.get("mother_birthday"),
+      mother_nationality: form_data.get("mother_nationality"),
+      spouse_name: formData.get("spouse_name"),
+      spouse_birthday: formData.get("spouse_birthday"),
+      spouse_nationality: form_data.get("spouse_nationality"),
+    };
+
+    try{
+
+      const response = await postSignatory(data);
+    }
+
+    catch(error){
+
+      console.error(error);
+    }
+
+  };
 
   return (
     <div className="form-overlay">
@@ -17,17 +78,29 @@ export default function SignatoryDetails() {
         </Header>
 
         <div className="form-container">
-          <div className="form">
+          <form className="form" onClick={submitSignatory}>
             <div className="form-row">
+
+          <div className="form-field">
+        <label>Personal detail type <span>*</span></label>
+        <select name='personal_detail_type_id' required>
+            <option value="">Select Personal detail type</option>
+            {personalDetailType.map((type) =>(
+              <option key={type.id} value={type.id}>
+                {type.name}
+              </option>
+            ))}
+        </select>
+    </div>
+
               <div className="input-field">
                 <label>
                   First name <span>*</span>
                 </label>
                 <input
-                  {...register("firstname")}
+                  name="firstname"
                   type="text"
                   placeholder="Enter first name"
-                  className={errors.firstname ? "input-error" : "input-normal"}
                 />
               </div>
 
@@ -36,10 +109,9 @@ export default function SignatoryDetails() {
                   Last Name <span>*</span>
                 </label>
                 <input
-                  {...register("lastname")}
+                  name="lastname"
                   type="text"
-                  placeholder="Enter Last name"
-                  className={errors.lastname ? "input-error" : "input-normal"}
+                  placeholder="Enter last name"
                 />
               </div>
             </div>
@@ -50,10 +122,9 @@ export default function SignatoryDetails() {
                   Middle Name <span>*</span>
                 </label>
                 <input
-                  {...register("middlename")}
+                  name="middlename"
                   type="text"
-                  placeholder="Enter Middle name"
-                  className={errors.middlename ? "input-error" : "input-normal"}
+                  placeholder="Enter middle name"
                 />
               </div>
 
@@ -62,10 +133,9 @@ export default function SignatoryDetails() {
                   Upload E-signature <span>*</span>
                 </label>
                 <input
-                  {...register("esignature")}
+                  name="esignature"
                   type="file"
-                  placeholder="Upload E-signature"
-                  className={errors.esignature ? "input-error" : "input-normal"}
+                  placeholder="Upload e-signature"
                 />
               </div>
             </div>
@@ -76,26 +146,20 @@ export default function SignatoryDetails() {
                   Present Address <span>*</span>
                 </label>
                 <input
-                  {...register("present_address")}
+                  name="present_address"
                   type="text"
-                  placeholder="Enter present Address"
-                  className={
-                    errors.present_address ? "input-error" : "input-normal"
-                  }
+                  placeholder="Enter present address"
                 />
               </div>
 
               <div className="input-field-short">
                 <label>
-                  Zip code <span>*</span>
+                  Zip Code <span>*</span>
                 </label>
                 <input
-                  {...register("present_zip_code")}
+                  name="present_zip_code"
                   type="number"
-                  placeholder="Enter Zip code"
-                  className={
-                    errors.present_zip_code ? "input-error" : "input-normal"
-                  }
+                  placeholder="Enter zip code"
                 />
               </div>
             </div>
@@ -106,12 +170,9 @@ export default function SignatoryDetails() {
                   Permanent Address <span>*</span>
                 </label>
                 <input
-                  {...register("permanent_address")}
+                  name="permanent_address"
                   type="text"
-                  placeholder="Enter permanent Address"
-                  className={
-                    errors.permanent_address ? "input-error" : "input-normal"
-                  }
+                  placeholder="Enter permanent address"
                 />
               </div>
               <div className="input-field-short">
@@ -119,12 +180,9 @@ export default function SignatoryDetails() {
                   Zip Code <span>*</span>
                 </label>
                 <input
-                  {...register("permanent_zip_code")}
+                  name="permanent_zip_code"
                   type="number"
-                  placeholder="Enter Zip code"
-                  className={
-                    errors.permanent_zip_code ? "input-error" : "input-normal"
-                  }
+                  placeholder="Enter zip code"
                 />
               </div>
             </div>
@@ -133,19 +191,17 @@ export default function SignatoryDetails() {
               <div className="input-field">
                 <label>Birthdate <span>*</span></label>
                 <input
-                  {...register("birthdate")}
+                  name="birthdate"
                   type="date"
-                  placeholder="Enter Birthdate"
-                  className={errors.birthdate ? "input-error" : "input-normal"}
+                  placeholder="Enter birthdate"
                 />
               </div>
               <div className="input-field">
-                <label>Birth place <span>*</span></label>
+                <label>Birth Place <span>*</span></label>
                 <input
-                  {...register("birth_place")}
+                  name="birth_place"
                   type="text"
-                  placeholder="Enter Birth place"
-                  className={errors.birth_place ? "input-error" : "input-normal"}
+                  placeholder="Enter birth place"
                 />
               </div>
             </div>
@@ -154,8 +210,8 @@ export default function SignatoryDetails() {
               */}
             <div className="form-row">
               <div className="input-field">
-                <label>Civi status <span>*</span></label>
-                <select {...register("civil_status")}>
+                <label>Civil Status <span>*</span></label>
+                <select name="civil_status">
                   <option disabled value="">
                     Select status
                   </option>
@@ -168,100 +224,169 @@ export default function SignatoryDetails() {
 
             <div className="input-field">
               <label>Gender <span>*</span></label>
-              <select {...register("gender")}>
+              <select name="gender">
                 <option disabled value="">
-                  Select Gender
+                  Select gender
                 </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option>Prefer not to say</option>
+                <option value="prefer_not_to_say">Prefer not to say</option>
               </select>
             </div>
             </div>
 
             <div className="form-row">
               <div className="input-field">
-                <label>Contact number <span>*</span></label>
+                <label>Contact Number <span>*</span></label>
                 <input
-                  {...register("contact_number")}
+                  name="contact_number"
                   type="tel"
-                  placeholder="Enter Contact Number"
-                  className={errors.contact_number ? "input-error" : "input-normal"}
+                  placeholder="Enter contact number"
                 />
               </div>
               <div className="input-field">
                 <label>Email <span>*</span></label>
                 <input
-                  {...register("email")}
+                  name="email"
                   type="email"
                   placeholder="Enter email"
-                  className={errors.email ? "input-error" : "input-normal"}
                 />
               </div>
             </div>
+            <h3>Valid Information</h3>
+            <hr></hr>
+
+            <div className="form-row">
+              <div className="input-field">
+                <label>1. Valid ID <span>*</span></label>
+                <input
+                    name="valid_id_1"
+                    type="file"
+                  />
+              </div>
+              <div className="input-field">
+                <label>ID Number <span>*</span></label>
+                <input
+                    name="valid_id_number_1"
+                    type="number"
+                    placeholder="Enter ID number"
+                  />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="input-field">
+                <label>Expiration Date <span>*</span></label>
+                <input
+                    name="id_expiration_1"
+                    type="number"
+                    placeholder="Enter expiration date"
+                  />
+              </div>
+            </div>
+
+             <div className="form-row">
+              <div className="input-field">
+                <label>2. Valid ID <span>*</span></label>
+                <input
+                    name="valid_id_2"
+                    type="file"
+                  />
+              </div>
+              <div className="input-field">
+                <label>ID Number <span>*</span></label>
+                <input
+                    name="valid_id_number_2"
+                    type="number"
+                    placeholder="Enter ID number"
+                  />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="input-field">
+                <label>Expiration Date <span>*</span></label>
+                <input
+                    name="id_expiration_2"
+                    type="number"
+                    placeholder="Enter expiration date"
+                  />
+              </div>
+            </div>
+
             <h3>Mother's Information</h3>
             <hr></hr>
             <div className="form-field">
-              <label>Mother's name <span>*</span></label>
+              <label>Mother's Name <span>*</span></label>
               <input
-                {...register("mother_name")}
+                name="mother_name"
                 type="text"
                 placeholder="Enter maiden name"
-                className={errors.mother_name ? "input-error" : "input-normal"}
               />
             </div>
             <div className="form-row">
               <div className="input-field">
                 <input
-                  {...register("mother_birthday")}
+                  name="mother_birthday"
                   type="date"
-                  className={
-                    errors.mother_birthday ? "input-error" : "input-normal"
-                  }
                 />
               </div>
               {/* select for mother nationality */}
-              <select>
-                <option disabled value="">Select Nationality</option>
-                <option>Filipino</option>
-              </select>
+              <div className="input-field">
+                <select name="mother_nationality">
+                  <option disabled value="">Select nationality</option>
+                  <option value="filipino">Filipino</option>
+                </select>
+              </div>
             </div>
 
             <div className="form-field">
               <label>Profession <span>*</span></label>
               <input
-                {...register("profession")}
+                name="profession"
                 type="text"
                 placeholder="Enter profession"
-                className={errors.profession ? "input-error" : "input-normal"}
               />
             </div>
 
             <h3>Spouse Information</h3>
             <hr></hr>
-            <input
-              {...register("spouse_name")}
-              type="text"
-              placeholder="Enter spouse name"
-              className={errors.spouse_name ? "input-error" : "input-normal"}
-            />
-            <input
-              {...register("spouse_birthday")}
-              type="date"
-              className={
-                errors.spouse_birthday ? "input-error" : "input-normal"
-              }
-            />
-            <input
-              {...register("spouse_profession")}
-              type="profession"
-              placeholder="Enter profession"
-              className={
-                errors.spouse_profession ? "input-error" : "input-normal"
-              }
-            />
+            <div className="form-field">
+              <label>Spouse Name <span>*</span></label>
+              <input
+                name="spouse_name"
+                type="text"
+                placeholder="Enter spouse name"
+              />
+            </div>
+            <div className="form-row">
+              <div className="input-field">
+                <label>Birthday <span>*</span></label>
+                <input
+                  name="spouse_birthday"
+                  type="date"
+                />
+              </div>
+              <div className="input-field">
+                <label>Nationality <span>*</span></label>
+                <select name="spouse_nationality">
+                    <option disabled value="">Select nationality</option>
+                    <option value="filipino">Filipino</option>
+                  </select>
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label>Profession <span>*</span></label>
+              <input
+                name="spouse_profession"
+                type="text"
+                placeholder="Enter profession"
+              />
+            </div>
             {/* select for spouse nationality */}
-          </div>
+            <button type="submit">Submit</button>
+            </form>
         </div>
       </div>
     </div>

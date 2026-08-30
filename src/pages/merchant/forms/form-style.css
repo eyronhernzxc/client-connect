@@ -150,23 +150,60 @@ body{
     border: 1px solid gray;
 }
 
-.form-field label span{
+.form-field label span, .form-field-grid label span{
 
     color: red;
 }
 
-.form-field label{
+.form-field label, .form-field-grid{
 
     color: black;
     font-size: 14px;
 }
 
-.form-container .form-field{
+.form .form-field{
 
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
+
+.form-field-grid .radio-field{
+
+    width: 100%;
+    height: max-content;
+    padding: 10px;
+    border: 1px solid;
+    display: flex;
+    flex-direction: row;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.form .form-field-grid{
+
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    width: 100%;
+    gap: 10px;
+    
+}
+
+.form-field-grid .radio-field label{
+
+    color: black;
+    font-size: 12px;
+}
+
+.form-field-grid .radio-field input{
+
+    height: 100%;
+    width: max-content;
+    padding: 10px;
+    accent-color: #005FA1;
+    border: 1px solid;
+}
+
 
 .form .form-row{
 

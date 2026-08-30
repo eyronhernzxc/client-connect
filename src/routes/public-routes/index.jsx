@@ -15,8 +15,9 @@ const Services = Loadable(lazy(() => import("../../pages/merchant/services/index
 const Settings = Loadable(lazy(() => import("../../pages/merchant/settings/index.jsx")));
 
 const CompanyRegistration = Loadable(lazy(() => import ("../../pages/merchant/forms/company-details/company-register.jsx")));
-const EMerchantForm = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/e-merchant-form.jsx")));
-
+const SignatoryDetails = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/signatory-details.jsx")));
+const FinancialInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/finacial-information.jsx")));
+const AdditionalInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/additional-information.jsx")));
 
 const publicRoutes = ([
     {
@@ -100,8 +101,28 @@ const publicRoutes = ([
         element: <FormLayout/>,
         children: [
             {
-                path: "form/e-merchant",
-                element: <EMerchantForm />,
+                path: "form/signatory",
+                element: <SignatoryDetails />,
+            }
+        ]
+    },
+
+        {
+        element: <FormLayout/>,
+        children: [
+            {
+                path: "form/financial",
+                element: <FinancialInformation />,
+            }
+        ]
+    },
+
+      {
+        element: <FormLayout/>,
+        children: [
+            {
+                path: "form/additional-info",
+                element: <AdditionalInformation />,
             }
         ]
     }

@@ -31,19 +31,6 @@ const handleCompanyRegistration = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const website_url = formData.get("website_url");
-    const phone = formData.get("phone");
-    const address = formData.get("address");
-    const zip_code = formData.get("zip_code");
-    const year_established = formData.get("year_established");
-    const dti_registration_number = formData.get("dti_registration_number");
-    const company_tin = formData.get("company_tin");
-    const tax_type = formData.get("tax_type");
-    const application_purpose = formData.get("application_purpose");
-    const expected_transaction = formData.get("expected_transaction");
-    const transaction_total_amount = formData.get("transaction_total_amount");
 
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id;
@@ -66,7 +53,7 @@ const handleCompanyRegistration = async (event) => {
         tax_type: formData.get("tax_type"),
         application_purpose: formData.get("application_purpose"),
         expected_transaction: formData.get("expected_transaction"),
-        transaction_total_amount: formData.get("transaction_total_amount")   ,
+        transaction_total_amount: formData.get("transaction_total_amount"),
         status: status
     }
 
@@ -89,6 +76,7 @@ return (
 <Header>
     <h1>Company Registration</h1>
 </Header>
+
 <div className='form-container'>
 <form onSubmit={handleCompanyRegistration} className='form'>
 

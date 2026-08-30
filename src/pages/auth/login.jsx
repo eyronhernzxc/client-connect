@@ -58,8 +58,9 @@ function Login() {
       }
       
     } catch (error) {
-      console.error("Error occurred while logging in:", error);
-      alert("Login failed. Please check your credentials and try again.");
+    console.error("LOGIN ERROR:", error);
+    console.error("RESPONSE:", error.response?.data);
+    console.error("STATUS:", error.response?.status);
       return;
     } finally {
       setLoading(false);
