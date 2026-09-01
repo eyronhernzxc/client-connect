@@ -1,20 +1,26 @@
-export async function postService (applicationData) {
-  const response = await fetch(
-    "http://necklace-flex-hiring-brain.trycloudflare.com/api/application-services",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(applicationData),
-    }
-  );
 
-  const data = await response.json();
+import { api } from "./api.js";
 
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to create application");
+export async function postService(applicationData) {
+  try {
+    const { data } = await api.post(
+      "/application-services",
+      applicationData
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "POST /application-services failed:",
+      error.response?.data || error
+    );
+
+    const message =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      "Failed to create application.";
+
+    throw new Error(message);
   }
-
-  return data;
 }
+
