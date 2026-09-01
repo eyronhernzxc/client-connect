@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Header from "../header/header";
 import { getPersonalDetailType } from "../../../../api/getPersonalDetailType";
+
 import "../form-style.css";
+import { postPersonalDetails } from "../../../../api/postSignatoryDetail";
 
 export default function SignatoryDetails() {
 
@@ -18,54 +20,51 @@ export default function SignatoryDetails() {
 
       } catch(error) {
 
-        console.log("Failed tp fetch personal detail type")
+        console.error("Failed tp fetch personal detail type")
+      console.log("STATUS:", error.response?.status);
+    console.log("RESPONSE:", error.response?.data);
+    console.log("ERRORS:", error.response?.data?.errors);
       }
-    }
-  })
+    };
+
+    fetchPersonalDetailTypes();
+  }, []);
 
   const submitSignatory = async (event) => {
     event.preventDefault();
 
-    const formData = new formData(event.currentTraget);
+    const formData = new FormData(event.currentTarget);
 
     const data = {
 
+      company_id: 1,
+      personal_detail_type_id: formData.get("personal_detail_type_id"),
       first_name: formData.get("firstname"),
       middle_name: formData.get("middlename"),
       last_name: formData.get("lastname"),
-      e_signature: formData.get("esignature"),
-      present_address: formData.get("present_address"),
-      present_zip_code: formData.get("present_zip_code"),
-      permanent_address: formData.get("permanent_address"),
-      permanent_zip_code: formData.get("permanent_zip_code"),
-      birthdate: formDta.get("birthdate"),
-      birth_place: formData.get("birth_place"),
+      signature: formData.get("signature"),
+      birthdate: formData.get("birthdate"),
+      birthplace: formData.get("birth_place"),
+      nationality: formData.get("nationality"),
+      citizenship: formData.get("citizenship"),
+      phone_number: formData.get("phone_number"),
+      email: formData.get("email"),
       civil_status: formData.get("civil_status"),
       gender: formData.get("gender"),
-      contact_number: formData.get("contact_number"),
-      email: formData.get("email"),
-      valid_id_1: formData.get("valid_id_1"),
-      valid_id_number_1: formData.get("valid_id_number_1"),
-      id_expiration_1: formData.get("id_expiration_1"),
-      valid_id_2: formData.get("valid_id_2"),
-      valid_id_number_2: formData.get("valid_id_number_2"),
-      id_expiration_2: formData.get("id_expiration_2"),
-      mother_name: formData.get("mother_name"),
-      mother_birthday: formData.get("mother_birthday"),
-      mother_nationality: form_data.get("mother_nationality"),
-      spouse_name: formData.get("spouse_name"),
-      spouse_birthday: formData.get("spouse_birthday"),
-      spouse_nationality: form_data.get("spouse_nationality"),
     };
 
     try{
 
-      const response = await postSignatory(data);
+      const response = await postPersonalDetails(data);
+      alert("Signatory details submitted successfully!");
     }
 
     catch(error){
 
-      console.error(error);
+    console.log("STATUS:", error.response?.status);
+    console.log("RESPONSE:", error.response?.data);
+    console.log("ERRORS:", error.response?.data?.errors);
+    
     }
 
   };
@@ -78,8 +77,8 @@ export default function SignatoryDetails() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onClick={submitSignatory}>
-            <div className="form-row">
+          <form className="form" onSubmit={submitSignatory}>
+           
 
           <div className="form-field">
         <label>Personal detail type <span>*</span></label>
@@ -92,7 +91,7 @@ export default function SignatoryDetails() {
             ))}
         </select>
     </div>
-
+          <div className="form-row">
               <div className="input-field">
                 <label>
                   First name <span>*</span>
@@ -133,56 +132,9 @@ export default function SignatoryDetails() {
                   Upload E-signature <span>*</span>
                 </label>
                 <input
-                  name="esignature"
-                  type="file"
+                  name="signature"
+                  type="text"
                   placeholder="Upload e-signature"
-                />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="input-field-large">
-                <label>
-                  Present Address <span>*</span>
-                </label>
-                <input
-                  name="present_address"
-                  type="text"
-                  placeholder="Enter present address"
-                />
-              </div>
-
-              <div className="input-field-short">
-                <label>
-                  Zip Code <span>*</span>
-                </label>
-                <input
-                  name="present_zip_code"
-                  type="number"
-                  placeholder="Enter zip code"
-                />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="input-field-large">
-                <label>
-                  Permanent Address <span>*</span>
-                </label>
-                <input
-                  name="permanent_address"
-                  type="text"
-                  placeholder="Enter permanent address"
-                />
-              </div>
-              <div className="input-field-short">
-                <label>
-                  Zip Code <span>*</span>
-                </label>
-                <input
-                  name="permanent_zip_code"
-                  type="number"
-                  placeholder="Enter zip code"
                 />
               </div>
             </div>
@@ -205,14 +157,48 @@ export default function SignatoryDetails() {
                 />
               </div>
             </div>
-            {/* select for nationality
-                select for citizenship
-              */}
+
+            <div className="form-row">
+              <div className="input-field">
+                <label>Nationality <span>*</span></label>
+                <select name="nationality">
+                  <option value="">Select Nationality</option>
+                  <option value="filipino">Filipino</option>
+                </select>
+                </div>
+                <div className="input-field">
+                <label>Citizenship <span>*</span></label>
+                <select name="citizenship">
+                  <option value="">Select Citizenship</option>
+                  <option value="filipino">Filipino</option>
+                </select>
+                </div>
+            </div>
+
+              <div className="form-row">
+              <div className="input-field">
+                <label>Contact Number <span>*</span></label>
+                <input
+                  name="phone_number"
+                  type="tel"
+                  placeholder="Enter phone number"
+                />
+              </div>
+              <div className="input-field">
+                <label>Email <span>*</span></label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Enter email"
+                />
+              </div>
+            </div>
+
             <div className="form-row">
               <div className="input-field">
                 <label>Civil Status <span>*</span></label>
                 <select name="civil_status">
-                  <option disabled value="">
+                  <option value="">
                     Select status
                   </option>
                   <option value="single">Single</option>
@@ -225,7 +211,7 @@ export default function SignatoryDetails() {
             <div className="input-field">
               <label>Gender <span>*</span></label>
               <select name="gender">
-                <option disabled value="">
+                <option value="">
                   Select gender
                 </option>
                 <option value="male">Male</option>
@@ -235,156 +221,7 @@ export default function SignatoryDetails() {
             </div>
             </div>
 
-            <div className="form-row">
-              <div className="input-field">
-                <label>Contact Number <span>*</span></label>
-                <input
-                  name="contact_number"
-                  type="tel"
-                  placeholder="Enter contact number"
-                />
-              </div>
-              <div className="input-field">
-                <label>Email <span>*</span></label>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Enter email"
-                />
-              </div>
-            </div>
-            <h3>Valid Information</h3>
-            <hr></hr>
 
-            <div className="form-row">
-              <div className="input-field">
-                <label>1. Valid ID <span>*</span></label>
-                <input
-                    name="valid_id_1"
-                    type="file"
-                  />
-              </div>
-              <div className="input-field">
-                <label>ID Number <span>*</span></label>
-                <input
-                    name="valid_id_number_1"
-                    type="number"
-                    placeholder="Enter ID number"
-                  />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="input-field">
-                <label>Expiration Date <span>*</span></label>
-                <input
-                    name="id_expiration_1"
-                    type="number"
-                    placeholder="Enter expiration date"
-                  />
-              </div>
-            </div>
-
-             <div className="form-row">
-              <div className="input-field">
-                <label>2. Valid ID <span>*</span></label>
-                <input
-                    name="valid_id_2"
-                    type="file"
-                  />
-              </div>
-              <div className="input-field">
-                <label>ID Number <span>*</span></label>
-                <input
-                    name="valid_id_number_2"
-                    type="number"
-                    placeholder="Enter ID number"
-                  />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="input-field">
-                <label>Expiration Date <span>*</span></label>
-                <input
-                    name="id_expiration_2"
-                    type="number"
-                    placeholder="Enter expiration date"
-                  />
-              </div>
-            </div>
-
-            <h3>Mother's Information</h3>
-            <hr></hr>
-            <div className="form-field">
-              <label>Mother's Name <span>*</span></label>
-              <input
-                name="mother_name"
-                type="text"
-                placeholder="Enter maiden name"
-              />
-            </div>
-            <div className="form-row">
-              <div className="input-field">
-                <input
-                  name="mother_birthday"
-                  type="date"
-                />
-              </div>
-              {/* select for mother nationality */}
-              <div className="input-field">
-                <select name="mother_nationality">
-                  <option disabled value="">Select nationality</option>
-                  <option value="filipino">Filipino</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-field">
-              <label>Profession <span>*</span></label>
-              <input
-                name="profession"
-                type="text"
-                placeholder="Enter profession"
-              />
-            </div>
-
-            <h3>Spouse Information</h3>
-            <hr></hr>
-            <div className="form-field">
-              <label>Spouse Name <span>*</span></label>
-              <input
-                name="spouse_name"
-                type="text"
-                placeholder="Enter spouse name"
-              />
-            </div>
-            <div className="form-row">
-              <div className="input-field">
-                <label>Birthday <span>*</span></label>
-                <input
-                  name="spouse_birthday"
-                  type="date"
-                />
-              </div>
-              <div className="input-field">
-                <label>Nationality <span>*</span></label>
-                <select name="spouse_nationality">
-                    <option disabled value="">Select nationality</option>
-                    <option value="filipino">Filipino</option>
-                  </select>
-              </div>
-            </div>
-
-            <div className="form-field">
-              <label>Profession <span>*</span></label>
-              <input
-                name="spouse_profession"
-                type="text"
-                placeholder="Enter profession"
-              />
-            </div>
-            {/* select for spouse nationality */}
             <button type="submit">Submit</button>
             </form>
         </div>

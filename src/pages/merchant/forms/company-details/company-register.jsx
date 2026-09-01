@@ -1,4 +1,3 @@
-import React from 'react'
 import { useEffect, useState } from 'react';
 import {postCompany} from "../../../../api/postCompany";
 import {getCompanyTypes} from "../../../../api/getCompanyTypes";
@@ -59,6 +58,7 @@ const handleCompanyRegistration = async (event) => {
 
     try{
         const response = await postCompany(data);
+        alert("Company registration submitted successfully");
     }
 
     catch(error){

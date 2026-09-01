@@ -12,7 +12,6 @@ export const api = axios.create({
   },
 });
 
-// Automatically attach the authentication token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_token");
@@ -27,4 +26,3 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-

@@ -18,6 +18,12 @@ const CompanyRegistration = Loadable(lazy(() => import ("../../pages/merchant/fo
 const SignatoryDetails = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/signatory-details.jsx")));
 const FinancialInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/finacial-information.jsx")));
 const AdditionalInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/additional-information.jsx")));
+const BusinessInformation = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-information.jsx")));
+const BusinessQuestion = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-questions.jsx")));
+const Declaration = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/declaration.jsx")));
+const ValidId = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/valid-id.jsx"))); 
+const Address = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/address.jsx")));
+const Reference = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/reference.jsx")));
 
 const publicRoutes = ([
     {
@@ -28,104 +34,93 @@ const publicRoutes = ([
         path: "/register",
         element: <Register />,
     },
+
     {
         element: <MerchantLayout />,
         children: [
             {
                 path: "/merchant/home",
                 element: <Home />,
-            }
-        ]
-    },
+            },
 
-
-
-    // {
-    //     element: <FormLayout/>,
-    //     children: [
-    //         {
-    //             path: "form/company",
-    //             element: <CompanyRegistration />,
-    //         }
-    //     ]
-    // }
-
-    {
-        element: <MerchantLayout />,
-        children: [
-            {
+             {
                 path: "/merchant/profile",
                 element: <Profile />,
-            }
-        ]
-    },
-    {
-        element: <MerchantLayout />,
-        children: [
+            },
+
             {
                 path: "/merchant/forms",
                 element: <Forms />,
-            }
-        ]
-    },
-    {
-        element: <MerchantLayout />,
-        children: [
+            },
+
             {
                 path: "/merchant/services",
                 element: <Services />,
-            }
-        ]
-    },
-    {
-        element: <MerchantLayout />,
-        children: [
+            },
+
             {
                 path: "/merchant/settings",
                 element: <Settings />,
             }
         ]
     },
-
+      
     {
         element: <FormLayout/>,
         children: [
+
             {
                 path: "form/company",
                 element: <CompanyRegistration />,
-            }
-        ]
-    },
+            },
 
-    {
-        element: <FormLayout/>,
-        children: [
             {
                 path: "form/signatory",
                 element: <SignatoryDetails />,
-            }
-        ]
-    },
+            },
 
-        {
-        element: <FormLayout/>,
-        children: [
             {
                 path: "form/financial",
                 element: <FinancialInformation />,
-            }
-        ]
-    },
+            },
 
-      {
-        element: <FormLayout/>,
-        children: [
             {
                 path: "form/additional-info",
                 element: <AdditionalInformation />,
+            },
+
+            {
+                path: "form/business-info",
+                element: <BusinessInformation />,
+            },
+
+            {
+                path: "form/business-question",
+                element: <BusinessQuestion />,
+            },
+
+            {
+                path: "form/valid-id",
+                element: <ValidId/>,
+            },
+
+            {
+                path: "form/address",
+                element: <Address />,
+            },
+
+            {
+                path: "form/declaration",
+                element: <Declaration />,
+            },
+
+            {
+
+                path: "form/reference",
+                element:<Reference />,
             }
         ]
-    }
+    },
 
 
     // {

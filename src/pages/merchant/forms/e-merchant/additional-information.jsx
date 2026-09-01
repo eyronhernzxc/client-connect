@@ -176,7 +176,6 @@ export default function AdditionalInformation() {
                 />
             </div>
 
-            {/* org relationship */}
             <h3>Organization Relationship</h3>
             <hr></hr>
 

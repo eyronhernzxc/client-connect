@@ -30,68 +30,35 @@ const protectedRoutes = ([
                 path: "/dashboard",
                 element: <Dashboard />,
             },
-        ],
-    },
 
-    {
-
-        element:
-        <MainLayout/>,
-        children: [
             {
 
                 path:"/onboarding",
                 element: <Onboarding />,
             },
-        ],
-    },
 
-    {
-        element: <MainLayout />,
-        children: [
             {
 
                 path:"/merchants",
                 element: <Merchants/>,
             },
-        ],
-    },
 
-    {
-        element:
-        <MainLayout/>,
-        children: [
             {
                 path:"/applications",
                 element: <Applications/>,
             },
-        ],
-    },
 
-    {
-        element:<MainLayout />,
-        children: [
             {
 
                 path:"/services",
                 element:<Services/>,
             },
-        ],
-    },
 
-    {
-        element:<MainLayout/>,
-        children: [
             {
                 path:"/activity-log",
                 element:<ActivityLog/>,
             },
-        ],
-    },
 
-    {
-        element:<MainLayout/>,
-        children: [
             {
 
                 path:"/settings",
@@ -99,6 +66,7 @@ const protectedRoutes = ([
             },
         ],
     },
+
     //   {
     //     path: "*",
     //     element: <NotFound />,
