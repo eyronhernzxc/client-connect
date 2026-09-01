@@ -1,18 +1,30 @@
 import React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import '../../pages.css'
 import PageHeader from '../../../components/admin/header/page-header';
 import TableHeader from '../../../components/admin/table/table-header';
 import SearchToolbar from '../../../components/admin/table/searchbar/searchbar';
 import Table from '../../../components/admin/table/table';
+import ApplicationReviewModal from '../../../components/admin/modals/application-review-modal/application-review-modal';
 
 
 export default function Applications() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedApplication, setSelectedApplication] = useState(null);
 
     useEffect(() => {
-
         document.title = "Pisopay | Admin Applications"
     });
+
+    const handleRowClick = (applicationData) => {
+      setSelectedApplication(applicationData);
+      setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+      setSelectedApplication(null);
+    };
 
   return (
 
@@ -87,13 +99,22 @@ export default function Applications() {
           </thead>
           
           <tbody>
-              <tr>
+              <tr onClick={() => handleRowClick({
+                referenceId: 'LOG-20240808',
+                companyName: 'Voltex Tech',
+                category: 'Government',
+                documents: '13/21',
+                status: 'Under Review',
+                statusClass: 'review',
+                date: '08-12-2026'
+              })} style={{ cursor: 'pointer' }}>
                 <td>LOG-20240808</td>
                 <td>Voltex Tech</td>
                 <td><span className='category-span'>Government</span></td>
+                <td>13/21</td>
                 <td><span className="status-span review">
                 Under Review</span></td>
-                <td>Aug 08, 2026</td>
+                <td>08-12-2026</td>
           
               </tr>
           </tbody>
@@ -102,6 +123,12 @@ export default function Applications() {
                   />
 
         </div>
+
+        <ApplicationReviewModal 
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          applicationData={selectedApplication}
+        />
 
     </div>
 

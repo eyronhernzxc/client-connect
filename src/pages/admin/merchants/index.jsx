@@ -16,7 +16,7 @@ export default function Merchants() {
      <div className ='admin-container'>
             <PageHeader>
                 <h1 className="page-title">
-                    Applications
+                    Merchants
                 </h1>
                 <p className='page-desc'>Review, validate documents and manage merchant onboarding status.</p>
             </PageHeader>
@@ -25,7 +25,7 @@ export default function Merchants() {
     
             <div className='table-container'>
     
-                <TableHeader tabletitle={<h1>Review Applications</h1>}/>
+                <TableHeader tabletitle={<h1>Current Merchants</h1>}/>
                 <SearchToolbar 
     
                  searchtool={
@@ -77,7 +77,6 @@ export default function Merchants() {
                     <th>REFERENCE ID</th>
                     <th>COMPANY NAME</th>
                     <th>CATEGORY</th>
-                    <th>DOCUMENTS</th>
                     <th>STATUS</th>
                     <th>DATE</th>
                   </tr>
@@ -88,8 +87,7 @@ export default function Merchants() {
                     <td>LOG-20240808</td>
                     <td>Voltex Tech</td>
                     <td><span className='category-span'>Government</span></td>
-                    <td><span className="status-span review">
-                    Under Review</span></td>
+                    <td>Active</td>
                     <td>Aug 08, 2026</td>
               
                   </tr>

@@ -39,13 +39,13 @@ const protectedRoutes = ([
 
             {
 
-                path:"/merchants",
-                element: <Merchants/>,
+                path:"/applications",
+                element: <Applications/>,
             },
 
             {
-                path:"/applications",
-                element: <Applications/>,
+                path:"/merchants",
+                element: <Merchants/>,
             },
 
             {

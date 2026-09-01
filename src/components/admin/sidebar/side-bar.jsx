@@ -65,9 +65,9 @@ export default function Sidebar() {
       <li>
         <NavLink className={({isActive})=>
         `navlink ${isActive ? 'active': ''}`}
-        to="/merchants" title="Merchants">
+        to="/applications" title="Applications">
         <PiUsersThreeBold />
-          <span>Merchants</span>
+          <span>Applications</span>
         </NavLink>
       </li>
         <li>
@@ -82,9 +82,9 @@ export default function Sidebar() {
        <li>
         <NavLink className={({isActive})=>
         `navlink ${isActive ? 'active': ''}`}
-         to="/applications" title="Services">
+         to="/merchants" title="Services">
           <StickyNote />
-          <span>Applications</span>
+          <span>Merchants</span>
         </NavLink>
       </li>
 

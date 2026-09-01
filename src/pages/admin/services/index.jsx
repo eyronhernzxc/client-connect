@@ -1,12 +1,20 @@
 import React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import '../../pages.css'
 import PageHeader from '../../../components/admin/header/page-header';
 import TableHeader from '../../../components/admin/table/table-header';
 import SearchToolbar from '../../../components/admin/table/searchbar/searchbar';
 import Table from '../../../components/admin/table/table';
+import ServicesModal from '../../../components/admin/modals/services-application-modal/services-modal';
 
 export default function Services() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleRowClick = (item) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  }
 
      useEffect(() => {
     
@@ -86,9 +94,10 @@ export default function Services() {
               </thead>
               
               <tbody>
-                  <tr>
+                  <tr onClick={() => handleRowClick({companyName: 'VOLTEZ V', category: 'Government'})}>
                     <td>VOLTEZ V</td>
                     <td><span className='category-span government'>Government</span></td>
+                    <td><span className='document-span'>19/21</span></td>
                     <td><span className='system-span backend'>Backend</span></td>
                     <td><span className="gateway-span ol-banking">Online Banking</span></td>
                     <td><span className='others-span'>payment_link</span></td>
@@ -99,9 +108,15 @@ export default function Services() {
                 </table>
                       </>}
                       />
-    
             </div>
-    
-        </div>
+            {/* modal */}
+            {isModalOpen && (
+              <ServicesModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                item={selectedItem}
+              />
+            )}
+          </div>
   );
 }
