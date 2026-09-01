@@ -1,6 +1,6 @@
 export async function postService (applicationData) {
   const response = await fetch(
-    "http://192.168.122.200:8000/api/s",
+    "http://necklace-flex-hiring-brain.trycloudflare.com/api/application-services",
     {
       method: "POST",
       headers: {
