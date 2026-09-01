@@ -1,0 +1,283 @@
+body{
+
+    margin: 0;
+    padding: 0;
+}
+
+*{
+
+    box-sizing: border-box;
+}
+
+.form-header{
+
+    background-color: #005FA1;
+    padding: 20px 20px;
+    width: 100%;
+    height: max-content;
+
+}
+
+.form-header h1{
+
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.form-overlay{
+
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    width: 100%;
+    height: max-content;
+    /* background-color: rgba(0, 0, 0, 0.363);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); */
+
+}
+
+.form-overlay .form-card{
+
+    width: 60%;
+    height: max-content;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.form-card .form-container{
+
+    width: 100%;
+    padding: 10px 20px;
+    height: max-content;
+}
+
+.form-container .form{
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-field input {
+
+    height: 2.5rem;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-row .input-field input:focus{
+
+    outline: none;
+    border: 1px solid black;
+}
+
+.form-field select{
+
+    height: 2.5rem;
+    padding: 10px 10px;
+    color: gray;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.form-field select option{
+
+    height: 2.5rem;
+    padding: 10px 10px;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.input-field  input {
+
+    height: 2.5rem;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.form-field label span{
+
+    color: red;
+}
+
+.form-field label{
+
+    color: black;
+}
+
+.form-container .form-field{
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form .form-row{
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+
+}
+
+.form-row .input-field{
+
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-row .input-field label{
+
+    color: black;
+}
+
+.form-row .input-field label span{
+
+    color: red;
+}
+
+.form button{
+
+    border: none;
+    border-radius: 10px;
+    background-color: #005FA1;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 10px;
+}
+
+/* Radio/checkbox inputs shouldn't inherit the big text-input sizing above.
+   More specific than ".form-field input" / ".input-field input", so this
+   wins without touching those existing rules. */
+.form-field input[type="radio"],
+.form-field input[type="checkbox"],
+.input-field input[type="radio"],
+.input-field input[type="checkbox"]{
+
+    height: auto;
+    width: auto;
+    padding: 0;
+    border: none;
+}
+
+/* Yes/No pairs and multi-item checkbox lists (KYC questionnaire) */
+.yesno-group{
+
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.yesno-group label,
+.checkbox-group label{
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: black;
+    font-weight: normal;
+}
+
+.checkbox-group{
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Section heading within a step */
+.section-title{
+
+    margin: 0;
+    padding: 0;
+    color: #005FA1;
+    font-size: 1.1rem;
+}
+
+.certification-text{
+
+    margin: 0;
+    color: black;
+    font-style: italic;
+}
+
+/* Step indicator dots */
+.form-steps{
+
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.form-step{
+
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: gray;
+    border: 1px solid gray;
+    background-color: white;
+}
+
+.form-step.active{
+
+    background-color: #005FA1;
+    border-color: #005FA1;
+    color: white;
+}
+
+.form-step.done{
+
+    background-color: #E9EEFC;
+    border-color: #005FA1;
+    color: #005FA1;
+}
+
+/* Back / Next / Submit row */
+.form-nav{
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form-nav button{
+
+    border: none;
+    border-radius: 10px;
+    background-color: #005FA1;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 10px 20px;
+}
+
+.form-nav button:disabled{
+
+    background-color: #B9C6E6;
+    cursor: not-allowed;
+}

@@ -5,13 +5,13 @@ import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
 import '../form-style.css'
 
-export default function CompanyRegistration() {
+export default function RiskAssessment() {
 
 const [companyTypes, setCompanyTypes] = useState([]);
 
 useEffect(() => {
     
-    document.title = "Pisopay | Company Registration"
+    document.title = "Pisopay | Risk Assessment"
 
     const fetchCompanyTypes = async () => {
         try {
@@ -26,7 +26,7 @@ useEffect(() => {
     fetchCompanyTypes();
 }, []);
 
-const handleCompanyRegistration = async (event) => {
+const handleRiskAssessment = async (event) => {
 
     event.preventDefault();
 
@@ -78,7 +78,7 @@ return (
 </Header>
 
 <div className='form-container'>
-<form onSubmit={handleCompanyRegistration} className='form'>
+<form onSubmit={handleRiskAssessment} className='form'>
 
 
     <div className="form-field">

@@ -24,6 +24,9 @@ const Declaration = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-mer
 const ValidId = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/valid-id.jsx"))); 
 const Address = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/address.jsx")));
 const Reference = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/reference.jsx")));
+const RiskAssessment = Loadable(lazy(() =>import ("../../pages/merchant/forms/risk-assessment/risk-assess.jsx")));
+const KnowYourCustomer = Loadable(lazy(() =>import ("../../pages/merchant/forms/kyc/kyc.jsx")));
+
 
 const publicRoutes = ([
     {
@@ -118,6 +121,16 @@ const publicRoutes = ([
 
                 path: "form/reference",
                 element:<Reference />,
+            },
+
+            {
+                path: "form/risk-assessment",
+                element: <RiskAssessment />,
+            },
+
+            {
+                path: "form/kyc",
+                element: <KnowYourCustomer />,q
             }
         ]
     },
