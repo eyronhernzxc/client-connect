@@ -23,8 +23,7 @@ const BusinessQuestion = Loadable(lazy(() =>import ("../../pages/merchant/forms/
 const Declaration = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/declaration.jsx")));
 const ValidId = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/valid-id.jsx"))); 
 const Address = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/address.jsx")));
-const Employment = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/employment-information.jsx")))
-const Employment = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/employment-information.jsx")))
+const Employment = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/employment-information.jsx")));
 const Reference = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/reference.jsx")));
 const RiskAssessment = Loadable(lazy(() =>import ("../../pages/merchant/forms/risk-assessment/risk-assess.jsx")));
 const KnowYourCustomer = Loadable(lazy(() =>import ("../../pages/merchant/forms/kyc/kyc.jsx")));
