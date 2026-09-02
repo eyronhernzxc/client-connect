@@ -19,11 +19,18 @@ export default function Metrics() {
       type: "positive",
     },
     {
-      title: "Expired Applications",
+      title: "Inactive Merchants",
       value: "1,000",
       change: "-4.2%",
       icon: Clock3,
       type: "negative",
+    },
+    {
+      title: "Active Merchants",
+      value: "2,506",
+      change: "+15.8%",
+      icon: CheckCircle2,
+      type: "positive",
     },
     {
       title: "Pending Applications",
@@ -32,13 +39,7 @@ export default function Metrics() {
       icon: FileCheck2,
       type: "warning",
     },
-    {
-      title: "Completed Applications",
-      value: "2,506",
-      change: "+15.8%",
-      icon: CheckCircle2,
-      type: "positive",
-    },
+
   ];
 
   const ringData = [

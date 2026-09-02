@@ -11,21 +11,19 @@ export default function Services() {
     <>
       <div className="merchant-container">
         <PageHeader>
-          <div className="name-container">
-            <h1 className="page-title">Hello,</h1>
-            <h1 className="admin-name">Uriel</h1>
-          </div>
+        <div className="name-container">
+          <h1 className="page-title">Forms</h1>
+        </div>
 
-          <p className="page-desc">
-            Services
-          </p>
+        <p className="page-desc">
+          Select a service to view the forms available for submission.
+        </p>
         </PageHeader>
       </div>
 
       <div className="ServiceTab">
-        <ServiceTab>
+        <ServiceTab />
 
-        </ServiceTab>
       </div>
     </>
   )

@@ -5,7 +5,6 @@ import "./sidebar.css";
 import {
   LayoutDashboard,
   Timer,
-  Settings,
   ChartNoAxesColumnIncreasing,
   LogOut,
   Handshake,
@@ -94,14 +93,6 @@ export default function Sidebar() {
          to="/activity-log" title="Activity Logs">
           <ChartNoAxesColumnIncreasing />
           <span>Activities</span>
-        </NavLink>
-      </li>
-      <li>
-        <NavLink className={({isActive})=>
-        `navlink ${isActive ? 'active': ''}`}
-         to="/settings" title="Settings">
-          <Settings />
-          <span>Settings</span>
         </NavLink>
       </li>
     </ul>
