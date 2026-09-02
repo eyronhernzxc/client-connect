@@ -2,38 +2,64 @@ import React from "react";
 import Header from "../header/header";
 import "../form-style.css";
 import { postDeclaration } from "../../../../api/postDeclaration";
+import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../../../../api/auth";
 
 export default function Declaration() {
 
-   const submitDeclaration  = async (event) => {
+  const navigate = useNavigate();
 
+  const submitDeclaration  = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    const business_information_id = 1;
-
-    const data = {
-
-        business_information_id: business_information_id,
-        politically_exposed_person: formData.get("politically_exposed_person"),
-        name: formData.get("name"),
-        signature:formData.get("signature"),
-        date: formData.get("date"),
-        designation: formData.get("designation"),
-    }
-
     try{
 
-        const response = await postDeclaration(data);
-        alert("Submit successfully");
-    }catch (error){
+      const user = await getCurrentUser();
 
-    console.log("STATUS:", error.response?.status);
-    console.log("RESPONSE:", error.response?.data);
-    console.log("ERRORS:", error.response?.data?.errors);
+      console.log("Authenticated User:", user);
+
+      if(!user?.id){
+
+        throw new Error("User not authenticated");
+      }
+
+      const business_information_id = user.business_information_id || user.business_information?.id;
+
+      console.log("Authenticated business information ID:", business_information_id);
+
+      if(!business_information_id){
+
+        throw new Error("Unable to determine the user's business information.");
+      }
+
+      const data = new FormData();
+
+      data.append("business_information_id", business_information_id);
+      data.append("politically_exposed_person", formData.get("politically_exposed_person"));
+      data.append("name", formData.get("name"));
+      data.append("signature", formData.get("signature"));
+      data.append("date", formData.get("date"));
+      data.append("designation",formData.get("designation"));
+
+
+    const response = await postDeclaration(data);
+
+    alert("Declaration submitted successfully!");
+    navigate("/merchant/home");
+
+    } catch(error){
+
+      console.log("STATUS:", error.response?.status);
+      console.log("RESPONSE:", error.response?.data);
+      console.log("ERRORS:", error.response?.data?.errors);
+      console.log("Error:", error);
     }
-   } 
+
+
+  }
+
 
   return (
     <div className="form-overlay">
@@ -43,7 +69,7 @@ export default function Declaration() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={submitDeclaration}>
+          <form className="form" onSubmit={(e) => submitDeclaration(e)}>
 
             <h3>Declarations</h3>
             <hr/>
@@ -78,7 +104,7 @@ export default function Declaration() {
                     <div className="form-field">
                         <label>Signature <span>*</span></label>
                         <input 
-                        type="text"
+                        type="file"
                         name="signature"
                         />
                     </div>

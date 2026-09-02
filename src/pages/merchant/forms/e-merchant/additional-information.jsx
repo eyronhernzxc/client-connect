@@ -25,14 +25,39 @@ export default function AdditionalInformation() {
         fetchBankCategory();
     }, []);
 
-   const submitInformation  = async (event) => {
-
+    const submitInformation = async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-    const bank = {
+    try{
+        const user = await getCurrentUser();
 
+        console.log("Authenticated User:", user);
+        
+        if (!user?.id) {
+            throw new Error("User not authenticated");
+        }
+
+        const company_id = user.company_id || user.company?.id;
+
+        console.log("Authenticated user ID:", user.id);
+        console.log("Authenticated company ID:", company_id);
+
+        if(!company_id) {
+            throw new Error("Unable to determine the user's company.");
+        }
+
+        const relatedCompanyList = {
+
+            company_id: company_id,
+            name: formData.get("related_company_list")
+        }
+
+        const bank = {
+
+        company_id: company_id,
         bank_category_id: formData.get("bank_category_id"),
         name: formData.get("bank_name"),
         branch_name: formData.get("branch_name"),
@@ -46,6 +71,7 @@ export default function AdditionalInformation() {
 
     const organization = {
 
+        company_id: company_id,
         fullname: formData.get("org_fullname"),
         relationship: formData.get("relationship"),
         position: formData.get("position"),
@@ -55,6 +81,7 @@ export default function AdditionalInformation() {
 
     const fatca = {
 
+        company_id: company_id,
         us_address: formData.get("us_address"),
         zip_code: formData.get("us_zip_code"),
         us_phone: formData.get("us_phone"),
@@ -64,23 +91,30 @@ export default function AdditionalInformation() {
 
     const customerSupport = {
 
+        company_id: company_id,
         contact_number: formData.get("cs_number"),
         cs_schedule:  formData.get("cs_schedule")
     }
 
-    try{
+    console.log("Bank Data:", bank);
+    console.log("Organization Data:", organization);
+    console.log("FATCA Data:", fatca);
+    console.log("Customer Support Data:", customerSupport);
 
-        const bankResponse = await postBank(bank);
-        const organizationResponse = await postOrganization(organization);
-        const fatcaResponse = await postFatca(fatca);
-        const CsResponse = await postCustomerSupport(customerSupport);
+    const relatedCompanies = await postRelatedCompanies(relatedCompanyList);
+    const bankResponse = await postBank(bank);
+    const organizationResponse = await postOrganization(organization);
+    const fatcaResponse = await postFatca(fatca);
+    const csResponse = await postCustomerSupport(customerSupport);
 
-        alert("Submit successfully");
-    }catch (error){
-
-        console.error(error);
+        
+    } catch (error) {
+        console.error("Error submitting additional information:", error);
+        console.error("RESPONSE:", error.response?.data);
+        console.error("STATUS:", error.response?.status);
     }
-   } 
+
+};
 
   return (
     <div className="form-overlay">
@@ -90,7 +124,7 @@ export default function AdditionalInformation() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={submitInformation}>
+          <form className="form" onSubmit={(e) => submitInformation(e)}>
             <div className="form-field">
                 <label>List of Company/ies where you’re a Director/Officer/Stockholder/Authorized Signatory<span>*</span></label>
                 <input

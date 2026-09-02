@@ -1,17 +1,44 @@
 import Header from "../header/header";
 import "../form-style.css";
 import { postReference } from "../../../../api/postReference";
+import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../../../../api/auth";
+
 
 export default function Reference() {
 
-const submitReference = async (event) => {
+  const navigate = useNavigate();
+
+  const submitReference = async (event) => {
     event.preventDefault();
 
-const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-const mother = {
+    try{
 
-    personal_detail_id: 1,
+      const user = await getCurrentUser();
+
+      console.log("Authenticated User:", user);
+
+      if(!user?.id){
+
+        throw new Error("User not authenticated");
+
+      }
+
+      const personal_detail_id = user.personal_detail_id || user.personal_detail?.id;
+
+      console.log("Personal Detail ID:", personal_detail_id);
+
+      if(!personal_detail_id){
+
+        throw new Error("Unable to determine the user's personal detail.");
+      }
+
+      const mother = {
+
+    personal_detail_id: personal_detail_id,
     reference_type_id: 1,
     name: formData.get("mother_name"),
     birthdate: formData.get("mother_birthdate"),
@@ -23,7 +50,7 @@ const mother = {
 
 const spouse = {
 
-    personal_detail_id: 1,
+    personal_detail_id: personal_detail_id,
     reference_type_id: 2,
     name: formData.get("spouse_name"),
     birthdate: formData.get("spouse_birthdate"),
@@ -32,23 +59,63 @@ const spouse = {
     profession: formData.get("spouse_profession")
 }
 
-    try{
-
       const response = await postReference(mother, spouse);
       alert("Reference submitted successfully!");
+      navigate("/form/financial");
 
+    }catch(error){
+      console.error("STATUS:", error.response?.status);
+      console.error("RESPONSE:", error.response?.data);
+      console.error("ERRORS:", error.response?.data?.errors);
+      console.error("MESSAGE:", error.message);
     }
-
-    catch(error){
-
-    console.error("STATUS:", error.response?.status);
-    console.error("RESPONSE:", error.response?.data);
-    console.error("ERRORS:", error.response?.data?.errors);
-    console.error("MESSAGE:", error.message);
-    
-    }
-
   };
+
+// const submitReference = async (event) => {
+//     event.preventDefault();
+
+// const formData = new FormData(event.currentTarget);
+
+// const mother = {
+
+//     personal_detail_id: 1,
+//     reference_type_id: 1,
+//     name: formData.get("mother_name"),
+//     birthdate: formData.get("mother_birthdate"),
+//     birthplace: formData.get("mother_birthplace"),
+//     nationality: formData.get("mother_nationality"),
+//     profession: formData.get("mother_profession")
+    
+// }
+
+// const spouse = {
+
+//     personal_detail_id: 1,
+//     reference_type_id: 2,
+//     name: formData.get("spouse_name"),
+//     birthdate: formData.get("spouse_birthdate"),
+//     birthplace: formData.get("spouse_birthplace"),
+//     nationality: formData.get("spouse_nationality"),
+//     profession: formData.get("spouse_profession")
+// }
+
+//     try{
+
+//       const response = await postReference(mother, spouse);
+//       alert("Reference submitted successfully!");
+
+//     }
+
+//     catch(error){
+
+//     console.error("STATUS:", error.response?.status);
+//     console.error("RESPONSE:", error.response?.data);
+//     console.error("ERRORS:", error.response?.data?.errors);
+//     console.error("MESSAGE:", error.message);
+    
+//     }
+
+//   };
 
   return (
     <div className="form-overlay">
@@ -57,7 +124,7 @@ const spouse = {
           <h1>Reference</h1>
         </Header>
         <div className="form-container">
-          <form className="form" onSubmit={submitReference}>
+          <form className="form" onSubmit={(e) => submitReference(e)}>
 
         <h3>Mother's Information</h3>
         <hr/>

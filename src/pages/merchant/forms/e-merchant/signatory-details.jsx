@@ -4,8 +4,12 @@ import { getPersonalDetailType } from "../../../../api/getPersonalDetailType";
 
 import "../form-style.css";
 import { postPersonalDetails } from "../../../../api/postSignatoryDetail";
+import { getCurrentUser } from "../../../../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function SignatoryDetails() {
+
+  const navigate = useNavigate();
 
   const [personalDetailType, setpersonalDetailType] = useState([]);
 
@@ -30,44 +34,74 @@ export default function SignatoryDetails() {
     fetchPersonalDetailTypes();
   }, []);
 
-  const submitSignatory = async (event) => {
+
+ const submitSignatory = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    const data = {
+    try {
+        const user = await getCurrentUser();
 
-      company_id: 1,
-      personal_detail_type_id: formData.get("personal_detail_type_id"),
-      first_name: formData.get("firstname"),
-      middle_name: formData.get("middlename"),
-      last_name: formData.get("lastname"),
-      signature: formData.get("signature"),
-      birthdate: formData.get("birthdate"),
-      birthplace: formData.get("birth_place"),
-      nationality: formData.get("nationality"),
-      citizenship: formData.get("citizenship"),
-      phone_number: formData.get("phone_number"),
-      email: formData.get("email"),
-      civil_status: formData.get("civil_status"),
-      gender: formData.get("gender"),
-    };
+        console.log("Authenticated User:", user);
 
-    try{
+        if (!user?.id) {
+            throw new Error("User not authenticated");
+        }
 
-      const response = await postPersonalDetails(data);
-      alert("Signatory details submitted successfully!");
+        const companyId =
+            user.company_id ||
+            user.company?.id;
+
+        console.log("Authenticated user ID:", user.id);
+        console.log("Authenticated company ID:", companyId);
+
+        if (!companyId) {
+            throw new Error(
+                "Unable to determine the user's company."
+            );
+        }
+
+        // Create FormData for API request
+        const data = new FormData();
+
+        data.append("company_id", companyId);
+        data.append(
+            "personal_detail_type_id",
+            formData.get("personal_detail_type_id")
+        );
+        data.append("first_name", formData.get("firstname"));
+        data.append("middle_name", formData.get("middlename") || "");
+        data.append("last_name", formData.get("lastname"));
+
+        // FILE
+        data.append("signature", formData.get("signature"));
+
+        data.append("birthdate", formData.get("birthdate"));
+        data.append("birthplace", formData.get("birth_place"));
+        data.append("nationality", formData.get("nationality"));
+        data.append("citizenship", formData.get("citizenship"));
+        data.append("phone_number", formData.get("phone_number"));
+        data.append("email", formData.get("email"));
+        data.append("civil_status", formData.get("civil_status"));
+        data.append("gender", formData.get("gender"));
+
+        console.log("SIGNATURE:", formData.get("signature"));
+
+        const response = await postPersonalDetails(data);
+
+        console.log("RESPONSE:", response);
+
+        alert("Signatory details submitted successfully!");
+        navigate("/form/address");
+
+    } catch (error) {
+        console.log("STATUS:", error.response?.status);
+        console.log("RESPONSE:", error.response?.data);
+        console.log("ERRORS:", error.response?.data?.errors);
+        console.error(error);
     }
-
-    catch(error){
-
-    console.log("STATUS:", error.response?.status);
-    console.log("RESPONSE:", error.response?.data);
-    console.log("ERRORS:", error.response?.data?.errors);
-    
-    }
-
-  };
+};
 
   return (
     <div className="form-overlay">
@@ -77,7 +111,7 @@ export default function SignatoryDetails() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={submitSignatory}>
+          <form className="form" onSubmit={(e) => submitSignatory(e)}>
            
 
           <div className="form-field">
@@ -133,7 +167,7 @@ export default function SignatoryDetails() {
                 </label>
                 <input
                   name="signature"
-                  type="text"
+                  type="file"
                   placeholder="Upload e-signature"
                 />
               </div>

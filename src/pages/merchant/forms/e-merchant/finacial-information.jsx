@@ -2,8 +2,66 @@ import React from "react";
 
 import Header from "../header/header";
 import "../form-style.css";
+import { getCurrentUser } from "../../../../api/auth";
+import { postFinancial } from "../../../../api/postFinancial";
+import { useNavigate } from "react-router-dom";
+
 
 export default function FinancialInformation() {
+
+  const navigate = useNavigate();
+
+  const submitFinancial = async (event) =>{
+  event.preventDefault();
+
+  const formData = new FormData(event.currentTarget);
+
+  try{
+
+      const user = await getCurrentUser();
+    
+          console.log("Authenticated User:", user);
+    
+          if(!user?.id){
+    
+            throw new Error("User not authenticated");
+    
+          }
+    
+          const personal_detail_id = user.personal_detail_id || user.personal_detail?.id;
+    
+          console.log("Personal Detail ID:", personal_detail_id);
+    
+          if(!personal_detail_id){
+    
+            throw new Error("Unable to determine the user's personal detail.");
+          }
+
+          const data = {
+
+            personal_detail_id: personal_detail_id,
+            occupation: formData.get("occupation"),
+            tax_id_number: formData.get("tax_id_number"),
+            source_of_wealth: formData.get("source_of_wealth"),
+            monthly_gross_income: formData.get("monthly_gross"),
+            annual_gross_income: formData.get("annual_gross"),
+
+          }
+
+          const response = await postFinancial(data);
+          console.log("Financial Information submitted successfully:", response);
+        alert("Financial Information submitted successfully");
+        navigate("/form/employment");
+
+
+  }catch(error){
+
+     console.error("STATUS:", error.response?.status);
+        console.error("RESPONSE:", error.response?.data);
+        console.error("ERRORS:", error.response?.data?.errors);
+        console.error("Error Message:", error.message);
+  }
+}
 
 
   return (
@@ -14,7 +72,7 @@ export default function FinancialInformation() {
         </Header>
 
         <div className="form-container">
-          <form className="form">
+          <form className="form" onSubmit={(e) => submitFinancial(e)}>
             <div className="form-field">
               <label>
                 Occupation <span>*</span>
@@ -145,13 +203,13 @@ export default function FinancialInformation() {
 
             <div className="form-field">
               <label>
-                TIN Number <span>*</span>
+                Tax ID Number <span>*</span>
               </label>
 
               <input
                 type="number"
-                name="tin_number"
-                placeholder="Enter TIN number"
+                name="tax_id_number"
+                placeholder="Enter tax id"
               />
             </div>
 
@@ -410,6 +468,8 @@ export default function FinancialInformation() {
                 </div>
               </div>
             </div>
+
+            <button type="submit">Submit</button>
           </form>
         </div>
       </div>

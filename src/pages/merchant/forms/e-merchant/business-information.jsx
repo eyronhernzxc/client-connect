@@ -1,21 +1,44 @@
 import React from "react";
 import { postBusinessInfo } from "../../../../api/postBusinessInfo";
-
-
 import Header from "../header/header";
 import "../form-style.css";
+import { getCurrentUser } from "../../../../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function BusinessInformation() {
 
-   const submitBusinessInformation  = async (event) => {
+const navigate = useNavigate();
 
+
+const submitBusinessInformation  = async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-    const company_id = 1;
+    try{
 
-    const data = {
+        const user = await getCurrentUser();
+
+        console.log("Authenticated User:", user);
+
+        if(!user?.id){
+
+            throw new Error("User not authenticated");
+            console.error("User not authenticated");        
+        }
+
+        console.log("Authenticated user ID:", user.id);
+        console.log("Authenticated company ID:", user.company_id);
+
+        const company_id = user.company_id || user.company?.id;
+
+        if(!company_id){
+
+            throw new Error("Unable to determine the user's company.");
+        }
+
+        const data = {
 
         company_id: company_id,
         name: formData.get("name"),
@@ -31,15 +54,19 @@ export default function BusinessInformation() {
         chargeback_familiarity: formData.get("chargeback_familiarity"),
     }
 
-    try{
+    const response = await postBusinessInfo(data);
+    alert("Business Information submitted successfully!");
+    console.log("Business Information submitted successfully:", response);
+    navigate("/form/business-question");
 
-        const response = await postBusinessInfo(data);
-        alert("Submit successfully");
     }catch (error){
-
-        console.error(error);
+        
+        console.error("STATUS:", error.response?.status);
+        console.error("RESPONSE:", error.response?.data);
+        console.error("ERRORS:", error.response?.data?.errors);
+        console.error("Error Message:", error.message);
     }
-   } 
+};
 
   return (
     <div className="form-overlay">
@@ -49,7 +76,7 @@ export default function BusinessInformation() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={submitBusinessInformation}>
+          <form className="form" onSubmit={(e) => submitBusinessInformation(e)}>
 
             <h3>Online/E-commerce business Info</h3>
             <hr/>

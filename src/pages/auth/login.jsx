@@ -51,7 +51,7 @@ function Login() {
 
       if(hasCompany){
 
-        navigate('merchant/home');
+        navigate('form/signatory');
       } else {
 
         navigate('form/company')
@@ -61,6 +61,7 @@ function Login() {
     console.error("LOGIN ERROR:", error);
     console.error("RESPONSE:", error.response?.data);
     console.error("STATUS:", error.response?.status);
+    alert("error");
       return;
     } finally {
       setLoading(false);

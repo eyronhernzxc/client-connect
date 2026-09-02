@@ -4,18 +4,48 @@ import { postBusinessQuestion } from "../../../../api/postBusinessInfo";
 
 import Header from "../header/header";
 import "../form-style.css";
+import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../../../../api/auth";
 
 export default function BusinessQuestion() {
 
-   const submitBusinessQuestion  = async (event) => {
+const navigate = useNavigate();
 
+const submitBusinessQuestion  = async (event) => {
     event.preventDefault();
-
+ 
     const formData = new FormData(event.currentTarget);
 
-    const business_information_id = 1;
+    try{
 
-    const data = {
+        const user = await getCurrentUser();
+        
+        console.log("Authenticated User:", user);
+
+        if(!user?.id){
+
+            throw new Error("User not authenticated");
+        }
+
+        const company_id = user.company_id || user.company?.id;
+
+        console.log("Authenticated user ID:", user.id);
+        console.log("Authenticated company ID:", company_id);
+
+        if(!company_id){
+            throw new Error("Unable to determine the user's company.");
+        }
+
+        const business_information_id = user.business_information_id || user.business_information?.id;
+
+        console.log("Authenticated business information ID:", business_information_id);
+
+        if(!business_information_id){
+
+            throw new Error("Unable to determine the user's business information.");
+        }
+
+        const data = {
 
         business_information_id: business_information_id,
         creditcard: formData.get("creditcard"),
@@ -28,17 +58,19 @@ export default function BusinessQuestion() {
         mobile_app_sale: formData.get("mobile_app_sale"),
     }
 
-    try{
+    const response = await postBusinessQuestion(data);
+    alert("Business Question submitted successfully!");
+    console.log("Business Question submitted successfully:", response);
+    navigate("/form/declaration");
 
-        const response = await postBusinessQuestion(data);
-        alert("Submit successfully");
-    }catch (error){
+    }catch(error){
 
-    console.log("STATUS:", error.response?.status);
-    console.log("RESPONSE:", error.response?.data);
-    console.log("ERRORS:", error.response?.data?.errors);
+        console.error("STATUS:", error.response?.status);
+        console.error("RESPONSE:", error.response?.data);
+        console.error("ERRORS:", error.response?.data?.errors);
+        console.error("Error Message:", error.message);
     }
-   } 
+}
 
   return (
     <div className="form-overlay">
@@ -48,7 +80,7 @@ export default function BusinessQuestion() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={submitBusinessQuestion}>
+          <form className="form" onSubmit={(e) => submitBusinessQuestion(e)}>
 
             <h3>Online/E-commerce business Info</h3>
             <hr/>

@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import {postCompany} from "../../../../api/postCompany";
 import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
+import {useNavigate} from "react-router-dom";
 import '../form-style.css'
 
 export default function CompanyRegistration() {
+
+const navigate = useNavigate();
 
 const [companyTypes, setCompanyTypes] = useState([]);
 
@@ -57,13 +60,19 @@ const handleCompanyRegistration = async (event) => {
     }
 
     try{
-        const response = await postCompany(data);
+        const Companyresponse = await postCompany(data);
+        console.log("Company Registration submitted successfully:", Companyresponse);
         alert("Company registration submitted successfully");
+        navigate("/form/signatory");
+
     }
 
     catch(error){
 
-        console.error(error);
+         console.log("STATUS:", error.response?.status);
+  console.log("DATA:", error.response?.data);
+  console.log("MESSAGE:", error.response?.data?.message);
+  console.log("FULL ERROR:", error);
     }
 
 }
@@ -185,7 +194,7 @@ return (
     <div className="form-field">
         <label>Tax type <span>*</span></label>
         <select name='tax_type'>
-            <option disabled value="">Tax type</option>
+            <option value="">Tax type</option>
             <option value="1">Vat</option>
             <option value="2">Non-Vat</option>
         </select>

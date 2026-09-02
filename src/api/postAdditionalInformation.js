@@ -27,3 +27,9 @@ export const postCustomerSupport = async (customerSupport) => {
 
     return response.data;
 }
+
+export const postRelatedCompanies = async (relatedCompanyList) => {
+    const response = await api.post("/related-company", relatedCompanyList);
+
+    return response.data;  
+}
