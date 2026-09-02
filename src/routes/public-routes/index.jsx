@@ -130,7 +130,7 @@ const publicRoutes = ([
 
             {
                 path: "form/kyc",
-                element: <KnowYourCustomer />,q
+                element: <KnowYourCustomer />,
             }
         ]
     },

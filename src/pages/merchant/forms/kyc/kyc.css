@@ -1,283 +1,294 @@
-body{
+/* src\pages\merchant\forms\kyc\kyc.css */
 
-    margin: 0;
-    padding: 0;
+.kyc-root {
+  --ink: #152238;
+  --ink-soft: #5C6B84;
+  --line: #E3E8F1;
+  --bg: #EEF2F9;
+  --blue: #0090FF;
+  --blue-deep: #0276c9;
+  --blue-tint: #E9EEFC;
+  --teal: #055d9b;
+  --teal-tint: #E4F7F4;
+  --red: #D92D20;
+  --red-tint: #FEF3F2;
+
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-*{
-
-    box-sizing: border-box;
+.kyc-root * {
+  box-sizing: border-box;
 }
 
-.form-header{
-
-    background-color: #005FA1;
-    padding: 20px 20px;
-    width: 100%;
-    height: max-content;
-
+.kyc-panel {
+  width: 100%;
+  max-width: 640px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 12px 32px -16px rgba(21, 34, 56, 0.18);
+  overflow: hidden;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
 }
 
-.form-header h1{
-
-    margin: 0;
-    padding: 0;
-    color: white;
-    font-size: 1.5rem;
+/* Stepper */
+.kyc-stepper {
+  display: flex;
+  align-items: center;
+  padding: 20px 32px;
+  background: var(--blue-deep);
+  flex-wrap: wrap;
+  row-gap: 8px;
 }
 
-.form-overlay{
-
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    width: 100%;
-    height: max-content;
-    /* background-color: rgba(0, 0, 0, 0.363);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); */
-
+.kyc-step {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
-.form-overlay .form-card{
-
-    width: 60%;
-    height: max-content;
-    border: 1px solid gray;
-    border-radius: 10px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    overflow: hidden;
+.kyc-dot {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.55);
 }
 
-.form-card .form-container{
+.kyc-step.done .kyc-dot { background: var(--teal); color: #fff; }
+.kyc-step.current .kyc-dot { background: #fff; color: var(--blue-deep); }
 
-    width: 100%;
-    padding: 10px 20px;
-    height: max-content;
+.kyc-connector {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.18);
+  margin: 0 4px;
 }
 
-.form-container .form{
+.kyc-step.done .kyc-connector { background: var(--teal); }
 
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* Panel head */
+.kyc-panel-head {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--line);
 }
 
-.form-field input {
-
-    height: 2.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid gray;
+.kyc-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 8px;
 }
 
-.form-field input:focus,
-.form-field select:focus,
-.form-row .input-field input:focus{
-
-    outline: none;
-    border: 1px solid black;
+.kyc-panel-head h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink);
 }
 
-.form-field select{
-
-    height: 2.5rem;
-    padding: 10px 10px;
-    color: gray;
-    border-radius: 5px;
-    border: 1px solid gray;
+/* Body */
+.kyc-panel-body {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.form-field select option{
-
-    height: 2.5rem;
-    padding: 10px 10px;
-    color: black;
-    border-radius: 5px;
-    border: 1px solid gray;
+.kyc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.input-field  input {
-
-    height: 2.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid gray;
+.kyc-field label,
+.kyc-input-field label {
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
-.form-field label span{
+.kyc-field label span,
+.kyc-input-field label span { color: var(--red); }
 
-    color: red;
+.kyc-field input[type="text"],
+.kyc-field input[type="email"],
+.kyc-field input[type="tel"],
+.kyc-field input[type="date"],
+.kyc-field input[type="url"],
+.kyc-input-field input {
+  font-family: inherit;
+  height: 2.4rem;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  font-size: 0.9rem;
+  color: var(--ink);
+  width: 100%;
 }
 
-.form-field label{
-
-    color: black;
+.kyc-field input:focus,
+.kyc-input-field input:focus,
+.kyc-field select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0, 144, 255, 0.12);
 }
 
-.form-container .form-field{
-
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.kyc-field select {
+  height: 2.4rem;
+  padding: 8px 10px;
+  color: var(--ink-soft);
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  width: 100%;
 }
 
-.form .form-row{
-
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: 100%;
-
+.kyc-row {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  width: 100%;
 }
 
-.form-row .input-field{
-
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.kyc-input-field {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.form-row .input-field label{
-
-    color: black;
+/* Radio / checkbox reset */
+.kyc-field input[type="radio"],
+.kyc-field input[type="checkbox"],
+.kyc-input-field input[type="radio"],
+.kyc-input-field input[type="checkbox"] {
+  height: 16px;
+  width: 16px;
+  padding: 0;
+  border: none;
+  accent-color: var(--blue);
 }
 
-.form-row .input-field label span{
-
-    color: red;
+.kyc-yesno-group {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
 }
 
-.form button{
-
-    border: none;
-    border-radius: 10px;
-    background-color: #005FA1;
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 10px;
+.kyc-yesno-group label,
+.kyc-checkbox-group label,
+.kyc-checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
 }
 
-/* Radio/checkbox inputs shouldn't inherit the big text-input sizing above.
-   More specific than ".form-field input" / ".input-field input", so this
-   wins without touching those existing rules. */
-.form-field input[type="radio"],
-.form-field input[type="checkbox"],
-.input-field input[type="radio"],
-.input-field input[type="checkbox"]{
-
-    height: auto;
-    width: auto;
-    padding: 0;
-    border: none;
+.kyc-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Yes/No pairs and multi-item checkbox lists (KYC questionnaire) */
-.yesno-group{
-
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
+.kyc-reveal-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--blue-tint);
 }
 
-.yesno-group label,
-.checkbox-group label{
-
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: black;
-    font-weight: normal;
+.kyc-reveal-detail .kyc-field label,
+.kyc-reveal-detail .kyc-input-field label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
 }
 
-.checkbox-group{
-
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.kyc-certification-text {
+  margin: 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
-/* Section heading within a step */
-.section-title{
-
-    margin: 0;
-    padding: 0;
-    color: #005FA1;
-    font-size: 1.1rem;
+/* Actions */
+.kyc-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.certification-text{
+.kyc-actions-footer { padding: 0 32px 28px; }
 
-    margin: 0;
-    color: black;
-    font-style: italic;
+.kyc-btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: 0.15s ease;
 }
 
-/* Step indicator dots */
-.form-steps{
-
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    flex-wrap: wrap;
+.kyc-btn.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
 }
 
-.form-step{
-
-    width: 1.8rem;
-    height: 1.8rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: gray;
-    border: 1px solid gray;
-    background-color: white;
+.kyc-btn.primary:hover:not(:disabled) {
+  background: var(--blue-deep);
+  border-color: var(--blue-deep);
 }
 
-.form-step.active{
+.kyc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    background-color: #005FA1;
-    border-color: #005FA1;
-    color: white;
+.kyc-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--red-tint);
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.form-step.done{
-
-    background-color: #E9EEFC;
-    border-color: #005FA1;
-    color: #005FA1;
-}
-
-/* Back / Next / Submit row */
-.form-nav{
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.form-nav button{
-
-    border: none;
-    border-radius: 10px;
-    background-color: #005FA1;
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 10px 20px;
-}
-
-.form-nav button:disabled{
-
-    background-color: #B9C6E6;
-    cursor: not-allowed;
+@media (max-width: 600px) {
+  .kyc-root { padding: 0; }
+  .kyc-panel { max-width: 100%; border-radius: 0; }
+  .kyc-row { flex-direction: column; gap: 18px; }
+  .kyc-input-field { width: 100%; }
+  .kyc-panel-head,
+  .kyc-panel-body,
+  .kyc-actions-footer,
+  .kyc-stepper {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

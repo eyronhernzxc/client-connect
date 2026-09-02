@@ -1,515 +1,2562 @@
-import React from 'react'
-import { useEffect, useState } from 'react';
-import { postKyc } from "../../../../api/postKyc"; // TODO: this form has no company_type/company fields, so postCompany/getCompanyTypes from the original file don't apply — point this at your real KYC submit endpoint.
-import Header from '../header/header';
-import '../form-style.css'
+// src\pages\merchant\forms\kyc\kyc.jsx
+import React, {
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 
-const SECTIONS = [
-  "Bank / Institution Information",
-  "Ownership Management Information",
-  "General Requirements",
-  "General AML Policies",
-  "Know Your Customer, Due Diligence and Enhanced Due Diligence",
-  "AML Training",
-  "Risk Management",
-  "AML Controls / Internal Measures",
+import { getKYC } from "../../../../api/getKYC";
+import { postKYCSectionOne } from "../../../../api/postKYCSectionOne";
+import { postKYCAnswer } from "../../../../api/postKYCAnswer";
+import { postCertifiedBy } from "../../../../api/postCertifiedby";
+
+import "../form-style.css";
+import "./kyc.css";
+
+// ─────────────────────────────────────────────────────────────────────
+// BUSINESS TYPES
+// ─────────────────────────────────────────────────────────────────────
+
+const BUSINESS_TYPES = [
+    {
+        value: "sole_proprietorship",
+        label: "Sole Proprietorship",
+    },
+    {
+        value: "partnership",
+        label: "Partnership",
+    },
+    {
+        value: "corporation",
+        label: "Corporation",
+    },
+    {
+        value: "cooperative",
+        label: "Cooperative",
+    },
+    {
+        value: "others",
+        label: "Others",
+    },
 ];
 
-const SECTION_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
+// ─────────────────────────────────────────────────────────────────────
+// AUTOSAVE
+// ─────────────────────────────────────────────────────────────────────
 
-// Small reusable Yes/No pair — every field the FormData reader below
-// expects is name={name}, value "yes" or "no".
-function YesNo({ name, label, required }) {
-  return (
-    <div className="form-field">
-      <label>{label} {required && <span>*</span>}</label>
-      <div className="yesno-group">
-        <label><input type="radio" name={name} value="yes" required={required} /> Yes</label>
-        <label><input type="radio" name={name} value="no" /> No</label>
-      </div>
-    </div>
-  );
+const DRAFT_KEY = "pisopay_kyc_draft";
+
+function loadDraft() {
+    try {
+        const raw =
+            localStorage.getItem(DRAFT_KEY);
+
+        if (!raw) {
+            return {
+                step: 0,
+                fields: {},
+            };
+        }
+
+        const parsed =
+            JSON.parse(raw);
+
+        return {
+            step:
+                Number(
+                    parsed.step ?? 0
+                ),
+            fields:
+                parsed.fields ?? {},
+        };
+    } catch {
+        return {
+            step: 0,
+            fields: {},
+        };
+    }
 }
 
-export default function KnowYourCustomer() {
+function saveDraft(step, fields) {
+    try {
+        localStorage.setItem(
+            DRAFT_KEY,
+            JSON.stringify({
+                step,
+                fields,
+            })
+        );
+    } catch {
+        // Ignore localStorage errors.
+    }
+}
 
-  const [step, setStep] = useState(0);
+function clearDraft() {
+    try {
+        localStorage.removeItem(
+            DRAFT_KEY
+        );
+    } catch {
+        // Ignore localStorage errors.
+    }
+}
 
-  useEffect(() => {
-    document.title = "Pisopay | Know Your Customer";
-  }, []);
+// ─────────────────────────────────────────────────────────────────────
+// QUESTION HELPERS
+// ─────────────────────────────────────────────────────────────────────
 
-  const next = () => setStep((s) => Math.min(s + 1, SECTIONS.length - 1));
-  const back = () => setStep((s) => Math.max(s - 1, 0));
+function getQuestionId(question) {
+    return (
+        question?.id ??
+        question?.kyc_question_id ??
+        null
+    );
+}
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+/*
+ * Only use actual question fields.
+ *
+ * Do NOT fall back to "type".
+ * "type" can belong to other database/API data
+ * and was one possible source of the "0" issue.
+ */
+function getQuestionText(question) {
+    const value =
+        question?.question ??
+        question?.text ??
+        question?.label ??
+        "";
 
-    const formData = new FormData(event.currentTarget);
+    /*
+     * Never allow numeric 0 or other non-string
+     * metadata values to become visible question text.
+     */
+    if (
+        value === null ||
+        value === undefined ||
+        typeof value === "number"
+    ) {
+        return "";
+    }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?.id;
-    const status = 'pending';
+    return String(value).trim();
+}
 
-    const data = {
-      user_id: userId,
-      status: status,
+// ─────────────────────────────────────────────────────────────────────
+// YES / NO DETECTION
+// ─────────────────────────────────────────────────────────────────────
 
-      // Section I: Bank / Institution Information
-      bank_institution: formData.get("bank_institution"),
-      country: formData.get("country"),
-      business_type: formData.get("business_type"),
-      business_type_other: formData.get("business_type_other"),
-      company_registration_date: formData.get("company_registration_date"),
-      business_registration_no: formData.get("business_registration_no"),
-      bir_registration_no: formData.get("bir_registration_no"),
-      place_of_registration: formData.get("place_of_registration"),
-      business_address: formData.get("business_address"),
-      web_address: formData.get("web_address"),
-      parent_institution_name: formData.get("parent_institution_name"),
-      parent_institution_address: formData.get("parent_institution_address"),
-      telephone_no: formData.get("telephone_no"),
-      fax_no: formData.get("fax_no"),
-      email_address: formData.get("email_address"),
+function isYesNoQuestion(question) {
+    const text =
+        getQuestionText(question)
+            .toLowerCase();
 
-      // Section II: Ownership Management Information
-      publicly_held: formData.get("publicly_held"),
-      publicly_held_listed_where: formData.get("publicly_held_listed_where"),
-      privately_owned: formData.get("privately_owned"),
-      privately_owned_details: formData.get("privately_owned_details"),
-      ownership_changes_5yrs: formData.get("ownership_changes_5yrs"),
-      ownership_changes_details: formData.get("ownership_changes_details"),
-      board_listing_attached: formData.get("board_listing_attached") === "on",
-      executive_mgmt_status: formData.get("executive_mgmt_status"),
-      executive_mgmt_names: formData.get("executive_mgmt_names"),
-      peps_status: formData.get("peps_status"),
-      peps_details: formData.get("peps_details"),
-      publishes_financials: formData.get("publishes_financials"),
-      good_governance_system: formData.get("good_governance_system"),
+    if (!text) {
+        return false;
+    }
 
-      // Section III: General Requirements
-      supervised_by_authority: formData.get("supervised_by_authority"),
-      supervisory_authority_name: formData.get("supervisory_authority_name"),
-      supervision_covers_aml_cft: formData.get("supervision_covers_aml_cft"),
-      money_laundering_is_crime: formData.get("money_laundering_is_crime"),
-      money_laundering_law: formData.get("money_laundering_law"),
-      terrorist_financing_is_crime: formData.get("terrorist_financing_is_crime"),
-      terrorist_financing_law: formData.get("terrorist_financing_law"),
-      complies_fatf_eu: formData.get("complies_fatf_eu"),
-      fatf_eu_compliance_details: formData.get("fatf_eu_compliance_details"),
-      anonymous_accounts: formData.get("anonymous_accounts"),
-      anonymous_accounts_legal: formData.get("anonymous_accounts_legal"),
-      internal_audit_aml: formData.get("internal_audit_aml"),
-      external_audit_aml: formData.get("external_audit_aml"),
+    /*
+     * Explicit Yes/No questions.
+     */
+    if (
+        text.includes("(yes/no)") ||
+        text.includes("yes/no")
+    ) {
+        return true;
+    }
 
-      // Section IV: General AML Policies
-      country_has_aml_laws: formData.get("country_has_aml_laws"),
-      aml_program_board_approved: formData.get("aml_program_board_approved"),
-      aml_policy_last_version_date: formData.get("aml_policy_last_version_date"),
-      customers_have_aml_policies: formData.get("customers_have_aml_policies"),
-      prohibits_shell_banks: formData.get("prohibits_shell_banks"),
-      account_opening_procedures: formData.get("account_opening_procedures"),
-      account_opening_features: formData.get("account_opening_features"),
-      record_retention_procedures: formData.get("record_retention_procedures"),
-      aml_applies_all_branches: formData.get("aml_applies_all_branches"),
-      has_written_aml_policies: formData.get("has_written_aml_policies"),
-      aml_policy_includes: formData.getAll("aml_policy_includes"),
-      maintains_pep_database: formData.get("maintains_pep_database"),
-      pep_high_risk_definition: formData.get("pep_high_risk_definition"),
+    /*
+     * Questions beginning with these words
+     * are normally Yes/No questions.
+     */
+    const yesNoStart =
+        /^(is|are|does|do|did|has|have|can|will|was|were|any)\b/;
 
-      // Section V: KYC, Due Diligence and Enhanced Due Diligence
-      kyc_identification_process: formData.get("kyc_identification_process"),
-      collects_business_activity_info: formData.get("collects_business_activity_info"),
-      assesses_customer_aml_policies: formData.get("assesses_customer_aml_policies"),
-      updates_high_risk_customer_info: formData.get("updates_high_risk_customer_info"),
+    return yesNoStart.test(text);
+}
 
-      // Section VI: AML Training
-      provides_aml_training: formData.get("provides_aml_training"),
-      aml_training_frequency: formData.get("aml_training_frequency"),
-      retains_training_records: formData.get("retains_training_records"),
-      communicates_aml_changes: formData.get("communicates_aml_changes"),
+// ─────────────────────────────────────────────────────────────────────
+// LISTING QUESTION
+// ─────────────────────────────────────────────────────────────────────
 
-      // Section VII: Risk Management
-      risk_focused_assessment: formData.get("risk_focused_assessment"),
-      determines_edd_level: formData.get("determines_edd_level"),
+/*
+ * Broadened beyond exact "Listing Attached" wording — the PEPs and
+ * Executive Management questions get edited over time and don't always
+ * contain that literal phrase. Keep this in sync with however these
+ * questions are worded going forward; anything that fails to match here
+ * falls through to "text" and silently gets swallowed as a follow-up of
+ * whatever question precedes it (see buildFollowUpMap below).
+ */
+function isListingQuestion(question) {
+    const text =
+        getQuestionText(question)
+            .toLowerCase();
 
-      // Section VIII: AML Controls / Internal Measures
-      has_aml_officer: formData.get("has_aml_officer"),
-      aml_officer_name: formData.get("aml_officer_name"),
-      aml_officer_address: formData.get("aml_officer_address"),
-      aml_officer_position: formData.get("aml_officer_position"),
-      aml_officer_contact: formData.get("aml_officer_contact"),
-      aml_officer_email: formData.get("aml_officer_email"),
-      officer_produces_reports: formData.get("officer_produces_reports"),
-      has_reporting_policies: formData.get("has_reporting_policies"),
-      has_audit_trail_recordkeeping: formData.get("has_audit_trail_recordkeeping"),
-      has_internal_or_third_party_audit: formData.get("has_internal_or_third_party_audit"),
+    if (!text) return false;
 
-      // Certification
-      certifying_officer_name: formData.get("certifying_officer_name"),
-      certifying_officer_position: formData.get("certifying_officer_position"),
-      date_signed: formData.get("date_signed"),
+    return (
+        text.includes(
+            "listing attached"
+        ) ||
+        text.includes(
+            "photo identifications"
+        ) ||
+        text.includes(
+            "valid photo identification"
+        ) ||
+        text.includes(
+            "executive management"
+        ) ||
+        text.includes(
+            "politically exposed"
+        )
+    );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// INPUT TYPE
+// ─────────────────────────────────────────────────────────────────────
+
+function getQuestionType(question) {
+    /*
+     * Only trust input_type.
+     *
+     * Do NOT use question.type because your
+     * API may use "type" for something other
+     * than the HTML input type.
+     */
+    const inputType =
+        question?.input_type;
+
+    if (
+        typeof inputType ===
+            "string" &&
+        inputType.trim()
+    ) {
+        const normalized =
+            inputType
+                .trim()
+                .toLowerCase();
+
+        if (
+            normalized ===
+                "yes_no" ||
+            normalized ===
+                "yes-no" ||
+            normalized ===
+                "radio"
+        ) {
+            return "yes_no";
+        }
+
+        if (
+            normalized ===
+                "listing"
+        ) {
+            return "listing";
+        }
+
+        if (
+            normalized ===
+                "textarea"
+        ) {
+            return "textarea";
+        }
+
+        if (
+            normalized ===
+                "text"
+        ) {
+            return "text";
+        }
+    }
+
+    /*
+     * If there is no explicit input_type,
+     * safely infer only Yes/No.
+     */
+    if (
+        isYesNoQuestion(question)
+    ) {
+        return "yes_no";
+    }
+
+    if (
+        isListingQuestion(question)
+    ) {
+        return "listing";
+    }
+
+    return "text";
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// NORMALIZE API RESPONSE
+// ─────────────────────────────────────────────────────────────────────
+
+function normalizeKYCResponse(data) {
+    let questions = [];
+
+    /*
+     * Supported API response formats:
+     *
+     * [
+     *   {...},
+     *   {...}
+     * ]
+     *
+     * {
+     *   data: [...]
+     * }
+     *
+     * {
+     *   questions: [...]
+     * }
+     */
+    if (Array.isArray(data)) {
+        questions = data;
+    } else if (
+        Array.isArray(data?.data)
+    ) {
+        questions =
+            data.data;
+    } else if (
+        Array.isArray(
+            data?.questions
+        )
+    ) {
+        questions =
+            data.questions;
+    } else if (
+        Array.isArray(
+            data?.data?.questions
+        )
+    ) {
+        questions =
+            data.data.questions;
+    }
+
+    return questions
+        .filter(
+            (question) =>
+                question &&
+                question.is_active !==
+                    false
+        )
+        .map((question) => {
+            const id =
+                getQuestionId(
+                    question
+                );
+
+            const text =
+                getQuestionText(
+                    question
+                );
+
+            const sectionId =
+                question?.kyc_section_id ??
+                question?.section_id ??
+                question?.kyc_section
+                    ?.id ??
+                null;
+
+            const displayOrder =
+                Number(
+                    question?.display_order ??
+                        0
+                );
+
+            return {
+                ...question,
+
+                id,
+
+                question:
+                    text,
+
+                kyc_section_id:
+                    sectionId,
+
+                display_order:
+                    Number.isFinite(
+                        displayOrder
+                    )
+                        ? displayOrder
+                        : 0,
+            };
+        })
+        .filter(
+            (question) =>
+                question.id !==
+                    null &&
+                question.id !==
+                    undefined &&
+                question.kyc_section_id !==
+                    null &&
+                question.kyc_section_id !==
+                    undefined &&
+                question.question !==
+                    ""
+        )
+        .sort(
+            (a, b) =>
+                Number(
+                    a.kyc_section_id
+                ) -
+                    Number(
+                        b.kyc_section_id
+                    ) ||
+                Number(
+                    a.display_order
+                ) -
+                    Number(
+                        b.display_order
+                    ) ||
+                Number(a.id) -
+                    Number(b.id)
+        );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// GROUP QUESTIONS BY SECTION
+// ─────────────────────────────────────────────────────────────────────
+
+function groupQuestionsBySection(
+    questions
+) {
+    const groups = {};
+
+    for (const question of questions) {
+        const sectionId =
+            question.kyc_section_id;
+
+        if (
+            !groups[sectionId]
+        ) {
+            groups[sectionId] =
+                [];
+        }
+
+        groups[sectionId].push(
+            question
+        );
+    }
+
+    Object.values(groups).forEach(
+        (sectionQuestions) => {
+            sectionQuestions.sort(
+                (a, b) =>
+                    Number(
+                        a.display_order
+                    ) -
+                        Number(
+                            b.display_order
+                        ) ||
+                    Number(a.id) -
+                        Number(b.id)
+            );
+        }
+    );
+
+    return groups;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// BUILD FOLLOW-UP RELATIONSHIPS
+// ─────────────────────────────────────────────────────────────────────
+
+/*
+ * A "text"-type question is treated as the follow-up detail field of
+ * whichever yes_no/listing question immediately precedes it, in display
+ * order, within the same section. This is positional, not wording-based
+ * — detail questions are phrased too inconsistently ("If yes...", "If
+ * there are...", "Provide the names of...", "Please state...") to
+ * regex-match reliably. Every yes_no/listing question "owns" every
+ * plain-text question right after it, until the next yes_no/listing
+ * question starts a new group.
+ *
+ * NOTE: a question can only become a follow-up if it fails to be
+ * classified as yes_no or listing. If a real standalone question gets
+ * misclassified as "text", it will silently get folded into the
+ * previous question's reveal box instead of rendering on its own — so
+ * keep isListingQuestion/isYesNoQuestion matching in sync with however
+ * question text gets worded going forward.
+ */
+function buildFollowUpMap(
+    questions
+) {
+    const map = {};
+
+    let parentId = null;
+
+    for (const question of questions) {
+        const id =
+            getQuestionId(
+                question
+            );
+
+        const type =
+            getQuestionType(
+                question
+            );
+
+        if (
+            type === "yes_no" ||
+            type === "listing"
+        ) {
+            parentId = id;
+            continue;
+        }
+
+        if (parentId !== null) {
+            if (
+                !map[parentId]
+            ) {
+                map[parentId] =
+                    [];
+            }
+
+            map[parentId].push(
+                question
+            );
+        }
+    }
+
+    return map;
+}
+
+function buildFollowUpParentMap(
+    questions
+) {
+    const map = {};
+
+    let parentId = null;
+
+    for (const question of questions) {
+        const id =
+            getQuestionId(
+                question
+            );
+
+        const type =
+            getQuestionType(
+                question
+            );
+
+        if (
+            type === "yes_no" ||
+            type === "listing"
+        ) {
+            parentId = id;
+            continue;
+        }
+
+        if (parentId !== null) {
+            map[id] = parentId;
+        }
+    }
+
+    return map;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// SECTION LABELS
+// ─────────────────────────────────────────────────────────────────────
+
+function getSectionLabel(
+    sectionId
+) {
+    const labels = {
+        1: "Bank / Institution Information",
+        2: "Ownership Management Information",
+        3: "General Requirements",
+        4: "General AML Policies",
+        5: "KYC, Due Diligence and Enhanced Due Diligence",
+        6: "AML Training",
+        7: "Risk Management",
+        8: "AML Controls / Internal Measures",
     };
 
-    try {
-      const response = await postKyc(data);
-    } catch (error) {
-      console.error(error);
+    return (
+        labels[sectionId] ??
+        `Section ${sectionId}`
+    );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// DYNAMIC TEXT FIELD
+// ─────────────────────────────────────────────────────────────────────
+
+function DynamicDetailField({
+    question,
+    draftValue,
+}) {
+    const id =
+        getQuestionId(
+            question
+        );
+
+    const text =
+        getQuestionText(
+            question
+        );
+
+    /*
+     * Do not render an invalid question.
+     */
+    if (!text) {
+        return null;
     }
-  };
 
-  return (
+    return (
+        <div className="kyc-field">
+            <label>
+                {text}
 
-  <div className='form-overlay'>
-  <div className='form-card'>
+                {question.is_required && (
+                    <span>
+                        {" "}
+                        *
+                    </span>
+                )}
+            </label>
 
-  <Header>
-      <h1>Know Your Customer and Anti-Money Laundering Questionnaire</h1>
-  </Header>
-
-  <div className='form-container'>
-  <form onSubmit={handleSubmit} className='form'>
-
-    <div className="form-steps">
-      {SECTIONS.map((label, i) => (
-        <span
-          key={label}
-          className={`form-step ${i === step ? "active" : i < step ? "done" : ""}`}
-        >
-          {i + 1}
-        </span>
-      ))}
-    </div>
-
-    <h2 className="section-title">SECTION {SECTION_NUMERALS[step]}: {SECTIONS[step]}</h2>
-
-    {/* Section I: Bank / Institution Information */}
-    <div style={{ display: step === 0 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>Bank / Institution <span>*</span></label>
-          <input type='text' name='bank_institution' placeholder="Enter bank/institution name" />
+            <textarea
+                name={`q_${id}`}
+                placeholder="Enter your answer"
+                defaultValue={
+                    draftValue || ""
+                }
+                required={
+                    Boolean(
+                        question.is_required
+                    )
+                }
+            />
         </div>
-        <div className="input-field">
-          <label>Country <span>*</span></label>
-          <input type='text' name='country' placeholder="Enter country" />
+    );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// YES / NO FIELD
+// ─────────────────────────────────────────────────────────────────────
+
+function DynamicYesNo({
+    question,
+    draftValue,
+    followUps,
+    draftFields,
+}) {
+    const id =
+        getQuestionId(
+            question
+        );
+
+    const text =
+        getQuestionText(
+            question
+        );
+
+    const [value, setValue] =
+        useState(
+            draftValue || ""
+        );
+
+    if (!text) {
+        return null;
+    }
+
+    return (
+        <div className="kyc-field">
+            <label>
+                {text}
+
+                {question.is_required && (
+                    <span>
+                        {" "}
+                        *
+                    </span>
+                )}
+            </label>
+
+            <div className="kyc-yesno-group">
+                <label>
+                    <input
+                        type="radio"
+                        name={`q_${id}`}
+                        value="yes"
+                        checked={
+                            value ===
+                            "yes"
+                        }
+                        required={
+                            Boolean(
+                                question.is_required
+                            )
+                        }
+                        onChange={() =>
+                            setValue(
+                                "yes"
+                            )
+                        }
+                    />
+
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name={`q_${id}`}
+                        value="no"
+                        checked={
+                            value ===
+                            "no"
+                        }
+                        onChange={() =>
+                            setValue(
+                                "no"
+                            )
+                        }
+                    />
+
+                    No
+                </label>
+            </div>
+
+            {/* 
+             * FOLLOW-UP QUESTIONS ONLY APPEAR
+             * WHEN YES IS SELECTED.
+             */}
+            {value ===
+                "yes" &&
+                followUps.length >
+                    0 && (
+                    <div className="kyc-reveal-detail">
+                        {followUps.map(
+                            (
+                                followUp
+                            ) => (
+                                <DynamicDetailField
+                                    key={getQuestionId(
+                                        followUp
+                                    )}
+                                    question={
+                                        followUp
+                                    }
+                                    draftValue={
+                                        draftFields[
+                                            `q_${getQuestionId(
+                                                followUp
+                                            )}`
+                                        ]
+                                    }
+                                />
+                            )
+                        )}
+                    </div>
+                )}
         </div>
-      </div>
+    );
+}
 
-      <div className="form-field">
-        <label>Type of Business <span>*</span></label>
-        <div className="checkbox-group">
-          <label><input type="radio" name="business_type" value="sole_proprietorship" /> Sole Proprietorship</label>
-          <label><input type="radio" name="business_type" value="partnership" /> Partnership</label>
-          <label><input type="radio" name="business_type" value="corporation" /> Corporation</label>
-          <label><input type="radio" name="business_type" value="others" /> Others (please specify)</label>
+// ─────────────────────────────────────────────────────────────────────
+// LISTING / N/A FIELD
+// ─────────────────────────────────────────────────────────────────────
+
+function DynamicListing({
+    question,
+    draftValue,
+    followUps,
+    draftFields,
+}) {
+    const id =
+        getQuestionId(
+            question
+        );
+
+    const text =
+        getQuestionText(
+            question
+        );
+
+    const [value, setValue] =
+        useState(
+            draftValue || ""
+        );
+
+    if (!text) {
+        return null;
+    }
+
+    return (
+        <div className="kyc-field">
+            <label>
+                {text}
+
+                {question.is_required && (
+                    <span>
+                        {" "}
+                        *
+                    </span>
+                )}
+            </label>
+
+            <div className="kyc-checkbox-group">
+                <label>
+                    <input
+                        type="radio"
+                        name={`q_${id}`}
+                        value="listing_attached"
+                        checked={
+                            value ===
+                            "listing_attached"
+                        }
+                        required={
+                            Boolean(
+                                question.is_required
+                            )
+                        }
+                        onChange={() =>
+                            setValue(
+                                "listing_attached"
+                            )
+                        }
+                    />
+
+                    Listing Attached
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name={`q_${id}`}
+                        value="na"
+                        checked={
+                            value ===
+                            "na"
+                        }
+                        onChange={() =>
+                            setValue(
+                                "na"
+                            )
+                        }
+                    />
+
+                    N/A
+                </label>
+            </div>
+
+            {value ===
+                "listing_attached" &&
+                followUps.length >
+                    0 && (
+                    <div className="kyc-reveal-detail">
+                        {followUps.map(
+                            (
+                                followUp
+                            ) => (
+                                <DynamicDetailField
+                                    key={getQuestionId(
+                                        followUp
+                                    )}
+                                    question={
+                                        followUp
+                                    }
+                                    draftValue={
+                                        draftFields[
+                                            `q_${getQuestionId(
+                                                followUp
+                                            )}`
+                                        ]
+                                    }
+                                />
+                            )
+                        )}
+                    </div>
+                )}
         </div>
-        <input type='text' name='business_type_other' placeholder="If others, please specify" />
-      </div>
+    );
+}
 
-      <div className="form-row">
-        <div className="input-field">
-          <label>Company Registration Date <span>*</span></label>
-          <input type='date' name='company_registration_date' />
+// ─────────────────────────────────────────────────────────────────────
+// DYNAMIC QUESTION
+// ─────────────────────────────────────────────────────────────────────
+
+function DynamicQuestion({
+    question,
+    followUpMap,
+    followUpParentMap,
+    draftFields,
+}) {
+    const id =
+        getQuestionId(
+            question
+        );
+
+    /*
+     * NEVER render a follow-up by itself.
+     *
+     * Its parent renders it when appropriate.
+     */
+    if (
+        followUpParentMap[id] !==
+        undefined
+    ) {
+        return null;
+    }
+
+    const text =
+        getQuestionText(
+            question
+        );
+
+    if (!text) {
+        return null;
+    }
+
+    const type =
+        getQuestionType(
+            question
+        );
+
+    const followUps =
+        followUpMap[id] ||
+        [];
+
+    if (
+        type === "yes_no"
+    ) {
+        return (
+            <DynamicYesNo
+                question={
+                    question
+                }
+                draftValue={
+                    draftFields[
+                        `q_${id}`
+                    ]
+                }
+                followUps={
+                    followUps
+                }
+                draftFields={
+                    draftFields
+                }
+            />
+        );
+    }
+
+    if (
+        type === "listing"
+    ) {
+        return (
+            <DynamicListing
+                question={
+                    question
+                }
+                draftValue={
+                    draftFields[
+                        `q_${id}`
+                    ]
+                }
+                followUps={
+                    followUps
+                }
+                draftFields={
+                    draftFields
+                }
+            />
+        );
+    }
+
+    return (
+        <DynamicDetailField
+            question={
+                question
+            }
+            draftValue={
+                draftFields[
+                    `q_${id}`
+                ]
+            }
+        />
+    );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────────────
+
+export default function KnowYourCustomer() {
+    const formRef =
+        useRef(null);
+
+    const [draft] =
+        useState(
+            loadDraft
+        );
+
+    const [step, setStep] =
+        useState(
+            Number(
+                draft.step || 0
+            )
+        );
+
+    const [
+        businessType,
+        setBusinessType,
+    ] = useState(
+        draft.fields
+            .business_type ||
+            ""
+    );
+
+    const [
+        submitting,
+        setSubmitting,
+    ] = useState(false);
+
+    const [
+        submitError,
+        setSubmitError,
+    ] = useState("");
+
+    const [
+        questions,
+        setQuestions,
+    ] = useState([]);
+
+    const [
+        loadingQuestions,
+        setLoadingQuestions,
+    ] = useState(true);
+
+    const [
+        questionLoadError,
+        setQuestionLoadError,
+    ] = useState("");
+
+    // ─────────────────────────────────────────────────────────────────
+    // LOAD QUESTIONS
+    // ─────────────────────────────────────────────────────────────────
+
+    useEffect(() => {
+        const fetchQuestions =
+            async () => {
+                try {
+                    setLoadingQuestions(
+                        true
+                    );
+
+                    setQuestionLoadError(
+                        ""
+                    );
+
+                    const response =
+                        await getKYC();
+
+                    const normalized =
+                        normalizeKYCResponse(
+                            response
+                        );
+
+                    console.log(
+                        "KYC questions from API:",
+                        normalized
+                    );
+
+                    setQuestions(
+                        normalized
+                    );
+                } catch (
+                    error
+                ) {
+                    console.error(
+                        "Failed to fetch KYC questions:",
+                        error
+                    );
+
+                    setQuestionLoadError(
+                        error.message ||
+                            "Failed to load KYC questions."
+                    );
+                } finally {
+                    setLoadingQuestions(
+                        false
+                    );
+                }
+            };
+
+        fetchQuestions();
+    }, []);
+
+    // ─────────────────────────────────────────────────────────────────
+    // PAGE TITLE
+    // ─────────────────────────────────────────────────────────────────
+
+    useEffect(() => {
+        document.title =
+            "Pisopay | Know Your Customer";
+    }, []);
+
+    // ─────────────────────────────────────────────────────────────────
+    // AUTOSAVE
+    // ─────────────────────────────────────────────────────────────────
+
+    const persistDraft =
+        () => {
+            if (
+                !formRef.current
+            ) {
+                return;
+            }
+
+            const formData =
+                new FormData(
+                    formRef.current
+                );
+
+            const fields =
+                Object.fromEntries(
+                    formData.entries()
+                );
+
+            saveDraft(
+                step,
+                {
+                    ...fields,
+                    business_type:
+                        businessType,
+                }
+            );
+        };
+
+    useEffect(() => {
+        persistDraft();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        step,
+        businessType,
+    ]);
+
+    // ─────────────────────────────────────────────────────────────────
+    // GROUPING
+    // ─────────────────────────────────────────────────────────────────
+
+    const groupedQuestions =
+        groupQuestionsBySection(
+            questions
+        );
+
+    const sectionIds =
+        Object.keys(
+            groupedQuestions
+        )
+            .map(Number)
+            .filter(
+                Number.isFinite
+            )
+            .sort(
+                (a, b) =>
+                    a - b
+            );
+
+    /*
+     * Step 0 = Section I
+     *
+     * Steps 1+ = DB sections
+     *
+     * Final step = Certification
+     */
+    const totalSteps =
+        sectionIds.length +
+        2;
+
+    const isSectionOneStep =
+        step === 0;
+
+    const isCertificationStep =
+        step ===
+        totalSteps - 1;
+
+    const sectionIndex =
+        !isSectionOneStep &&
+        !isCertificationStep
+            ? step - 1
+            : null;
+
+    const currentSectionId =
+        sectionIndex !==
+            null
+            ? sectionIds[
+                  sectionIndex
+              ]
+            : null;
+
+    const stepLabel =
+        isSectionOneStep
+            ? "Bank / Institution Information"
+            : isCertificationStep
+              ? "Certification"
+              : getSectionLabel(
+                    currentSectionId
+                );
+
+    // ─────────────────────────────────────────────────────────────────
+    // VALIDATION
+    // ─────────────────────────────────────────────────────────────────
+
+    const isStepComplete =
+        (stepIndex) => {
+            if (
+                !formRef.current
+            ) {
+                return true;
+            }
+
+            const container =
+                formRef.current.querySelector(
+                    `[data-step="${stepIndex}"]`
+                );
+
+            if (!container) {
+                return true;
+            }
+
+            const requiredEls =
+                container.querySelectorAll(
+                    "[required]"
+                );
+
+            const seenRadioGroups =
+                new Set();
+
+            for (const el of requiredEls) {
+                if (
+                    el.type ===
+                    "radio"
+                ) {
+                    if (
+                        seenRadioGroups.has(
+                            el.name
+                        )
+                    ) {
+                        continue;
+                    }
+
+                    seenRadioGroups.add(
+                        el.name
+                    );
+
+                    const checked =
+                        container.querySelector(
+                            `input[name="${el.name}"]:checked`
+                        );
+
+                    if (
+                        !checked
+                    ) {
+                        return false;
+                    }
+
+                    continue;
+                }
+
+                if (
+                    el.type ===
+                    "checkbox"
+                ) {
+                    if (
+                        !el.checked
+                    ) {
+                        return false;
+                    }
+
+                    continue;
+                }
+
+                if (
+                    !el.value ||
+                    !el.value
+                        .trim()
+                ) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+    // ─────────────────────────────────────────────────────────────────
+    // NAVIGATION
+    // ─────────────────────────────────────────────────────────────────
+
+    const next =
+        () => {
+            if (
+                !isStepComplete(
+                    step
+                )
+            ) {
+                setSubmitError(
+                    "Please complete all required fields before continuing."
+                );
+
+                return;
+            }
+
+            setSubmitError(
+                ""
+            );
+
+            setStep(
+                (current) =>
+                    Math.min(
+                        current +
+                            1,
+                        totalSteps -
+                            1
+                    )
+            );
+        };
+
+    const back =
+        () => {
+            setSubmitError(
+                ""
+            );
+
+            setStep(
+                (current) =>
+                    Math.max(
+                        current -
+                            1,
+                        0
+                    )
+            );
+        };
+
+    const canJumpTo =
+        (target) => {
+            if (
+                target <=
+                step
+            ) {
+                return true;
+            }
+
+            for (
+                let i = 0;
+                i < target;
+                i++
+            ) {
+                if (
+                    !isStepComplete(
+                        i
+                    )
+                ) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+    const goToStep =
+        (target) => {
+            if (
+                canJumpTo(
+                    target
+                )
+            ) {
+                setSubmitError(
+                    ""
+                );
+
+                setStep(
+                    target
+                );
+            }
+        };
+
+    // ─────────────────────────────────────────────────────────────────
+    // SUBMIT
+    // ─────────────────────────────────────────────────────────────────
+
+    const handleSubmit =
+        async (event) => {
+            event.preventDefault();
+
+            if (
+                !isStepComplete(
+                    totalSteps -
+                        1
+                )
+            ) {
+                setSubmitError(
+                    "Please complete all required certification fields."
+                );
+
+                return;
+            }
+
+            const formData =
+                new FormData(
+                    event.currentTarget
+                );
+
+            // ---------------------------------------------------------
+            // COMPANY ID
+            // ---------------------------------------------------------
+
+            let user = {};
+
+            try {
+                user =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "user"
+                        )
+                    ) || {};
+            } catch {
+                user = {};
+            }
+
+            const companyId =
+                user?.company_id ??
+                user?.company
+                    ?.id ??
+                null;
+
+            if (!companyId) {
+                setSubmitError(
+                    "Unable to determine your company ID. Please log in again."
+                );
+
+                return;
+            }
+
+            setSubmitting(
+                true
+            );
+
+            setSubmitError(
+                ""
+            );
+
+            try {
+                // =====================================================
+                // SECTION ONE
+                // =====================================================
+
+                const selectedBusinessType =
+                    formData.get(
+                        "business_type"
+                    );
+
+                const sectionOneData =
+                    {
+                        company_id:
+                            companyId,
+
+                        bank_institution:
+                            formData.get(
+                                "bank_institution"
+                            ),
+
+                        country:
+                            formData.get(
+                                "country"
+                            ),
+
+                        business_type:
+                            selectedBusinessType ===
+                            "others"
+                                ? formData.get(
+                                      "business_type_other"
+                                  ) ||
+                                  "Others"
+                                : selectedBusinessType,
+
+                        company_reg_date:
+                            formData.get(
+                                "company_reg_date"
+                            ),
+
+                        business_reg_number:
+                            formData.get(
+                                "business_reg_no"
+                            ),
+
+                        bir_reg_tin_number:
+                            formData.get(
+                                "bir_reg_tin_no"
+                            ),
+
+                        registration_place:
+                            formData.get(
+                                "registration_place"
+                            ),
+
+                        business_address:
+                            formData.get(
+                                "business_address"
+                            ),
+
+                        web_address:
+                            formData.get(
+                                "web_address"
+                            ),
+
+                        parent_institution:
+                            formData.get(
+                                "parent_institution"
+                            ) ||
+                            null,
+
+                        parent_institution_address:
+                            formData.get(
+                                "parent_institution_address"
+                            ) ||
+                            null,
+
+                        telephone_no:
+                            formData.get(
+                                "telephone_no"
+                            ),
+
+                        fax_no:
+                            formData.get(
+                                "fax_no"
+                            ),
+
+                        email:
+                            formData.get(
+                                "email"
+                            ),
+                    };
+
+                await postKYCSectionOne(
+                    sectionOneData
+                );
+
+                // =====================================================
+                // DYNAMIC QUESTIONS
+                // =====================================================
+
+                for (const sectionId of sectionIds) {
+                    const sectionQuestions =
+                        groupedQuestions[
+                            sectionId
+                        ] || [];
+
+                    const followUpMap =
+                        buildFollowUpMap(
+                            sectionQuestions
+                        );
+
+                    const followUpParentMap =
+                        buildFollowUpParentMap(
+                            sectionQuestions
+                        );
+
+                    for (const question of sectionQuestions) {
+                        const id =
+                            getQuestionId(
+                                question
+                            );
+
+                        /*
+                         * Skip follow-up questions.
+                         *
+                         * They are saved in the
+                         * parent's if_yes field.
+                         */
+                        if (
+                            followUpParentMap[
+                                id
+                            ] !==
+                            undefined
+                        ) {
+                            continue;
+                        }
+
+                        const raw =
+                            formData.get(
+                                `q_${id}`
+                            );
+
+                        if (
+                            raw ===
+                                null ||
+                            raw ===
+                                undefined ||
+                            !String(
+                                raw
+                            ).trim()
+                        ) {
+                            continue;
+                        }
+
+                        let answer =
+                            String(
+                                raw
+                            ).trim();
+
+                        if (
+                            answer ===
+                            "yes"
+                        ) {
+                            answer =
+                                "Yes";
+                        }
+
+                        if (
+                            answer ===
+                            "no"
+                        ) {
+                            answer =
+                                "No";
+                        }
+
+                        if (
+                            answer ===
+                            "listing_attached"
+                        ) {
+                            answer =
+                                "Listing Attached";
+                        }
+
+                        if (
+                            answer ===
+                            "na"
+                        ) {
+                            answer =
+                                "N/A";
+                        }
+
+                        // -------------------------------------------------
+                        // FOLLOW-UP ANSWERS
+                        // -------------------------------------------------
+
+                        const followUps =
+                            followUpMap[
+                                id
+                            ] || [];
+
+                        const followUpValues =
+                            [];
+
+                        /*
+                         * Follow-ups are collected ONLY
+                         * when the parent answer is Yes.
+                         */
+                        if (
+                            answer ===
+                            "Yes"
+                        ) {
+                            for (const followUp of followUps) {
+                                const followUpId =
+                                    getQuestionId(
+                                        followUp
+                                    );
+
+                                const value =
+                                    formData.get(
+                                        `q_${followUpId}`
+                                    );
+
+                                if (
+                                    value &&
+                                    String(
+                                        value
+                                    ).trim()
+                                ) {
+                                    followUpValues.push(
+                                        String(
+                                            value
+                                        ).trim()
+                                    );
+                                }
+                            }
+                        }
+
+                        const answerData =
+                            {
+                                company_id:
+                                    companyId,
+
+                                kyc_question_id:
+                                    id,
+
+                                answer,
+
+                                if_yes:
+                                    followUpValues.length >
+                                    0
+                                        ? followUpValues.join(
+                                              "\n"
+                                          )
+                                        : null,
+                            };
+
+                        console.log(
+                            "Submitting KYC answer:",
+                            answerData
+                        );
+
+                        await postKYCAnswer(
+                            answerData
+                        );
+                    }
+                }
+
+                // =====================================================
+                // CERTIFICATION
+                // =====================================================
+
+                const certifiedByData =
+                    {
+                        company_id:
+                            companyId,
+
+                        name:
+                            formData.get(
+                                "certified_name"
+                            ),
+
+                        signature:
+                            formData.get(
+                                "certified_signature"
+                            ),
+
+                        position:
+                            formData.get(
+                                "certified_position"
+                            ),
+
+                        date_signed:
+                            formData.get(
+                                "certified_date_signed"
+                            ),
+                    };
+
+                await postCertifiedBy(
+                    certifiedByData
+                );
+
+                clearDraft();
+
+                alert(
+                    "KYC submitted successfully!"
+                );
+            } catch (
+                error
+            ) {
+                console.error(
+                    "KYC submission failed:",
+                    error
+                );
+
+                setSubmitError(
+                    error.message ||
+                        "Something went wrong while submitting the KYC form."
+                );
+            } finally {
+                setSubmitting(
+                    false
+                );
+            }
+        };
+
+    // ─────────────────────────────────────────────────────────────────
+    // LOADING
+    // ─────────────────────────────────────────────────────────────────
+
+    if (
+        loadingQuestions
+    ) {
+        return (
+            <div className="kyc-root">
+                <div className="kyc-panel">
+                    <div className="kyc-panel-head">
+                        <p className="kyc-eyebrow">
+                            Know Your Customer
+                        </p>
+
+                        <h1>
+                            Loading KYC questions...
+                        </h1>
+                    </div>
+
+                    <div className="kyc-panel-body">
+                        <p>
+                            Please wait while we
+                            load the latest KYC
+                            questions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // ERROR
+    // ─────────────────────────────────────────────────────────────────
+
+    if (
+        questionLoadError
+    ) {
+        return (
+            <div className="kyc-root">
+                <div className="kyc-panel">
+                    <div className="kyc-panel-head">
+                        <p className="kyc-eyebrow">
+                            Know Your Customer
+                        </p>
+
+                        <h1>
+                            Unable to load KYC
+                            questions
+                        </h1>
+                    </div>
+
+                    <div className="kyc-panel-body">
+                        <p className="kyc-error">
+                            {
+                                questionLoadError
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // RENDER
+    // ─────────────────────────────────────────────────────────────────
+
+    return (
+        <div className="kyc-root">
+            <form
+                ref={formRef}
+                onChange={
+                    persistDraft
+                }
+                onSubmit={
+                    handleSubmit
+                }
+                noValidate
+                className="kyc-panel"
+            >
+                {/* STEPPER */}
+
+                <div className="kyc-stepper">
+                    {Array.from({
+                        length: totalSteps,
+                    }).map(
+                        (
+                            _,
+                            i
+                        ) => {
+                            const unlocked =
+                                canJumpTo(
+                                    i
+                                );
+
+                            return (
+                                <div
+                                    key={i}
+                                    className={`kyc-step ${
+                                        i ===
+                                        step
+                                            ? "current"
+                                            : i <
+                                                step
+                                              ? "done"
+                                              : ""
+                                    } ${
+                                        unlocked
+                                            ? "clickable"
+                                            : "locked"
+                                    }`}
+                                    onClick={() =>
+                                        goToStep(
+                                            i
+                                        )
+                                    }
+                                    title={
+                                        unlocked
+                                            ? undefined
+                                            : "Complete the previous required fields first"
+                                    }
+                                >
+                                    <div className="kyc-dot">
+                                        {i +
+                                            1}
+                                    </div>
+
+                                    {i <
+                                        totalSteps -
+                                            1 && (
+                                        <div className="kyc-connector" />
+                                    )}
+                                </div>
+                            );
+                        }
+                    )}
+                </div>
+
+                {/* HEADER */}
+
+                <div className="kyc-panel-head">
+                    <p className="kyc-eyebrow">
+                        Step{" "}
+                        {step +
+                            1}{" "}
+                        of{" "}
+                        {
+                            totalSteps
+                        }
+                    </p>
+
+                    <h1>
+                        {
+                            stepLabel
+                        }
+                    </h1>
+                </div>
+
+                <div className="kyc-panel-body">
+                    {submitError && (
+                        <p className="kyc-error">
+                            {
+                                submitError
+                            }
+                        </p>
+                    )}
+
+                    {/* =================================================
+                        SECTION I
+                    ================================================= */}
+
+                    <div
+                        data-step={
+                            0
+                        }
+                        style={{
+                            display:
+                                isSectionOneStep
+                                    ? "flex"
+                                    : "none",
+                            flexDirection:
+                                "column",
+                            gap: "18px",
+                        }}
+                    >
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    Bank /
+                                    Institution{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="bank_institution"
+                                    placeholder="Enter bank/institution name"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .bank_institution ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Country{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="country"
+                                    placeholder="Enter country"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .country ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="kyc-field">
+                            <label>
+                                Type of Business{" "}
+                                <span>
+                                    *
+                                </span>
+                            </label>
+
+                            <div className="kyc-checkbox-group">
+                                {BUSINESS_TYPES.map(
+                                    (
+                                        option
+                                    ) => (
+                                        <label
+                                            key={
+                                                option.value
+                                            }
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="business_type"
+                                                value={
+                                                    option.value
+                                                }
+                                                checked={
+                                                    businessType ===
+                                                    option.value
+                                                }
+                                                required
+                                                onChange={(
+                                                    event
+                                                ) => {
+                                                    setBusinessType(
+                                                        event
+                                                            .target
+                                                            .value
+                                                    );
+
+                                                    setSubmitError(
+                                                        ""
+                                                    );
+                                                }}
+                                            />
+
+                                            {
+                                                option.label
+                                            }
+                                        </label>
+                                    )
+                                )}
+                            </div>
+
+                            {businessType ===
+                                "others" && (
+                                <input
+                                    type="text"
+                                    name="business_type_other"
+                                    placeholder="Please specify"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .business_type_other ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            )}
+                        </div>
+
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    Company Registration
+                                    Date{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="company_reg_date"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .company_reg_date ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Business Registration
+                                    No.{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="business_reg_no"
+                                    placeholder="Enter registration no."
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .business_reg_no ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    BIR Registration
+                                    No. / TIN No.{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="bir_reg_tin_no"
+                                    placeholder="Enter BIR/TIN no."
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .bir_reg_tin_no ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Place of Registration{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="registration_place"
+                                    placeholder="Enter place of registration"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .registration_place ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="kyc-field">
+                            <label>
+                                Business Address{" "}
+                                <span>
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="business_address"
+                                placeholder="Enter business address"
+                                defaultValue={
+                                    draft
+                                        .fields
+                                        .business_address ||
+                                    ""
+                                }
+                                required
+                            />
+                        </div>
+
+                        <div className="kyc-field">
+                            <label>
+                                Web Address
+                            </label>
+
+                            <input
+                                type="url"
+                                name="web_address"
+                                placeholder="Enter web address"
+                                defaultValue={
+                                    draft
+                                        .fields
+                                        .web_address ||
+                                    ""
+                                }
+                            />
+                        </div>
+
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    Name of Parent
+                                    Institution
+                                    {" "}
+                                    (If applicable)
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="parent_institution"
+                                    placeholder="Enter parent institution name"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .parent_institution ||
+                                        ""
+                                    }
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Address of Parent
+                                    Institution
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="parent_institution_address"
+                                    placeholder="Enter parent institution address"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .parent_institution_address ||
+                                        ""
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    Telephone No.{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    name="telephone_no"
+                                    placeholder="Enter telephone no."
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .telephone_no ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Fax No.
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="fax_no"
+                                    placeholder="Enter fax no."
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .fax_no ||
+                                        ""
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className="kyc-field">
+                            <label>
+                                Email Address{" "}
+                                <span>
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Enter email address"
+                                defaultValue={
+                                    draft
+                                        .fields
+                                        .email ||
+                                    ""
+                                }
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    {/* =================================================
+                        DATABASE QUESTIONS
+                    ================================================= */}
+
+                    {sectionIds.map(
+                        (
+                            sectionId,
+                            index
+                        ) => {
+                            const sectionQuestions =
+                                groupedQuestions[
+                                    sectionId
+                                ] || [];
+
+                            const followUpMap =
+                                buildFollowUpMap(
+                                    sectionQuestions
+                                );
+
+                            const followUpParentMap =
+                                buildFollowUpParentMap(
+                                    sectionQuestions
+                                );
+
+                            return (
+                                <div
+                                    key={
+                                        sectionId
+                                    }
+                                    data-step={
+                                        index +
+                                        1
+                                    }
+                                    style={{
+                                        display:
+                                            sectionIndex ===
+                                            index
+                                                ? "flex"
+                                                : "none",
+                                        flexDirection:
+                                            "column",
+                                        gap: "18px",
+                                    }}
+                                >
+                                    {sectionQuestions.map(
+                                        (
+                                            question
+                                        ) => (
+                                            <DynamicQuestion
+                                                key={getQuestionId(
+                                                    question
+                                                )}
+                                                question={
+                                                    question
+                                                }
+                                                followUpMap={
+                                                    followUpMap
+                                                }
+                                                followUpParentMap={
+                                                    followUpParentMap
+                                                }
+                                                draftFields={
+                                                    draft
+                                                        .fields
+                                                }
+                                            />
+                                        )
+                                    )}
+                                </div>
+                            );
+                        }
+                    )}
+
+                    {/* =================================================
+                        CERTIFICATION
+                    ================================================= */}
+
+                    <div
+                        data-step={
+                            totalSteps -
+                            1
+                        }
+                        style={{
+                            display:
+                                isCertificationStep
+                                    ? "flex"
+                                    : "none",
+                            flexDirection:
+                                "column",
+                            gap: "18px",
+                        }}
+                    >
+                        <p className="kyc-certification-text">
+                            I hereby
+                            certify
+                            that the
+                            statements
+                            and
+                            information
+                            given
+                            above are
+                            true and
+                            correct.
+                        </p>
+
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    Name of Authorized
+                                    Officer{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="certified_name"
+                                    placeholder="Enter name"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .certified_name ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Position/Rank{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="certified_position"
+                                    placeholder="Enter position/rank"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .certified_position ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="kyc-row">
+                            <div className="kyc-input-field">
+                                <label>
+                                    Signature{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="certified_signature"
+                                    placeholder="Type full name as signature"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .certified_signature ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+
+                            <div className="kyc-input-field">
+                                <label>
+                                    Date Signed{" "}
+                                    <span>
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="certified_date_signed"
+                                    defaultValue={
+                                        draft
+                                            .fields
+                                            .certified_date_signed ||
+                                        ""
+                                    }
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ACTIONS */}
+
+                <div className="kyc-actions kyc-actions-footer">
+                    <button
+                        type="button"
+                        className="kyc-btn"
+                        onClick={
+                            back
+                        }
+                        disabled={
+                            step === 0
+                        }
+                    >
+                        Back
+                    </button>
+
+                    {!isCertificationStep ? (
+                        <button
+                            type="button"
+                            className="kyc-btn primary"
+                            onClick={
+                                next
+                            }
+                        >
+                            Next
+                        </button>
+                    ) : (
+                        <button
+                            type="submit"
+                            className="kyc-btn primary"
+                            disabled={
+                                submitting
+                            }
+                        >
+                            {submitting
+                                ? "Submitting…"
+                                : "Submit"}
+                        </button>
+                    )}
+                </div>
+            </form>
         </div>
-        <div className="input-field">
-          <label>Business Registration No. <span>*</span></label>
-          <input type='text' name='business_registration_no' placeholder="Enter registration no." />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>BIR Registration No. / TIN No. <span>*</span></label>
-          <input type='text' name='bir_registration_no' placeholder="Enter BIR/TIN no." />
-        </div>
-        <div className="input-field">
-          <label>Place of Registration <span>*</span></label>
-          <input type='text' name='place_of_registration' placeholder="Enter place of registration" />
-        </div>
-      </div>
-
-      <div className="form-field">
-        <label>Business Address <span>*</span></label>
-        <input type='text' name='business_address' placeholder="Enter business address" />
-      </div>
-
-      <div className="form-field">
-        <label>Web Address</label>
-        <input type='url' name='web_address' placeholder="Enter web address" />
-      </div>
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>Name of Parent Institution (If Applicable)</label>
-          <input type='text' name='parent_institution_name' placeholder="Enter parent institution name" />
-        </div>
-        <div className="input-field">
-          <label>Address of Parent Institution</label>
-          <input type='text' name='parent_institution_address' placeholder="Enter parent institution address" />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>Telephone No. <span>*</span></label>
-          <input type='tel' name='telephone_no' placeholder="Enter telephone no." />
-        </div>
-        <div className="input-field">
-          <label>Fax No.</label>
-          <input type='text' name='fax_no' placeholder="Enter fax no." />
-        </div>
-      </div>
-
-      <div className="form-field">
-        <label>Email Address <span>*</span></label>
-        <input type='email' name='email_address' placeholder="Enter email address" />
-      </div>
-
-    </div>
-
-    {/* Section II: Ownership Management Information */}
-    <div style={{ display: step === 1 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="publicly_held" label="Is the institution publicly held?" required />
-      <div className="form-field">
-        <label>If YES, where is it listed?</label>
-        <input type='text' name='publicly_held_listed_where' placeholder="Enter where it is listed" />
-      </div>
-
-      <YesNo name="privately_owned" label="Is the institution privately owned?" required />
-      <div className="form-field">
-        <label>If YES, please provide/attach details of ownership/stockholders including % of their interest/stockholdings.</label>
-        <input type='text' name='privately_owned_details' placeholder="Enter ownership details" />
-      </div>
-
-      <YesNo name="ownership_changes_5yrs" label="Any significant changes in ownership during the last five (5) years?" required />
-      <div className="form-field">
-        <label>If YES, please provide details and information (shareholding changes due to deceased director).</label>
-        <input type='text' name='ownership_changes_details' placeholder="Enter details" />
-      </div>
-
-      <div className="form-field">
-        <label>
-          <input type="checkbox" name="board_listing_attached" style={{ marginRight: '8px' }} />
-          Current member of the Board of Directors (with address, birthdates, and valid photo identifications) — Listing Attached
-        </label>
-      </div>
-
-      <div className="form-field">
-        <label>Current Executive Management (with address, birthdates, and valid photo identifications)</label>
-        <div className="checkbox-group">
-          <label><input type="radio" name="executive_mgmt_status" value="listing_attached" /> Listing Attached</label>
-          <label><input type="radio" name="executive_mgmt_status" value="na" /> N/A</label>
-        </div>
-        <input type='text' name='executive_mgmt_names' placeholder="Provide the names of Senior Executives of the Institution" />
-      </div>
-
-      <div className="form-field">
-        <label>Politically Exposed Persons (PEPs) — individuals who have or have had positions of public trust (govt./corp., politicians, party officials, their families and close associates)</label>
-        <div className="checkbox-group">
-          <label><input type="radio" name="peps_status" value="listing_attached" /> Listing Attached</label>
-          <label><input type="radio" name="peps_status" value="na" /> N/A</label>
-        </div>
-        <input type='text' name='peps_details' placeholder="Provide names and roles if there are PEPs" />
-      </div>
-
-      <YesNo name="publishes_financials" label="Do you publish your latest financial statement and similar information?" required />
-      <YesNo name="good_governance_system" label="Does your institution have a good governance system?" required />
-
-    </div>
-
-    {/* Section III: General Requirements */}
-    <div style={{ display: step === 2 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="supervised_by_authority" label="Is your company supervised by a national authority / Agency?" required />
-      <div className="form-field">
-        <label>Please state the supervisory authority</label>
-        <input type='text' name='supervisory_authority_name' placeholder="Enter supervisory authority" />
-      </div>
-
-      <YesNo name="supervision_covers_aml_cft" label="Is the supervision carried out with special regard to the prevention of money laundering and combatting terrorist financing?" required />
-
-      <YesNo name="money_laundering_is_crime" label="Is money laundering considered a crime in your country's legislation?" required />
-      <div className="form-field">
-        <label>If YES, please state the law</label>
-        <input type='text' name='money_laundering_law' placeholder="Enter the law" />
-      </div>
-
-      <YesNo name="terrorist_financing_is_crime" label="Is terrorist financing considered a crime in your country's legislation?" required />
-      <div className="form-field">
-        <label>If YES, please state the law</label>
-        <input type='text' name='terrorist_financing_law' placeholder="Enter the law" />
-      </div>
-
-      <YesNo name="complies_fatf_eu" label="Does your institution comply with the recommendations of the FATF or European Union (EU) or with your equal standards?" required />
-      <div className="form-field">
-        <label>If YES, please describe the compliance</label>
-        <input type='text' name='fatf_eu_compliance_details' placeholder="Describe compliance" />
-      </div>
-
-      <YesNo name="anonymous_accounts" label="Does your institution open/maintain accounts for customers which are not identified (anonymous accounts)?" required />
-      <div className="form-field">
-        <label>If YES, is this legally allowed?</label>
-        <input type='text' name='anonymous_accounts_legal' placeholder="Enter details" />
-      </div>
-
-      <YesNo name="internal_audit_aml" label="Are you audited in terms of testing the adequacy of your AML procedures and policies — internal audit on a regular basis?" required />
-      <YesNo name="external_audit_aml" label="Are you audited in terms of testing the adequacy of your AML procedures and policies — external audit on a regular basis?" required />
-
-    </div>
-
-    {/* Section IV: General AML Policies */}
-    <div style={{ display: step === 3 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="country_has_aml_laws" label="Has the country in which you are located established laws designed to prevent money laundering?" required />
-
-      <YesNo name="aml_program_board_approved" label="Does the AML compliance program get approved by your institution's Board of Senior committee?" required />
-      <div className="form-field">
-        <label>Please provide the date of the last version of AML Compliance policies and procedures.</label>
-        <input type='date' name='aml_policy_last_version_date' />
-      </div>
-
-      <YesNo name="customers_have_aml_policies" label="Does your institution ensure that its credit / financial institution customers have adequate anti-money laundering written policies & procedures in place?" required />
-      <YesNo name="prohibits_shell_banks" label="Does your institution have a policy prohibiting accounts / relationships with shell banks?" required />
-
-      <YesNo name="account_opening_procedures" label="Do you have account opening procedures (customer acceptance policy / customer information sheet) in place?" required />
-      <div className="form-field">
-        <label>If YES please attach salient features.</label>
-        <input type='text' name='account_opening_features' placeholder="Describe salient features" />
-      </div>
-
-      <YesNo name="record_retention_procedures" label="Does your institution have appropriate record retention procedures pursuant to applicable law?" required />
-      <YesNo name="aml_applies_all_branches" label="Does your institution require that its AML policies and practices be applied to all branches and subsidiaries of the financial institution in the home country and in locations outside of the home country?" required />
-
-      <div className="form-field">
-        <label>Do you have written anti-money laundering policies and procedures which include at least:</label>
-        <div className="yesno-group">
-          <label><input type="radio" name="has_written_aml_policies" value="yes" /> Yes</label>
-          <label><input type="radio" name="has_written_aml_policies" value="no" /> No</label>
-        </div>
-        <div className="checkbox-group">
-          <label><input type="checkbox" name="aml_policy_includes" value="compliance_officer_designation" /> Designation of compliance officer</label>
-          <label><input type="checkbox" name="aml_policy_includes" value="compliance_officer_roles" /> Roles and Responsibilities of the compliance officer</label>
-          <label><input type="checkbox" name="aml_policy_includes" value="staff_training_monitoring" /> Staff training, Monitoring and reporting in terms of AML on a regular basis</label>
-          <label><input type="checkbox" name="aml_policy_includes" value="record_keeping" /> Adequate record keeping of transactions</label>
-          <label><input type="checkbox" name="aml_policy_includes" value="customer_identification" /> The Identification of the true identity of all customers prior to establishing a business relationship</label>
-          <label><input type="checkbox" name="aml_policy_includes" value="pep_policies" /> Written policies/procedures/programs for relationships with PEPs and other high-risk customers</label>
-        </div>
-      </div>
-
-      <YesNo name="maintains_pep_database" label="Does your institution maintain a database for PEP / High Risk customers?" required />
-      <div className="form-field">
-        <label>What does your institution define as PEP and high-risk customers? Provide list if necessary.</label>
-        <input type='text' name='pep_high_risk_definition' placeholder="Describe your institution's definition" />
-      </div>
-
-    </div>
-
-    {/* Section V: Know Your Customer, Due Diligence and Enhanced Due Diligence */}
-    <div style={{ display: step === 4 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="kyc_identification_process" label="Has your institution implemented processes for the identification of those customers on whose behalf it maintains or operates or transacts?" required />
-      <YesNo name="collects_business_activity_info" label="Does your institution have a requirement to collect information regarding its customers' business activities?" required />
-      <YesNo name="assesses_customer_aml_policies" label="Does your institution assess its financial institution customers' AML policies and practices?" required />
-      <YesNo name="updates_high_risk_customer_info" label="Does your institution have a process to view and, where appropriate, update customer information relating to high risk client information?" required />
-
-    </div>
-
-    {/* Section VI: AML Training */}
-    <div style={{ display: step === 5 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="provides_aml_training" label="Does your institution provide adequate/continuous training on Anti-Money Laundering?" required />
-      <div className="form-field">
-        <label>If YES, how frequent?</label>
-        <input type='text' name='aml_training_frequency' placeholder="Enter frequency" />
-      </div>
-
-      <YesNo name="retains_training_records" label="Does your institution retain records of its training sessions including attendance records and relevant training material used?" required />
-      <YesNo name="communicates_aml_changes" label="Does your institution communicate new anti-money laundering related laws or changes to existing AML related policies or practices to relevant employees?" required />
-
-    </div>
-
-    {/* Section VII: Risk Management */}
-    <div style={{ display: step === 6 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="risk_focused_assessment" label="Does your institution have a risk focused assessment of its customer base and transaction of its customers?" required />
-      <YesNo name="determines_edd_level" label="Does your institution determine the appropriate level of enhanced due diligence necessary for those categories of customers and transactions that the institution has reason to believe pose a heightened risk of illicit activities?" required />
-
-    </div>
-
-    {/* Section VIII: AML Controls / Internal Measures */}
-    <div style={{ display: step === 7 ? "flex" : "none", flexDirection: "column", gap: "10px" }}>
-
-      <YesNo name="has_aml_officer" label="Is there a person responsible for coordinating and overseeing the anti-money laundering program / system in your institution?" required />
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>Name</label>
-          <input type='text' name='aml_officer_name' placeholder="Enter name" />
-        </div>
-        <div className="input-field">
-          <label>Address</label>
-          <input type='text' name='aml_officer_address' placeholder="Enter address" />
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>Position</label>
-          <input type='text' name='aml_officer_position' placeholder="Enter position" />
-        </div>
-        <div className="input-field">
-          <label>Contact Nos. / Fax No.</label>
-          <input type='text' name='aml_officer_contact' placeholder="Enter contact/fax no." />
-        </div>
-      </div>
-
-      <div className="form-field">
-        <label>Email Address</label>
-        <input type='email' name='aml_officer_email' placeholder="Enter email address" />
-      </div>
-
-      <YesNo name="officer_produces_reports" label="Does the reporting officer produce annual/periodic reports on AML activities, results and conclusions?" required />
-      <YesNo name="has_reporting_policies" label="Are there policies or practices for identifying and reporting transactions that are required by applicable law to be reported to the authorities?" required />
-      <YesNo name="has_audit_trail_recordkeeping" label="Does the institution have adequate record-keeping, providing an audit trail for suspicious transactions?" required />
-      <YesNo name="has_internal_or_third_party_audit" label="In addition to inspection by government supervisors/regulators, does your institution have an internal audit function or other independent third party that assesses AML policies and practices on a regular basis?" required />
-
-      <p className="certification-text">
-        I hereby certify that the statements and information given above are true and correct.
-      </p>
-
-      <div className="form-row">
-        <div className="input-field">
-          <label>Name / Signature of Authorized officer of the Institution <span>*</span></label>
-          <input type='text' name='certifying_officer_name' placeholder="Enter name" />
-        </div>
-        <div className="input-field">
-          <label>Position/Rank <span>*</span></label>
-          <input type='text' name='certifying_officer_position' placeholder="Enter position/rank" />
-        </div>
-      </div>
-
-      <div className="form-field">
-        <label>Date Signed <span>*</span></label>
-        <input type='date' name='date_signed' />
-      </div>
-
-    </div>
-
-    <div className="form-nav">
-      <button type="button" onClick={back} disabled={step === 0}>Back</button>
-      {step < SECTIONS.length - 1 ? (
-        <button type="button" onClick={next}>Next</button>
-      ) : (
-        <button type="submit">Submit</button>
-      )}
-    </div>
-
-  </form>
-  </div>
-  </div>
-  </div>
-  )
+    );
 }
