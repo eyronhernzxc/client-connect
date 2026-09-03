@@ -4,6 +4,8 @@ import "../form-style.css";
 import { postDeclaration } from "../../../../api/postDeclaration";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../../../../api/auth";
+import PageHeader from "../../../../components/admin/header/page-header";
+import { PenLine } from "lucide-react";
 
 export default function Declaration() {
 
@@ -62,7 +64,18 @@ export default function Declaration() {
 
 
   return (
-    <div className="form-overlay">
+    <>
+     <PageHeader>
+                    <div className="name-container">
+                      <h1 className="page-title">Hello,</h1>
+                      <h1 className="admin-name">Jamaica</h1>
+                    </div>
+                    
+                    <p className="page-desc">
+                     We’re happy to have you here. Let’s get your merchant and company application started!
+                    </p>
+                </PageHeader>
+    <div className="main-container">
       <div className="form-card">
         <Header>
           <h1>Declaration</h1>
@@ -70,9 +83,6 @@ export default function Declaration() {
 
         <div className="form-container">
           <form className="form" onSubmit={(e) => submitDeclaration(e)}>
-
-            <h3>Declarations</h3>
-            <hr/>
 
             <div className="form-field">
                 <label>Politically exposed person <span>*</span></label>
@@ -92,40 +102,50 @@ export default function Declaration() {
                         name="politically_exposed_person"
                         />No </label>
                     </div>
+</div>
+<hr/>
+                  </div>
 
-                    <div className="form-field">
-                        <label>Full name <span>*</span></label>
-                        <input 
-                        type="text"
-                        name="name"
-                        />
+                    <div className="form-row">
+                      <div className="input-field">
+                          <label>Full name <span>*</span></label>
+                          <input
+                          type="text"
+                          name="name"
+                          placeholder="e.g Juan Dela Cruz"
+                          />
+                      </div>
+                      <div className="input-field">
+                          <label>Signature <span>*</span></label>
+                          <input
+                          type="file"
+                          name="signature"
+                          id="signature"
+                          />
+                          <label htmlFor="signature" className="file-label">
+                            <PenLine />
+                          </label>
+                      </div>
                     </div>
 
-                    <div className="form-field">
-                        <label>Signature <span>*</span></label>
-                        <input 
-                        type="file"
-                        name="signature"
-                        />
-                    </div>
-
-                     <div className="form-field">
-                        <label>Date <span>*</span></label>
-                        <input 
-                        type="date"
-                        name="date"
-                        />
-                    </div>
-
-                       <div className="form-field">
-                        <label>Designation <span>*</span></label>
-                        <input 
-                        type="text"
-                        name="designation"
-                        />
-                    </div>
-                </div>
-            </div>
+                     <div className="form-row">
+                       <div className="input-field">
+                          <label>Date <span>*</span></label>
+                          <input
+                          type="date"
+                          name="date"
+                          />
+                                           </div>
+                         <div className="input-field">
+                          <label>Designation <span>*</span></label>
+                          <input
+                          type="text"
+                          name="designation"
+                          placeholder="e.g President"
+                          />
+                                           </div>
+                                       </div>
+                    
 
 
     <button type="submit">Submit</button>
@@ -136,5 +156,6 @@ export default function Declaration() {
         </div>
       </div>
     </div>
+    </>
   );
 }

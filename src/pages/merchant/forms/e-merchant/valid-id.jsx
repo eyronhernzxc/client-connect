@@ -5,6 +5,8 @@ import {getIdTypes} from "../../../../api/getIdTypes";
 import {postValidId} from "../../../../api/postValidId";
 import { getCurrentUser } from "../../../../api/auth";
 import { useNavigate } from "react-router-dom";
+import { Upload } from "lucide-react";
+import PageHeader from "../../../../components/admin/header/page-header";
 
 export default function ValidId() {
   const navigate = useNavigate();
@@ -78,7 +80,18 @@ try{
 
 };
   return (
-    <div className="form-overlay">
+<>
+        <PageHeader>
+            <div className="name-container">
+              <h1 className="page-title">Hello,</h1>
+              <h1 className="admin-name">Jamaica</h1>
+            </div>
+            
+            <p className="page-desc">
+             We’re happy to have you here. Let’s get your merchant and company application started!
+            </p>
+        </PageHeader>
+    <div className="main-container">
       <div className="form-card">
         <Header>
           <h1>Valid Id</h1>
@@ -87,51 +100,63 @@ try{
         <div className="form-container">
           <form className="form" onSubmit={(e) => submitValidId(e)}>
 
-            <div className="form-field">
-              <label>Valid Id Type <span>*</span></label>
-              <select name="valid_id_type_id" required>
-                <option value="">Select Id Type</option>
-                {IdTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             <div className="form-row">
               <div className="input-field">
+                <label>Valid Id Type <span>*</span></label>
+                <select name="valid_id_type_id" required>
+                  <option value="">Select Id Type</option>
+                  {IdTypes.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+               <div className="input-field">
                 <label>Valid Id Image <span>*</span></label>
                 <input
                 type="file"
+                id="image"
                 name="image"
                 required
+                
                 />
+              <label htmlFor="image" className="file-label">
+                <Upload />
+              </label>
               </div>
+            </div>
+
+            <div className="form-row">
 
               <div className="input-field">
                 <label>Valid Id Number <span>*</span></label>
                 <input
                   type="text"
                   name="number"
+                  placeholder="e.g XXX-XXX-XX"
                   required
                 />
               </div>
-            </div>
 
-            <div className="form-field">
+               <div className="input-field">
               <label>Expiration Date <span>*</span></label>
               <input
                 type="date"
                 name="expiration_date"
                 required
+
               />
             </div>
+            </div>
+
 
             <button type="submit">Submit</button>
             </form>
         </div>
       </div>
     </div>
+</>
   );
 }

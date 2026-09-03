@@ -6,6 +6,8 @@ import "../form-style.css";
 import { postPersonalDetails } from "../../../../api/postSignatoryDetail";
 import { getCurrentUser } from "../../../../api/auth";
 import { useNavigate } from "react-router-dom";
+import PageHeader from "../../../../components/admin/header/page-header";
+import { PenLine } from "lucide-react";
 
 export default function SignatoryDetails() {
 
@@ -104,7 +106,19 @@ export default function SignatoryDetails() {
 };
 
   return (
-    <div className="form-overlay">
+<>
+    <PageHeader>
+            <div className="name-container">
+              <h1 className="page-title">Hello,</h1>
+              <h1 className="admin-name">Jamaica</h1>
+            </div>
+    
+            <p className="page-desc">
+             We’re happy to have you here. Let’s get your merchant and company application started!
+            </p>
+          </PageHeader>
+
+    <div className="main-container">
       <div className="form-card">
         <Header>
           <h1>Signatory Details</h1>
@@ -168,8 +182,10 @@ export default function SignatoryDetails() {
                 <input
                   name="signature"
                   type="file"
-                  placeholder="Upload e-signature"
                 />
+                <label htmlFor="signature" className="file-label">
+                  <PenLine />
+                </label>
               </div>
             </div>
 
@@ -261,5 +277,6 @@ export default function SignatoryDetails() {
         </div>
       </div>
     </div>
+  </>
   );
 }

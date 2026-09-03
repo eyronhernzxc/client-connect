@@ -3,6 +3,7 @@ import "../form-style.css";
 import {postAddress} from "../../../../api/postAddress";
 import { getCurrentUser } from "../../../../api/auth";
 import { useNavigate } from "react-router-dom";
+import PageHeader from "../../../../components/admin/header/page-header";
 
 
 export default function Address() {
@@ -85,7 +86,19 @@ const permanent_address = {
 };
 
   return (
-    <div className="form-overlay">
+
+<>
+     <PageHeader>
+                    <div className="name-container">
+                      <h1 className="page-title">Hello,</h1>
+                      <h1 className="admin-name">Jamaica</h1>
+                    </div>
+                    
+                    <p className="page-desc">
+                     We’re happy to have you here. Let’s get your merchant and company application started!
+                    </p>
+                </PageHeader>
+    <div className="main-container">
       <div className="form-card">
         <Header>
           <h1>Address</h1>
@@ -264,5 +277,6 @@ const permanent_address = {
         </div>
       </div>
     </div>
+    </>
   );
 }

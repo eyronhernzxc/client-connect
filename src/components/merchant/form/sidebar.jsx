@@ -2,55 +2,97 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import "./sidebar.css";
-import { 
+import {
+  LayoutDashboard,
   Timer,
-  Settings,
+  ChartNoAxesColumnIncreasing,
   LogOut,
   Handshake,
+  StickyNote,
 } from "lucide-react";
-
-import {
-  House,
-  IdCard,
-  FileText,
-} from "lucide-react";
-
-import PisoPayLogo from "../../../assets/pisopay_logo.png";
-import PisopayName from "../../../assets/pisopay_name.png"
-
+import { IoMenu } from "react-icons/io5";
+import { PiUsersThreeBold } from "react-icons/pi";
+import PisopayLogo from "../../../assets/pisopay_logo.png";
+import PisopayName from "../../../assets/pisopay_name.png";
 
 export default function Sidebar() {
 
   const [isCollapse, setIsCollapse] = useState(true);
 
   return (
+    <div className="sidebar-main">
 
-<div className="sidebar-container">
+  {!isCollapse && (
+
+    <div 
+   className="sidebar-overlay"
+   onClick={() => setIsCollapse(true)}
+   >
+
+    </div>
+  )}
+<div className={`sidebar-container ${isCollapse? "" : "collapsed"}`}>
   <div className="menu-container">
-    <img src = {PisoPayLogo} alt="PisoPay Logo" className="logo"/>
-    <img src = {PisopayName} alt="Client Connect" className="name"/>
-  
+    <img src={PisopayLogo} alt="pisopay logo" className="logo"/>
+    <img src={PisopayName} alt="pisopay name" className="name"/>
+    <button className="menu-btn" title="Menu" onClick={() => setIsCollapse(!isCollapse)}>
+      <IoMenu />
+    </button>
   </div>
 
   <nav className="navbar">
     <ul>
       <li>
-        <NavLink   className={({ isActive }) =>
+        <NavLink  className={({ isActive }) =>
         `navlink ${isActive ? 'active' : ''}`
         }
-         to="/form/company" title="Home">
-          <House />
-          <span>Company Details</span>
+         to="/dashboard" title="Dashboard">
+          <LayoutDashboard />
+          <span>Dashboard</span>
         </NavLink>
       </li>
 
       <li>
-        <NavLink className={({ isActive }) =>
-        `navlink ${isActive ? 'active' : ''}`
-        }
-         to="/form/signatory" title="Profile">
-          <IdCard />
-          <span>E-merchant Form</span>
+        <NavLink className={({isActive})=>
+        `navlink ${isActive ? 'active': ''}`}
+         to="/onboarding"title="Onboarding">
+          <Timer />
+          <span>Onboarding</span>
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink className={({isActive})=>
+        `navlink ${isActive ? 'active': ''}`}
+        to="/applications" title="Applications">
+        <PiUsersThreeBold />
+          <span>Applications</span>
+        </NavLink>
+      </li>
+        <li>
+        <NavLink className={({isActive})=>
+        `navlink ${isActive ? 'active': ''}`}
+         to="/services" title="Services">
+          <Handshake />
+          <span>Services</span>
+        </NavLink>
+      </li>
+
+       <li>
+        <NavLink className={({isActive})=>
+        `navlink ${isActive ? 'active': ''}`}
+         to="/merchants" title="Services">
+          <StickyNote />
+          <span>Merchants</span>
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink className={({isActive})=>
+        `navlink ${isActive ? 'active': ''}`}
+         to="/activity-log" title="Activity Logs">
+          <ChartNoAxesColumnIncreasing />
+          <span>Activities</span>
         </NavLink>
       </li>
     </ul>
@@ -63,7 +105,7 @@ export default function Sidebar() {
       <span>Logout</span>
     </button>
   </div>
-  
+</div>
 </div>
 );
 }

@@ -5,6 +5,7 @@ import { postBank, postOrganization, postFatca, postCustomerSupport } from "../.
 
 import Header from "../header/header";
 import "../form-style.css";
+import PageHeader from "../../../../components/admin/header/page-header";
 
 export default function AdditionalInformation() {
 
@@ -117,7 +118,18 @@ export default function AdditionalInformation() {
 };
 
   return (
-    <div className="form-overlay">
+<>
+    <PageHeader>
+                <div className="name-container">
+                  <h1 className="page-title">Hello,</h1>
+                  <h1 className="admin-name">Jamaica</h1>
+                </div>
+                
+                <p className="page-desc">
+                 We’re happy to have you here. Let’s get your merchant and company application started!
+                </p>
+            </PageHeader>
+    <div className="main-container">
       <div className="form-card">
         <Header>
           <h1>Additional Information</h1>
@@ -132,117 +144,136 @@ export default function AdditionalInformation() {
                 name="related_company_list"
                 />
             </div>
-            <div className="form-field">
-                <label>Bank Category<span>*</span></label>
-               <select name="bank_category_id" required>
-                <option value="">Select bank category</option>
-                {bankCategory.map((category) => (
-
-                    <option key={category.id} value={category.id}>
-                        {category.name}
-                    </option>
-                                ))}
-
-               </select>
+            <div className="form-row">
+                <div className="input-field">
+                    <label>Bank Category<span>*</span></label>
+                   <select name="bank_category_id" required>
+                    <option value="">Select bank category</option>
+                    {bankCategory.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                                    ))}
+                   </select>
+                </div>
+                 <div className="input-field">
+                    <label>Bank Name<span>*</span></label>
+                    <input
+                    type="text"
+                    name="bank_name"
+                    placeholder="e.g Banco de Oro"
+                    />
+                </div>
             </div>
 
-             <div className="form-field">
-                <label>Bank Name<span>*</span></label>
-                <input
-                type="text"
-                name="bank_name"     
-                />
+            <div className="form-row">
+                <div className="input-field">
+                    <label>Branch Name<span>*</span></label>
+                    <input
+                    type="text"
+                    name="branch_name"
+                    placeholder="e.g BDO Makati"
+                    />
+                </div>
+                <div className="input-field">
+                    <label>Branch Address<span>*</span></label>
+                    <input
+                    type="text"
+                    name="branch_address"
+                    placeholder="e.g Ayala Avenue Branch"
+                    />
+                </div>
             </div>
 
-            <div className="form-field">
-                <label>Branch Name<span>*</span></label>
-                <input
-                type="text"
-                name="branch_name"     
-                />
-            </div>
+             <div className="form-row">
+                 <div className="input-field">
+                    <label>Account Number<span>*</span></label>
+                    <input
+                    type="number"
+                    name="account_number"
+                    placeholder="e.g XXX-XXX-XXX"
+                    />
+                             </div>
+                 
+                             <div className="input-field">
+                    <label>Account Type<span>*</span></label>
+                    <input
+                    type="text"
+                    name="account_type"
+                    placeholder="e.g Savings Account"
+                    />
+                             </div>
+             </div>
 
-            <div className="form-field">
-                <label>Branch Address<span>*</span></label>
-                <input
-                type="text"
-                name="branch_address"     
-                />
-            </div>
-
-             <div className="form-field">
-                <label>Account Number<span>*</span></label>
-                <input
-                type="number"
-                name="account_number"     
-                />
-            </div>
-
-            <div className="form-field">
-                <label>Account Type<span>*</span></label>
-                <input
-                type="text"
-                name="account_type"     
-                />
-            </div>
-
-             <div className="form-field">
-                <label>Contact Person<span>*</span></label>
-                <input
-                type="text"
-                name="contact_person"     
-                />
-            </div>
-
-            <div className="form-field">
-                <label>Phone Number <span>*</span></label>
-                <input
-                type="tel"
-                name="phone"     
-                />
-            </div>
+             <div className="form-row">
+                 <div className="input-field">
+                    <label>Contact Person<span>*</span></label>
+                    <input
+                    type="text"
+                    name="contact_person"
+                    placeholder="e.g Juan"
+                    />
+                             </div>
+                 
+                             <div className="input-field">
+                    <label>Phone Number <span>*</span></label>
+                    <input
+                    type="tel"
+                    name="phone"
+                    placeholder="e.g 09XXXXXXXXX"
+                    />
+                             </div>
+             </div>
 
             <div className="form-field">
                 <label>Email <span>*</span></label>
                 <input
                 type="email"
                 name="email"     
+                placeholder="e.g sample@gmail.com"
                 />
             </div>
 
             <h3>Organization Relationship</h3>
             <hr></hr>
 
-             <div className="form-field">
-                <label>Fullname <span>*</span></label>
-                <input
-                type="text"
-                name="org_fullname"     
-                />
-            </div>
+             <div className="form-row">
+                 <div className="input-field">
+                    <label>Fullname <span>*</span></label>
+                    <input
+                    type="text"
+                    name="org_fullname"
+                    placeholder="e.g Juan Dela Cruz"
+                    />
+                             </div>
+                 
+                             <div className="input-field">
+                    <label>Relationship <span>*</span></label>
+                    <input
+                    type="text"
+                    name="relationship"
+                    placeholder="e.g Shareholder"
+                    />
+                             </div>
+             </div>
 
-            <div className="form-field">
-                <label>Relationship <span>*</span></label>
-                <input
-                type="text"
-                name="relationship"     
-                />
-            </div>
-
-            <div className="form-field">
-                <label>Position <span>*</span></label>
-                <input
-                type="text"
-                name="position"     
-                />
-            </div>
-
-            <div className="form-field">
-                <label>Organization Name <span>*</span></label>
-                <input
-                type="text"
-                name="organization_name"     
-                />
+            <div className="form-row">
+                <div className="input-field">
+                    <label>Position <span>*</span></label>
+                    <input
+                    type="text"
+                    name="position"
+                    placeholder="e.g Owner"
+                    />
+                </div>
+                <div className="input-field">
+                    <label>Organization Name <span>*</span></label>
+                    <input
+                    type="text"
+                    name="organization_name"
+                    placeholder="e.g XYZ Trading Company"
+                    />
+                </div>
             </div>
 
             <h3>FATCA</h3>
@@ -274,28 +305,33 @@ export default function AdditionalInformation() {
                     </div>
 
                 </div>
+                <hr/>
             </div>
-            <div className="form-field">
-                <label>US Address <span>*</span></label>
-                   <input
-                    type="text"
-                    name="us_address"       
-                    />
-            </div>
-
-              <div className="form-field">
-                <label>Zip Code <span>*</span></label>
-                   <input
-                    type="text"
-                    name="us_zip_code"       
-                    />
+            <div className="form-row">
+                <div className="input-field-large">
+                    <label>US Address <span>*</span></label>
+                       <input
+                        type="text"
+                        name="us_address"
+                        placeholder="e.g 1234 Sunset Boulevard, Los Angeles, CA 90026, USA"
+                        />
+                </div>
+                  <div className="input-field-short">
+                    <label>Zip Code <span>*</span></label>
+                       <input
+                        type="text"
+                        name="us_zip_code"
+                        placeholder="e.g 1100"
+                        />
+                </div>
             </div>
 
               <div className="form-field">
                 <label>U.S Phone number <span>*</span></label>
                    <input
                     type="tel"
-                    name="us_phone"       
+                    name="us_phone"   
+                    placeholder="e.g +1 202-555-0147"    
                     />
             </div>
 
@@ -303,7 +339,8 @@ export default function AdditionalInformation() {
                 <label>Length of stay in U.S <span>*</span></label>
                    <input
                     type="number"
-                    name="length_of_stay"       
+                    name="length_of_stay" 
+                    placeholder="e.g 7 years"      
                     />
             </div>
 
@@ -311,29 +348,34 @@ export default function AdditionalInformation() {
                 <label>U.S Tin<span>*</span></label>
                    <input
                     type="number"
-                    name="us_tin"       
+                    name="us_tin"     
+                    placeholder="e.g XXX-XXX-XXXX"  
                     />
             </div>
 
             {/* Customer Support*/}
             <h3>Customer Support Detail</h3>
             <hr></hr>
-
-            <div className="form-field">
-                <label>Customer Service Number<span>*</span></label>
-                   <input
-                    type="tel"
-                    name="cs_number"       
-                    />
-            </div>
-
-            <div className="form-field">
-                <label>Customer Service Schedule<span>*</span></label>
-                   <input
-                    type="text"
-                    name="cs_schedule"       
-                    />
-            </div>
+<div className="form-row">
+    
+                <div className="input-field">
+                    <label>Customer Service Number<span>*</span></label>
+                       <input
+                        type="tel"
+                        name="cs_number"
+                        placeholder="e.g 09XXXXXXXXX"
+                        />
+                </div>
+    
+                <div className="input-field">
+                    <label>Customer Service Schedule<span>*</span></label>
+                       <input
+                        type="text"
+                        name="cs_schedule"
+                        placeholder="e.g Monday to Friday, 8:00 am to 6:00 pm"
+                        />
+                </div>
+</div>
             
     <button type="submit">Submit</button>
 
@@ -343,5 +385,6 @@ export default function AdditionalInformation() {
         </div>
       </div>
     </div>
+    </>
   );
 }
