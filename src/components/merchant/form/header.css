@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    font-family: "Inter", sans-serif;
+}
+
+
+.dashboard-header {
+    width: auto;
+    height: max-content;
+    position: fixed;
+    left: 50px;
+    right: 0;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(to bottom, #0276c9, #0090FF);
+    border-bottom-left-radius: 80px;
+    border-bottom-right-radius: 80px;
+}
+
+.icon-container{
+
+    height: max-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 30px;
+    width: 100%;
+    padding: 0 10px;
+
+}
+
+.icon-container .bell{
+
+        margin: 0;
+        padding: 0;
+        height: max-content;
+        width: max-content;
+        background-color: transparent;
+        border: none;
+
+        svg{
+
+            color: white;
+        }
+
+        &:hover{
+
+            cursor: pointer;
+        }
+}
+
+.icon-container .profile-btn{
+
+            background-color: white;
+            border-radius: 50%;
+            height: 3rem;
+            width: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+
+            h2{
+
+                margin: 0;
+                padding: 0;
+                font-size: 1rem;
+                color:#055d9b;
+
+            }
+
+            &:hover{
+
+                cursor: pointer;
+            }
+}
+
+.header-greeting{
+
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 50px;
+
+    p{
+
+        color: white;
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+    }
+}
+
+.name-container{
+
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 10px;
+        align-items: center;
+        height: max-content;
+        
+        h1{
+
+            font-size: 2.8rem;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+}
+
+.page-header{
+
+    width: auto;
+    height: max-content;
+    position: fixed;
+    left: 50px;
+    right: 0;
+    padding: 20px;
+    z-index: 900;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(to bottom, #0276c9, #0090FF);
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.page-header .title-container{
+
+    width: 50%;
+    color: white;
+    gap: 10px;
+    align-items: center;
+    padding: 0px 30px;
+
+}
+
+.name.container{
+
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+    height: max-content;
+}
+
+.name-container h1{
+
+     font-size: 1.5rem;
+
+}
+
+.title-container .page-title,
+.title-container .page-desc{
+
+    margin: 0;
+    padding: 0;
+}
+
+.title-container .page-title{
+
+    font-size: 1.5rem;
+}
+
+.title-container .page-desc{
+
+    font-size: 0.8rem;
+}
+
+.page-header .p-icon-container{
+
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 5px 30px;
+}
+
+.p-icon-container .bell{
+
+        height: max-content;
+        width: max-content;
+        background-color: transparent;
+        border: none;
+
+        &:hover{
+
+            cursor: pointer;
+        }
+}
+
+.p-icon-container .bell svg{
+
+    color: white;
+}
+
+.p-icon-container .profile-btn{
+
+    background-color: white;
+    border-radius: 50%;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+
+    &:hover{
+
+    cursor: pointer;
+
+    }
+}
+
+.p-icon-container .profile-btn h2{
+
+    margin: 0;
+    padding: 0;
+    font-size: 1rem;
+    color:#055d9b;
+}

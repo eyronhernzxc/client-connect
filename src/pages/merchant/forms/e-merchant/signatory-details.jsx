@@ -66,7 +66,6 @@ export default function SignatoryDetails() {
         const response = await postPersonalDetails(data);
 
         console.log("RESPONSE:", response);
-
         alert("Signatory details submitted successfully!");
         navigate("/form/address");
 
