@@ -34,7 +34,7 @@ export default function ServicesModal({
           {/* Current Status */}
           <div className="status-section">
             <label className="section-label">Current Status</label>
-            <span className="status-badge pending">Pending</span>
+            <span className="status-badge pending">{item?.status}</span>
           </div>
 
           {/* Merchant Information */}
@@ -45,27 +45,27 @@ export default function ServicesModal({
             <div className="info-grid">
               <div className="info-item">
                 <label>Company Name</label>
-                <p>{item?.companyName || "Juan dela Cruz"}</p>
+                <p>{item?.company?.name || "N/A"}</p>
               </div>
               <div className="info-item">
-                <label>Business Type</label>
-                <p>Sole Proprietorship</p>
+                <label>Company Type</label>
+                <p>{item?.company?.company_type?.name || "N/A"}</p>
               </div>
               <div className="info-item">
-                <label>Category</label>
-                <p>Remittance</p>
+                 <label>Website Url</label>
+                <p>{item?.company?.website_url || "N/A"}</p>
               </div>
               <div className="info-item">
-                <label>Contact Email</label>
-                <p>juan.delacruz@gmail.com</p>
+                <label>Email</label>
+                 <p>{item?.company?.email || "N/A"}</p>
               </div>
               <div className="info-item">
-                <label>Contact Phone</label>
-                <p>+63 917 123 4567</p>
+                <label>Phone Number</label>
+                <p>{item?.company?.phone || "N/A"}</p>
               </div>
               <div className="info-item full-width">
-                <label>Business Address</label>
-                <p>123 Rizal St., Brgy. Santo Niño, Manila, Metro Manila</p>
+                <label>Company Address</label>
+                <p>{item?.company?.company_detail?.address || "N/A"}</p>
               </div>
             </div>
           </div>

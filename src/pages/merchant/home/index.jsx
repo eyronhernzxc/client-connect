@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../../../components/merchant/header/page-header";
 import "../../pages.css";
+import { getCurrentUser } from "../../../api/auth";
 
 export default function Home() {
+
+  const [user, setUser] = useState(null);
+
+useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            const data = await getCurrentUser();
+            setUser(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    fetchUser();
+}, []);
+
   const application = {
     id: "APP-2026-0078",
     type: "Merchant Registration",
@@ -57,7 +74,7 @@ export default function Home() {
       <PageHeader>
         <div className="name-container">
           <h1 className="page-title">Hello,</h1>
-          <h1 className="admin-name">Jamaica</h1>
+          <h1 className="admin-name">{user?.data?.userdetail?.first_name}</h1>
         </div>
 
         <p className="page-desc">

@@ -16,10 +16,14 @@ import {
   Check,
   Edit3,
 } from "lucide-react";
+import { getCurrentUser } from "../../../api/auth.js";
 
 export default function Profile() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+   const [user, setUser] = useState(null);
+
+
 
   const handleRowClick = (item) => {
     setSelectedItem(item);
@@ -28,7 +32,17 @@ export default function Profile() {
 
   useEffect(() => {
     document.title = "Pisopay | Merchant Profile";
-  }, []);
+ const fetchUser = async () => {
+         try {
+             const data = await getCurrentUser();
+             setUser(data);
+         } catch (error) {
+             console.error(error);
+         }
+     };
+ 
+     fetchUser();
+ }, []);
 
   return (
     <div className="admin-container">
@@ -57,7 +71,7 @@ export default function Profile() {
 
           {/* Merchant Information */}
           <div className="merchant-main-info">
-            <h2>Company Name</h2>
+            <h2>{user?.data?.company?.name}</h2>
 
             <p>
               PisoPay Merchant
@@ -99,7 +113,7 @@ export default function Profile() {
             <Smartphone size={18} />
             <div>
               <span>Contact No.</span>
-              <p>+63 2301231223</p>
+              <p>{user?.data?.company?.phone}</p>
             </div>
           </div>
 
@@ -108,7 +122,7 @@ export default function Profile() {
             <Mail size={18} />
             <div>
               <span>Contact Email Address</span>
-              <p>anggaling@gmail.com</p>
+              <p>{user?.data?.company?.email}</p>
             </div>
           </div>
 
@@ -117,7 +131,7 @@ export default function Profile() {
             <MapPin size={18} />
             <div>
               <span>Company Address</span>
-              <p>#123 Ang Galing St.</p>
+              <p>{user?.data?.company?.company_detail?.address}</p>
             </div>
           </div>
 
@@ -126,7 +140,7 @@ export default function Profile() {
             <Link size={18} />
             <div>
               <span>Website URL</span>
-              <p>paranoia.com</p>
+              <p>{user?.data?.company?.website_url}</p>
             </div>
           </div>
 
@@ -135,7 +149,7 @@ export default function Profile() {
             <Send size={18} />
             <div>
               <span>Zip Code</span>
-              <p>1100</p>
+              <p>{user?.data?.company?.company_detail?.zip_code}</p>
             </div>
           </div>
 
@@ -144,7 +158,7 @@ export default function Profile() {
             <CalendarDays size={18} />
             <div>
               <span>Year Established</span>
-              <p>1231</p>
+              <p>{user?.data?.company?.company_detail?.year_established}</p>
             </div>
           </div>
 

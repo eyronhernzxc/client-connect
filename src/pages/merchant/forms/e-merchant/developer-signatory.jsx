@@ -44,7 +44,7 @@ export default function SignatoryDetails() {
         const data = new FormData();
 
         data.append("company_id", companyId);
-        data.append("personal_detail_type_id", 1);
+        data.append("personal_detail_type_id", 3);
         data.append("first_name", formData.get("firstname"));
         data.append("middle_name", formData.get("middlename") || "");
         data.append("last_name", formData.get("lastname"));
@@ -94,7 +94,7 @@ export default function SignatoryDetails() {
     <div className="main-container">
       <div className="form-card">
         <Header>
-          <h1>Signatory Details</h1>
+          <h1>DEVELOPER / TECHNICAL CONTACT PERSON</h1>
         </Header>
 
         <div className="form-container">

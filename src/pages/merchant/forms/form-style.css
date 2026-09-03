@@ -85,7 +85,7 @@ body {
     width: 100%;
     height: max-content;
 
-    padding: 120px 40px 40px 80px;
+    padding-top: 120px;
     
 }
 
@@ -98,7 +98,7 @@ body {
     display: flex;
     flex-direction: column;
 
-    width: 100%;
+    width: 70%;
     height: max-content;
 
     gap: 10px;

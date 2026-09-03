@@ -6,15 +6,36 @@ import TableHeader from '../../../components/admin/table/table-header';
 import SearchToolbar from '../../../components/admin/table/searchbar/searchbar';
 import Table from '../../../components/admin/table/table';
 import ApplicationReviewModal from '../../../components/admin/modals/application-review-modal/application-review-modal';
+import { getCompany } from '../../../api/getCompany';
+import { BarLoader } from 'react-spinners';
 
 
 export default function Applications() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState(null);
+    const [companies, setCompanies] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         document.title = "Pisopay | Admin Applications"
-    });
+
+        const fetchCompany = async () => {
+
+          try{
+
+            const data = await getCompany();
+            setCompanies(data);
+          }catch(error){
+
+            console.error("Failed to fetch company", error);
+          } finally{
+
+            setLoading(false);
+          }
+        }
+
+        fetchCompany();
+    },[]);
 
     const handleRowClick = (applicationData) => {
       setSelectedApplication(applicationData);
@@ -53,7 +74,7 @@ export default function Applications() {
               />
 
               <select id="category" className="dropdown">
-                <option selected disabled hidden value="">
+                <option  value="">
                   Category
                 </option>
                 <option value="1">GOCC</option>
@@ -64,7 +85,7 @@ export default function Applications() {
               </select>
 
               <select id="status" className="dropdown">
-                <option selected disabled value="">
+                <option value="">
                   Status
                 </option>
                 <option value="1">Under Review</option>
@@ -89,35 +110,67 @@ export default function Applications() {
           
           <thead>
               <tr className='tbl-header'>
-                <th>REFERENCE ID</th>
-                <th>COMPANY NAME</th>
-                <th>CATEGORY</th>
-                <th>DOCUMENTS</th>
-                <th>STATUS</th>
-                <th>DATE</th>
+                <th>COMPANY ID</th>
+                <th>USER ID</th>
+                <th>COMPANY TYPE</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>WEBSITE URL</th>
+                <th>Status</th>
+                {/* <th>PHONE</th>
+                <th>ADDRESS</th>
+                <th>ZIP CODE</th>
+                <th>DTI REG NUMBER</th>
+                <th>COMPANY TIN</th>
+                <th>TAX TYPE</th> */}
               </tr>
           </thead>
           
-          <tbody>
-              <tr onClick={() => handleRowClick({
-                referenceId: 'LOG-20240808',
-                companyName: 'Voltex Tech',
-                category: 'Government',
-                documents: '13/21',
-                status: 'Under Review',
-                statusClass: 'review',
-                date: '08-12-2026'
-              })} style={{ cursor: 'pointer' }}>
-                <td>LOG-20240808</td>
-                <td>Voltex Tech</td>
-                <td><span className='category-span'>Government</span></td>
-                <td>13/21</td>
-                <td><span className="status-span review">
-                Under Review</span></td>
-                <td>08-12-2026</td>
-          
-              </tr>
-          </tbody>
+         <tbody>
+  {loading ? (
+    <tr>
+      <td colSpan="7" style={{ padding: "30px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <BarLoader color="#0090FF" />
+        </div>
+      </td>
+    </tr>
+  ) : companies.length === 0 ? (
+    <tr>
+      <td
+        colSpan="7"
+        style={{
+          textAlign: "center",
+          padding: "30px",
+        }}
+      >
+        No companies found.
+      </td>
+    </tr>
+  ) : (
+    companies.map((company) => (
+      <tr
+        key={company.id}
+        onClick={() => handleRowClick(company)}
+        style={{ cursor: "pointer" }}
+      >
+        <td>{company.id}</td>
+        <td>{company.user_id}</td>
+        <td>{company.company_type?.name}</td>
+        <td>{company.name}</td>
+        <td>{company.email}</td>
+        <td>{company.website_url}</td>
+        <td>{company.status}</td>
+      </tr>
+    ))
+  )}
+</tbody>
             </table>
                   </>}
                   />
