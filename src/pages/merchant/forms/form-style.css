@@ -516,3 +516,44 @@ input[type="number"]::-webkit-outer-spin-button {
         background-color: #0771c2;
     }
 }
+
+.error-message {
+  display: block;
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.input-error {
+  border: 1px solid #dc2626 !important;
+}
+
+.permanent-address-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.same-address-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.same-address-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.same-address-checkbox span {
+  cursor: pointer;
+}
+
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
