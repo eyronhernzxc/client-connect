@@ -1,22 +1,47 @@
 import React from 'react'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../../pages.css'
 import PageHeader from '../../../components/admin/header/page-header';
 import TableHeader from '../../../components/admin/table/table-header';
 import SearchToolbar from '../../../components/admin/table/searchbar/searchbar';
 import Table from '../../../components/admin/table/table';
+import { getMerchant } from '../../../api/getMerchant';
+import { BarLoader } from 'react-spinners';
 
 export default function Merchants() {
+
+    const [merchants, setMerchant] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect (() => {
 
         document.title = "Pisopay | Admin Merchant List"
-    });
+
+        const fetchMerchant = async () => {
+
+            try{
+
+                const data = await getMerchant();
+                setMerchant(data);
+
+            }catch(error){
+
+                console.error("Failed to fetch merchant", error);
+
+            }finally{
+
+                setLoading(false);
+            }
+        }
+
+        fetchMerchant();
+    }, []);
+
   return (
      <div className ='admin-container'>
             <PageHeader>
                 <h1 className="page-title">
-                    Applications
+                    Merchants
                 </h1>
                 <p className='page-desc'>Review, validate documents and manage merchant onboarding status.</p>
             </PageHeader>
@@ -25,7 +50,7 @@ export default function Merchants() {
     
             <div className='table-container'>
     
-                <TableHeader tabletitle={<h1>Review Applications</h1>}/>
+                <TableHeader tabletitle={<h1>Current Merchants</h1>}/>
                 <SearchToolbar 
     
                  searchtool={
@@ -74,26 +99,59 @@ export default function Merchants() {
               
               <thead>
                   <tr className='tbl-header'>
-                    <th>REFERENCE ID</th>
-                    <th>COMPANY NAME</th>
-                    <th>CATEGORY</th>
-                    <th>DOCUMENTS</th>
-                    <th>STATUS</th>
-                    <th>DATE</th>
+                    <th>ID</th>
+                    <th>USER ID</th>
+                    <th>FIRST NAME</th>
+                    <th>MIDDLE NAME</th>
+                    <th>LAST NAME</th>
+                    <th>MOBILE NUMBER</th>
+                    <th>BIRTH DATE</th>
+                    <th>CREATED AT</th>
                   </tr>
               </thead>
               
               <tbody>
-                  <tr>
-                    <td>LOG-20240808</td>
-                    <td>Voltex Tech</td>
-                    <td><span className='category-span'>Government</span></td>
-                    <td><span className="status-span review">
-                    Under Review</span></td>
-                    <td>Aug 08, 2026</td>
-              
-                  </tr>
-              </tbody>
+  {loading ? (
+    <tr>
+      <td colSpan="8" style={{ padding: "30px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <BarLoader color="#0090FF" />
+        </div>
+      </td>
+    </tr>
+  ) : merchants.length === 0 ? (
+    <tr>
+      <td
+        colSpan="8"
+        style={{
+          textAlign: "center",
+          padding: "30px",
+        }}
+      >
+        No merchants found.
+      </td>
+    </tr>
+  ) : (
+    merchants.map((merchant) => (
+      <tr key={merchant.id}>
+        <td>{merchant.id}</td>
+        <td>{merchant.user_id}</td>
+        <td>{merchant.first_name}</td>
+        <td>{merchant.middle_name}</td>
+        <td>{merchant.last_name}</td>
+        <td>{merchant.mobile_number}</td>
+        <td>{merchant.birth_date?.split("T")[0] || ""}</td>
+        <td>{merchant.created_at?.split("T")[0] || ""}</td>
+      </tr>
+    ))
+  )}
+</tbody>
                 </table>
                       </>}
                       />

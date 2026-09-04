@@ -10,7 +10,7 @@ const Services = Loadable(lazy(() => import ("../../pages/admin/services/index.j
 const ActivityLog = Loadable(lazy(() => import ("../../pages/admin/activity-log/index.jsx")));
 const Settings = Loadable(lazy(() => import ("../../pages/admin/settings/index.jsx")));
 const Merchants = Loadable(lazy(() => import ("../../pages/admin/merchants/index.jsx")));
-
+const Login = Loadable(lazy(() => import("../../pages/auth/admin/login.jsx")));
 
 
 const protectedRoutes = ([
@@ -22,6 +22,11 @@ const protectedRoutes = ([
     //     path: "/register",
     //     element: <Register />,
     // },
+
+        {
+            path: "/admin/login",
+            element: <Login />,
+        },
     {
         element: 
             <MainLayout />,
@@ -30,68 +35,35 @@ const protectedRoutes = ([
                 path: "/dashboard",
                 element: <Dashboard />,
             },
-        ],
-    },
 
-    {
-
-        element:
-        <MainLayout/>,
-        children: [
             {
 
                 path:"/onboarding",
                 element: <Onboarding />,
             },
-        ],
-    },
 
-    {
-        element: <MainLayout />,
-        children: [
             {
 
-                path:"/merchants",
-                element: <Merchants/>,
-            },
-        ],
-    },
-
-    {
-        element:
-        <MainLayout/>,
-        children: [
-            {
                 path:"/applications",
                 element: <Applications/>,
             },
-        ],
-    },
 
-    {
-        element:<MainLayout />,
-        children: [
+            {
+                path:"/merchants",
+                element: <Merchants/>,
+            },
+
             {
 
                 path:"/services",
                 element:<Services/>,
             },
-        ],
-    },
 
-    {
-        element:<MainLayout/>,
-        children: [
             {
                 path:"/activity-log",
                 element:<ActivityLog/>,
             },
-        ],
-    },
 
-    {
-        element:<MainLayout/>,
-        children: [
             {
 
                 path:"/settings",
@@ -99,6 +71,7 @@ const protectedRoutes = ([
             },
         ],
     },
+
     //   {
     //     path: "*",
     //     element: <NotFound />,

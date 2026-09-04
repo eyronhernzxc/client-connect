@@ -87,11 +87,11 @@ export default function ActivityLog() {
                   <tbody>
                       <tr>
                         <td>PSPY-123</td>
-                        <td><span className='category-span government'></span></td>
-                        <td><span className='system-span backend'>Backend</span></td>
-                        <td><span className="gateway-span ol-banking">Online Banking</span></td>
-                        <td><span className='others-span'>payment_link</span></td>
-                        <td><span className='total-span'>2</span></td>
+                        <td><span >Marvin ( Voltex Tech )</span></td>
+                        <td><span className='category-span government'>Merchant</span></td>
+                        <td><span className="gateway-span ol-banking">Application</span></td>
+                        <td><span className='others-span'>8:45 AM</span></td>
+                        <td><span className='total-span'>08-01-2026</span></td>
                   
                       </tr>
                   </tbody>

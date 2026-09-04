@@ -6,6 +6,7 @@ import PageHeader from "../../../components/admin/header/page-header.jsx";
 import TableHeader from "../../../components/admin/table/table-header.jsx";
 import SearchToolbar from "../../../components/admin/table/searchbar/searchbar.jsx";
 import DashboardDrawer from "../../../components/drawer/dashboard-drawer/dashboard-drawer.jsx";
+import QuickNavigation from "../../../components/admin/navigation/quick-navigation.jsx";
 
 export default function Dashboard() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -45,7 +46,7 @@ export default function Dashboard() {
       </PageHeader>
 
       <div className="page-gap"></div>
-
+      <QuickNavigation />
       <Metrics />
 
       <div className="table-container">

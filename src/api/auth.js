@@ -1,17 +1,33 @@
-import { api } from "./api.js";
 
-export const login = async (email, password) => {
-  const response = await api.post("/auth/login", { email, password });
-  localStorage.setItem("access_token", response.data.access_token);
-  return response.data;
-};
+import { api } from "./api";
 
+// Get currently authenticated user
 export const getCurrentUser = async () => {
-  const response = await api.get("/auth/me");
-  return response.data;
+  try {
+    const response = await api.get("/auth/me");
+
+    const user = response.data;
+
+    console.log("Authenticated user from /auth/me:", user);
+
+    // Save the latest user information locally
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    return user;
+  } catch (error) {
+    console.error(
+      "GET /auth/me failed:",
+      error.response?.data || error
+    );
+
+    const message =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      "Unable to retrieve authenticated user.";
+
+    throw new Error(message);
+  }
 };
 
-export const logout = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("user");
-};

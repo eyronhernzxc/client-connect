@@ -1,0 +1,315 @@
+.ra-root {
+    --ink: #152238;
+    --ink-soft: #5C6B84;
+    --line: #E3E8F1;
+    --bg: #EEF2F9;
+    --blue: #0090FF;
+    --blue-deep: #0276c9;
+    --blue-tint: #E9EEFC;
+    --teal: #055d9b;
+    --teal-tint: #E4F7F4;
+    --red: #D92D20;
+    --red-tint: #FEF3F2;
+
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+}
+
+.ra-panel {
+    width: 100%;
+    max-width: 720px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 12px 32px -16px rgba(21, 34, 56, 0.18);
+    overflow: hidden;
+    height: fit-content;
+}
+
+/* Header */
+.ra-panel-head {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--line);
+}
+
+.ra-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 0 0 8px;
+}
+
+.ra-panel-head h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px;
+}
+
+.ra-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+}
+
+/* Body */
+.ra-panel-body {
+    padding: 28px 32px;
+}
+
+.ra-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Autosave bar */
+.autosave-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    background: var(--teal-tint);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.autosave-restored {
+    color: var(--teal);
+    font-weight: 600;
+}
+
+.autosave-clear {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.autosave-clear:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+}
+
+/* Fields */
+.ra-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ra-field label span {
+    color: var(--red);
+}
+
+.ra-field input,
+.ra-field textarea {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    resize: vertical;
+    background: #fff;
+}
+
+.ra-field input:focus,
+.ra-field textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+}
+
+.ra-row {
+    display: flex;
+    gap: 16px;
+}
+
+.ra-row .ra-field {
+    flex: 1;
+}
+
+@media (max-width: 600px) {
+    .ra-row {
+        flex-direction: column;
+    }
+}
+
+/* Checkbox grid (nature of business, source of fund) */
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 4px 0 14px;
+}
+
+.checkbox-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    color: var(--ink);
+    font-weight: 400;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.checkbox-option:hover {
+    border-color: #B9C6E6;
+}
+
+.checkbox-option:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-tint);
+}
+
+.checkbox-option input {
+    margin-top: 3px;
+    accent-color: var(--blue);
+    cursor: pointer;
+}
+
+/* Radio groups */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.radio-group.inline {
+    flex-direction: row;
+    gap: 25px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+    font-weight: 400;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.radio-option input {
+    accent-color: var(--blue);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Countries grid */
+.country-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding-top: 4px;
+}
+
+.country-grid input {
+    font-family: inherit;
+    font-size: 14px;
+    height: 2.5rem;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    color: var(--ink);
+}
+
+.country-grid input:focus {
+    outline: none;
+    border-color: var(--blue);
+}
+
+/* License table */
+.license-table {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    margin-top: 4px;
+    background: var(--blue-tint);
+    border-radius: 12px;
+}
+
+/* Certification */
+.form-field.certification {
+    padding: 14px 16px;
+    background: var(--teal-tint);
+    border-radius: 12px;
+}
+
+.form-field.certification label {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-field.certification p {
+    margin: 6px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+/* Submit button */
+.ra-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ra-btn {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: 1.5px solid var(--blue);
+    background: var(--blue);
+    color: #fff;
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+.ra-btn:hover {
+    background: var(--blue-deep);
+    border-color: var(--blue-deep);
+}
+
+.ra-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+    .checkbox-grid,
+    .country-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ra-panel-head,
+    .ra-panel-body {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

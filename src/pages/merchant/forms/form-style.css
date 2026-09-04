@@ -1,266 +1,525 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* =========================
+   DESIGN TOKENS
+   A single scale keeps every control the same
+   height/radius/font-size instead of each rule
+   inventing its own numbers.
+========================= */
 
-body{
-
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", sans-serif;
-
+:root {
+    --control-height: 40px;
+    --control-radius: 8px;
+    --control-font-size: 14px;
+    --label-font-size: 13px;
+    --border-color: #d9dee7;
+    --border-color-hover: #b8c1ce;
+    --text-color: #344054;
+    --primary-color: #176b45;
+    --primary-color-hover: #125536;
+    --gap-sm: 8px;
+    --gap-md: 16px;
+    --gap-lg: 24px;
 }
 
-*{
 
-    box-sizing: border-box;
-}
+/* =========================
+   MAIN CONTAINER
+========================= */
 
-.form-header{
-
-    background-color: #005FA1;
-    padding: 20px 20px;
-    width: 100%;
-    height: max-content;
-
-}
-
-.form-header h1{
-
-    margin: 0;
-    padding: 0;
-    color: white;
-    font-size: 1.5rem;
-}
-
-.form-overlay{
-
+.main-container {
     display: flex;
     justify-content: center;
-    padding: 20px;
-    width: 100%;
-    height: max-content;
-    /* background-color: rgba(0, 0, 0, 0.363);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); */
+    align-items: flex-start;
 
+    width: 100%;
+    min-height: calc(100vh - 80px);
+
+<<<<<<< HEAD
+    padding: 105px 20px 30px;
+=======
+    padding-top: 120px;
+    
+>>>>>>> origin/updates
 }
 
-.form-overlay .form-card{
 
-    width: 60%;
-    height: max-content;
-    border: 1px solid gray;
-    border-radius: 10px;
-    background-color: white;
+/* =========================
+   FORM CARD
+========================= */
+
+.main-container .form-card {
+<<<<<<< HEAD
+    width: 100%;
+    max-width: 760px;
+=======
     display: flex;
     flex-direction: column;
-    gap: 10px;
+
+    width: 70%;
+    height: max-content;
+>>>>>>> origin/updates
+
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+
+    background-color: #fff;
+
     overflow: hidden;
+
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06),
+                0 1px 2px rgba(16, 24, 40, 0.04);
 }
 
-.form-card .form-container{
 
+/* =========================
+   FORM CONTAINER
+========================= */
+
+.form-card .form-container {
     width: 100%;
-    padding: 10px 20px;
-    height: max-content;
+    padding: 32px 28px;
 }
 
-.form-container .form{
 
+/* =========================
+   FORM
+========================= */
+
+.form-container .form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
 
-.form-container h3{
-
-    margin: 10px 0 0 0;
-}
-
-.form-container hr {
-
-    border: 1px solid #005FA1;
     width: 100%;
-    margin: 0;
+
+    gap: var(--gap-md);
 }
 
-.form-field input {
 
-    height: 2.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid gray;
+/* =========================
+   FORM ROW
+========================= */
+
+.form .form-row {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    width: 100%;
+
+    column-gap: var(--gap-md);
+    row-gap: var(--gap-md);
 }
 
-.form-field input:focus,
-.form-field select:focus,
-.form-row .input-field input:focus,
-.form-row .input-field-large input:focus,
-.form-row .input-field-short input:focus{
 
+/* =========================
+   INPUT FIELD
+========================= */
+
+.input-field,
+.input-field-large,
+.input-field-short,
+.form-field {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    gap: 6px;
+}
+
+
+/* =========================
+   LABELS
+========================= */
+
+.input-field label,
+.form-field label {
+    font-size: var(--label-font-size);
+    font-weight: 500;
+    color: var(--text-color);
+    line-height: 1.3;
+    padding: 10px 0px 0px;
+}
+
+
+/* =========================
+   INPUT / SELECT
+========================= */
+
+.input-field input,
+.input-field select,
+.form-field input,
+.form-field select {
+    box-sizing: border-box;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: var(--control-height);
+
+    padding: 0 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--control-radius);
+
+    font-family: inherit;
+    font-size: var(--control-font-size);
+    color: var(--text-color);
+
+    background: #fff;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-field input:hover,
+.input-field select:hover,
+.form-field input:hover,
+.form-field select:hover {
+    border-color: var(--border-color-hover);
+}
+
+.input-field input:focus-visible,
+.input-field select:focus-visible,
+.form-field input:focus-visible,
+.form-field select:focus-visible {
     outline: none;
-    border: 1px solid black;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.12);
 }
 
-.form-field select{
 
-    height: 2.5rem;
-    padding: 10px 10px;
-    color: gray;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
+/* =========================
+   TEXTAREA
+========================= */
 
-.form-field select option{
-
-    height: 2.5rem;
-    padding: 10px 10px;
-    color: black;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.input-field  input {
-
-    height: 2.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.input-field  select {
-
-    height: 2.5rem;
-    padding: 10px 10px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.input-field-large  input {
-
-    height: 2.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.input-field-short  input {
-
-    height: 2.5rem;
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.form-field label span, .form-field-grid label span{
-
-    color: red;
-}
-
-.form-field label, .form-field-grid{
-
-    color: black;
-    font-size: 14px;
-}
-
-.form .form-field{
-
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-field-grid .radio-field{
+.form-field textarea {
+    box-sizing: border-box;
 
     width: 100%;
-    height: max-content;
-    padding: 10px;
-    border: 1px solid;
+    max-width: 100%;
+
+    min-height: 96px;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--control-radius);
+
+    font-family: inherit;
+    font-size: var(--control-font-size);
+    color: var(--text-color);
+    line-height: 1.5;
+
+    resize: vertical;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-field textarea:hover {
+    border-color: var(--border-color-hover);
+}
+
+.form-field textarea:focus-visible {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.12);
+}
+
+
+/* =========================
+   CHECKBOX GRID
+========================= */
+
+.form .form-field-grid {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    width: 100%;
+
+    column-gap: var(--gap-lg);
+    row-gap: 14px;
+
+    margin-top: 4px;
+}
+
+
+/* =========================
+   CHECKBOX ITEM
+========================= */
+
+.form-field-grid .radio-field {
     display: flex;
-    flex-direction: row;
-    /* justify-content: center; */
+    align-items: flex-start;
+
+    width: 100%;
+    min-width: 0;
+
+    min-height: 20px;
+
+    padding: 0;
+}
+
+
+/* =========================
+   CHECKBOX
+========================= */
+
+.form-field-grid .radio-field input {
+    flex: 0 0 auto;
+
+    width: 16px;
+    height: 16px;
+
+    margin: 1px 8px 0 0;
+
+    accent-color: var(--primary-color);
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   CHECKBOX LABEL
+========================= */
+
+.form-field-grid .radio-field label {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+
+    color: var(--text-color);
+
+    font-size: var(--label-font-size);
+    font-weight: 400;
+
+    line-height: 1.4;
+
+    word-break: normal;
+    overflow-wrap: break-word;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   BUTTON CONTAINER
+========================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    width: 100%;
+
+    margin-top: 8px;
+    padding-top: 8px;
+
+    border-top: 1px solid #eef0f3;
+}
+
+
+/* =========================
+   SUBMIT BUTTON
+========================= */
+
+.form button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: auto;
+    min-width: 140px;
+
+    height: var(--control-height);
+
+    padding: 0 24px;
+
+    border: none;
+    border-radius: var(--control-radius);
+
+    background-color: var(--primary-color);
+
+    color: white;
+
+    font-family: inherit;
+    font-size: var(--control-font-size);
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.form button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+.form button:active {
+    transform: translateY(1px);
+}
+
+.form button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.25);
+}
+
+
+/* =========================
+   FILE UPLOAD
+========================= */
+
+.input-field .file-label {
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: var(--control-height);
+
+    border: 1px dashed var(--border-color-hover);
+    border-radius: var(--control-radius);
+
+    font-size: var(--control-font-size);
+    color: #667085;
+
+    cursor: pointer;
+
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.input-field .file-label:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(23, 107, 69, 0.03);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 560px) {
+    .form-card .form-container {
+        padding: 20px 16px;
+    }
+<<<<<<< HEAD
+
+    .form .form-row,
+    .form .form-field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+
+    .form button {
+        width: 100%;
+    }
+}
+
+/* OTHER */
+
+.companyf-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+    min-height: 70px;
+    padding: 0 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Center title */
+.companyf-title {
+    grid-column: 2;
+    margin: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.3px;
+}
+
+/* Right side */
+.companyf-header-actions {
+    grid-column: 3;
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
 }
 
-.form .form-field-grid{
-
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    width: 100%;
-    gap: 10px;
-    
-}
-
-.form-field-grid .radio-field label{
-
-    color: black;
-    font-size: 12px;
-}
-
-.form-field-grid .radio-field input{
-
-    height: 100%;
-    width: max-content;
-    padding: 10px;
-    accent-color: #005FA1;
-    border: 1px solid;
-}
-
-
-.form .form-row{
-
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: 100%;
-
-}
-
-.form-row .input-field{
-
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-row .input-field-large{
-
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-row .input-field-short{
-
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-row .input-field label,
-.form-row .input-field-large label,
-.form-row .input-field-short label{
-
-    color: black;
+/* Clear button */
+.companyf-clear {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: inherit;
     font-size: 14px;
-}
-
-.form-row .input-field label span,
-.form-row .input-field-large label span,
-.form-row .input-field-short label span{
-
-    color: red;
-}
-
-.form button{
-
-    border: none;
-    border-radius: 10px;
-    background-color: #005FA1;
-    color: white;
     font-weight: 600;
-    font-size: 1rem;
-    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
+.companyf-clear:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.companyf-clear:active {
+    transform: scale(0.97);
+}
+=======
+}
+
+.error-message {
+  display: block;
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.input-error {
+  border: 1px solid #dc2626 !important;
+}
+
+.permanent-address-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.same-address-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.same-address-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.same-address-checkbox span {
+  cursor: pointer;
+}
+
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+>>>>>>> origin/updates

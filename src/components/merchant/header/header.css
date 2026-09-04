@@ -134,6 +134,7 @@ body {
     left: 50px;
     right: 0;
     padding: 20px;
+    z-index: 900;
 
     display: flex;
     flex-direction: row;
