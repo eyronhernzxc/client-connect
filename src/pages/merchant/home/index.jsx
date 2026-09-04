@@ -1,6 +1,7 @@
 import React from "react";
 import PageHeader from "../../../components/merchant/header/page-header";
 import "../../pages.css";
+import { NavLink } from "react-router-dom";
 
 export default function Home() {
   const application = {
@@ -36,15 +37,15 @@ export default function Home() {
       type: "purple",
     },
     {
-      title: "Assigned to processing officer",
-      actor: "Admin",
+      title: "Categorized",
+      actor: "Admin ( BD )",
       date: "Aug 30, 2026",
       time: "10:15 AM",
       type: "orange",
     },
     {
       title: "Application approved — account activated",
-      actor: "Officer M. Lim",
+      actor: "Admin ( BD )",
       date: "Aug 30, 2026",
       time: "2:30 PM",
       type: "green",
@@ -175,25 +176,42 @@ export default function Home() {
             </div>
 
             <div className="action-list">
-              <button type="button" className="action-button">
-                <span>Company Details</span>
-                <span className="action-arrow">→</span>
-              </button>
+              {/* <button type="button" className="action-button"> */}
+                <NavLink
+                  className={({ isActive }) =>
+                    `action-button ${isActive ? "active" : ""}`
+                  }
+                  to="/merchant/profile"
+                  title="Profile">
+                  <span>Company Details</span>
+                  <span className="action-arrow">→</span>
+                </NavLink>
+              {/* </button> */}
 
-              <button type="button" className="action-button">
-                <span>Forms</span>
-                <span className="action-arrow">→</span>
-              </button>
+                <NavLink
+                  className={({ isActive }) =>
+                    `action-button ${isActive ? "active" : ""}`
+                  }
+                  to="/merchant/forms"
+                  title="Forms">
+                  <span>Forms</span>
+                  <span className="action-arrow">→</span>
+                </NavLink>
 
               <button type="button" className="action-button">
                 <span>Services</span>
                 <span className="action-arrow">→</span>
               </button>
 
-              <button type="button" className="action-button">
-                <span>Settings</span>
-                <span className="action-arrow">→</span>
-              </button>
+                <NavLink
+                  className={({ isActive }) =>
+                    `action-button ${isActive ? "active" : ""}`
+                  }
+                  to="/merchant/settings"
+                  title="Settings">
+                  <span>Settings</span>
+                  <span className="action-arrow">→</span>
+                </NavLink>
             </div>
           </section>
         </div>
