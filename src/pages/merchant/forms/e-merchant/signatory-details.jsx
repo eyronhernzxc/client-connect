@@ -585,227 +585,247 @@ export default function SignatoryDetails() {
         formData.get("signature")
       );
 
-      // =====================================================
+   // =====================================================
       // PRESENT ADDRESS
-      // =====================================================
+      // =====================================================     
 
-      data.append(
-        "present_address_number",
-        formData.get(
-          "present_address_number"
-        )
-      );
+     
+data.append(
+  "address[0][address_type_id]",
+  1
+);
 
-      data.append(
-        "present_street",
-        formData.get("present_street")
-      );
+data.append(
+  "address[0][address_number]",
+  formData.get("present_address_number")
+);
 
-      data.append(
-        "present_barangay",
-        formData.get("present_barangay")
-      );
+data.append(
+  "address[0][street]",
+  formData.get("present_street")
+);
 
-      data.append(
-        "present_district",
-        formData.get("present_district")
-      );
+data.append(
+  "address[0][barangay]",
+  formData.get("present_barangay")
+);
 
-      data.append(
-        "present_municipality",
-        formData.get(
-          "present_municipality"
-        )
-      );
+data.append(
+  "address[0][district]",
+  formData.get("present_district")
+);
 
-      data.append(
-        "present_city",
-        formData.get("present_city")
-      );
+data.append(
+  "address[0][municipality]",
+  formData.get("present_municipality")
+);
 
-      data.append(
-        "present_province",
-        formData.get("present_province")
-      );
+data.append(
+  "address[0][city]",
+  formData.get("present_city")
+);
 
-      data.append(
-        "present_zip_code",
-        formData.get(
-          "present_zip_code"
-        )
-      );
+data.append(
+  "address[0][province]",
+  formData.get("present_province")
+);
 
-      // =====================================================
-      // PERMANENT ADDRESS
-      // =====================================================
+data.append(
+  "address[0][zip_code]",
+  formData.get("present_zip_code")
+);
 
-      data.append(
-        "permanent_address_number",
-        formData.get(
-          "permanent_address_number"
-        )
-      );
 
-      data.append(
-        "permanent_street",
-        formData.get(
-          "permanent_street"
-        )
-      );
+// =====================================================
+// PERMANENT ADDRESS
+// =====================================================
 
-      data.append(
-        "permanent_barangay",
-        formData.get(
-          "permanent_barangay"
-        )
-      );
+data.append(
+  "address[1][address_type_id]",
+  2
+);
 
-      data.append(
-        "permanent_district",
-        formData.get(
-          "permanent_district"
-        )
-      );
+data.append(
+  "address[1][address_number]",
+  formData.get("permanent_address_number")
+);
 
-      data.append(
-        "permanent_municipality",
-        formData.get(
-          "permanent_municipality"
-        )
-      );
+data.append(
+  "address[1][street]",
+  formData.get("permanent_street")
+);
 
-      data.append(
-        "permanent_city",
-        formData.get(
-          "permanent_city"
-        )
-      );
+data.append(
+  "address[1][barangay]",
+  formData.get("permanent_barangay")
+);
 
-      data.append(
-        "permanent_province",
-        formData.get(
-          "permanent_province"
-        )
-      );
+data.append(
+  "address[1][district]",
+  formData.get("permanent_district")
+);
 
-      data.append(
-        "permanent_zip_code",
-        formData.get(
-          "permanent_zip_code"
-        )
-      );
+data.append(
+  "address[1][municipality]",
+  formData.get("permanent_municipality")
+);
 
-      // =====================================================
-      // VALID ID
-      // =====================================================
+data.append(
+  "address[1][city]",
+  formData.get("permanent_city")
+);
 
-      data.append(
-        "valid_id_type_id",
-        formData.get(
-          "valid_id_type_id"
-        )
-      );
+data.append(
+  "address[1][province]",
+  formData.get("permanent_province")
+);
 
-      data.append(
-        "image",
-        formData.get("image")
-      );
+data.append(
+  "address[1][zip_code]",
+  formData.get("permanent_zip_code")
+);
+// =====================================================
+// VALID ID 1
+// =====================================================
 
-      data.append(
-        "number",
-        formData.get("number")
-      );
+data.append(
+  "valid_id[0][valid_id_type_id]",
+  Number(formData.get("valid_id_type_id"))
+);
 
-      data.append(
-        "expiration_date",
-        formData.get(
-          "expiration_date"
-        )
-      );
+data.append(
+  "valid_id[0][number]",
+  formData.get("number")
+);
 
-      // =====================================================
-      // MOTHER
-      // =====================================================
+data.append(
+  "valid_id[0][expiration_date]",
+  formData.get("expiration_date")
+);
 
-      data.append(
-        "mother_name",
-        formData.get("mother_name")
-      );
 
-      data.append(
-        "mother_birthdate",
-        formData.get(
-          "mother_birthdate"
-        )
-      );
 
-      data.append(
-        "mother_birthplace",
-        formData.get(
-          "mother_birthplace"
-        )
-      );
+// =====================================================
+// VALID ID 2
+// =====================================================
 
-      data.append(
-        "mother_nationality",
-        formData.get(
-          "mother_nationality"
-        )
-      );
+data.append(
+  "valid_id[1][valid_id_type_id]",
+  Number(formData.get("valid_id_type_id2"))
+);
 
-      data.append(
-        "mother_profession",
-        formData.get(
-          "mother_profession"
-        )
-      );
+data.append(
+  "valid_id[1][number]",
+  formData.get("number2")
+);
 
-      // =====================================================
-      // SPOUSE
-      // =====================================================
+data.append(
+  "valid_id[1][expiration_date]",
+  formData.get("expiration_date2")
+);
 
-      data.append(
-        "spouse_name",
-        formData.get(
-          "spouse_name"
-        ) || ""
-      );
 
-      data.append(
-        "spouse_birthdate",
-        formData.get(
-          "spouse_birthdate"
-        ) || ""
-      );
+data.append(
+  "valid_id_images[0]",
+  formData.get("image")
+);
 
-      data.append(
-        "spouse_birthplace",
-        formData.get(
-          "spouse_birthplace"
-        ) || ""
-      );
+data.append(
+  "valid_id_images[1]",
+  formData.get("image2")
+);
 
-      data.append(
-        "spouse_nationality",
-        formData.get(
-          "spouse_nationality"
-        ) || ""
-      );
+const image1 = formData.get("image");
+const image2 = formData.get("image2");
 
-      data.append(
-        "spouse_profession",
-        formData.get(
-          "spouse_profession"
-        ) || ""
-      );
+console.log("IMAGE 1:", image1);
+console.log("IMAGE 2:", image2);
+console.log("IMAGE 1 IS FILE:", image1 instanceof File);
+console.log("IMAGE 2 IS FILE:", image2 instanceof File);
 
-      console.log(
-        "SIGNATORY DATA:",
-        Object.fromEntries(
-          data.entries()
-        )
-      );
+// =====================================================
+// REFERENCES
+// =====================================================
 
+// MOTHER - REFERENCE 1
+data.append(
+  "reference[0][reference_type_id]",
+  1
+);
+
+data.append(
+  "reference[0][name]",
+  formData.get("mother_name")
+);
+
+data.append(
+  "reference[0][birthdate]",
+  formData.get("mother_birthdate")
+);
+
+data.append(
+  "reference[0][birthplace]",
+  formData.get("mother_birthplace")
+);
+
+data.append(
+  "reference[0][nationality]",
+  formData.get("mother_nationality")
+);
+
+data.append(
+  "reference[0][profession]",
+  formData.get("mother_profession")
+);
+
+
+// =====================================================
+// SPOUSE - REFERENCE 2
+// =====================================================
+
+
+  data.append(
+    "reference[1][reference_type_id]",
+    2
+  );
+
+  data.append(
+    "reference[1][name]",
+    formData.get("spouse_name")
+  );
+
+  data.append(
+    "reference[1][birthdate]",
+    formData.get("spouse_birthdate")
+  );
+
+  data.append(
+    "reference[1][birthplace]",
+    formData.get("spouse_birthplace")
+  );
+
+  data.append(
+    "reference[1][nationality]",
+    formData.get("spouse_nationality")
+  );
+
+  data.append(
+    "reference[1][profession]",
+    formData.get("spouse_profession")
+  );
+
+
+
+
+// =====================================================
+// DEBUG FORM DATA
+// =====================================================
+
+console.log("===== SIGNATORY DATA =====");
+
+for (const [key, value] of data.entries()) {
+  console.log(key, value);
+}
       // =====================================================
       // POST
       // =====================================================
@@ -816,7 +836,7 @@ export default function SignatoryDetails() {
         "Signatory details submitted successfully!"
       );
 
-      navigate("/form/address");
+      navigate("/form/finance");
     } catch (error) {
       console.log(
         "STATUS:",
@@ -860,6 +880,7 @@ export default function SignatoryDetails() {
       ? "input-error"
       : "";
   };
+
 
   // =========================================================
   // RENDER
@@ -1771,6 +1792,112 @@ export default function SignatoryDetails() {
                 </div>
 
               </div>
+
+              {/* VAID ID 22222 */}
+
+              <div className="form-row">
+
+                <div className="input-field">
+                  <label>
+                    Valid Id Type{" "}
+                    <span>*</span>
+                  </label>
+
+                  <select
+                    name="valid_id_type_id2"
+                    className={getInputClass(
+                      "valid_id_type_id"
+                    )}
+                  >
+                    <option value="">
+                      Select Id Type
+                    </option>
+
+                    {IdTypes.map((type) => (
+                      <option
+                        key={type.id}
+                        value={type.id}
+                      >
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <ErrorMessage
+                    field="valid_id_type_id2"
+                  />
+                </div>
+
+                <div className="input-field">
+                  <label>
+                    Valid Id Image{" "}
+                    <span>*</span>
+                  </label>
+
+                  <input
+                    type="file"
+                    id="image2"
+                    name="image2"
+                  />
+
+                  <label
+                    htmlFor="image2"
+                    className="file-label"
+                  >
+                    <Upload />
+                  </label>
+
+                  <ErrorMessage
+                    field="image"
+                  />
+                </div>
+
+              </div>
+
+              <div className="form-row">
+
+                <div className="input-field">
+                  <label>
+                    Valid Id Number{" "}
+                    <span>*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    name="number2"
+                    placeholder="e.g XXX-XXX-XX"
+                    className={getInputClass(
+                      "number"
+                    )}
+                  />
+
+                  <ErrorMessage
+                    field="number"
+                  />
+                </div>
+
+                <div className="input-field">
+                  <label>
+                    Expiration Date{" "}
+                    <span>*</span>
+                  </label>
+
+                  <input
+                    type="date"
+                    name="expiration_date2"
+                    className={getInputClass(
+                      "expiration_date"
+                    )}
+                  />
+
+                  <ErrorMessage
+                    field="expiration_date"
+                  />
+                </div>
+
+              </div>
+
+              
 
               {/* =================================================
                   MOTHER

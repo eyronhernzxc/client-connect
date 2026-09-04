@@ -3,12 +3,12 @@ import {api} from './api.js';
 export const postReference = async (mother, spouse) => {
     try {
         const motherResponse = await api.post(
-            "/references",
+            "/reference",
             mother
         );  
 
         const spouseResponse = await api.post(
-            "/references",
+            "/reference",
             spouse
         );
 

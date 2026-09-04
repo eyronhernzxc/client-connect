@@ -98,11 +98,10 @@ useEffect(() => {
                 </span>
               </div>
 
-              <p className="application-id">{application.id}</p>
+              <p className="application-id">User Id: {user?.data?.id}</p>
 
               <p className="application-description">
-                Your merchant account has been successfully approved and
-                activated.
+                Your merchant account has been successfully approved and activated.
               </p>
             </div>
 
@@ -150,34 +149,34 @@ useEffect(() => {
           <section className="dashboard-card">
             <div className="section-header">
               <div>
-                <h3>Application Information</h3>
-                <p>Details about your merchant application.</p>
+                <h3>Company Registration</h3>
+                <p>Details about your company application.</p>
               </div>
             </div>
 
             <div className="info-grid">
               <div className="info-item">
-                <span className="info-label">Application ID</span>
+                <span className="info-label">Company ID</span>
 
-                <strong>{application.id}</strong>
+                <strong>{user?.data?.company?.id}</strong>
               </div>
 
               <div className="info-item">
-                <span className="info-label">Application Type</span>
+                <span className="info-label">Status</span>
 
-                <strong>{application.type}</strong>
+                <strong>{user?.data?.company?.status}</strong>
               </div>
 
               <div className="info-item">
                 <span className="info-label">Submitted</span>
 
-                <strong>{application.submitted}</strong>
+                <strong>{user?.data?.company?.created_at?.split("T")[0]}</strong>
               </div>
 
               <div className="info-item">
                 <span className="info-label">Last Updated</span>
 
-                <strong>{application.lastUpdated}</strong>
+                <strong>{user?.data?.company?.updated_at?.split("T")[0]}</strong>
               </div>
             </div>
           </section>

@@ -100,7 +100,7 @@ return (
     <button>Clear</button>
 </Header>
 
-<div className='form-container'>
+<div className='company-form-container'>
 <form onSubmit={handleCompanyRegistration} className='form'>
 
 

@@ -21,12 +21,11 @@ const AdditionalInformation = Loadable(lazy(() => import ("../../pages/merchant/
 const BusinessInformation = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-information.jsx")));
 const BusinessQuestion = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-questions.jsx")));
 const Declaration = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/declaration.jsx")));
-const ValidId = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/valid-id.jsx"))); 
-const Address = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/address.jsx")));
 const Employment = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/employment-information.jsx")));
-const Reference = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/reference.jsx")));
 const RiskAssessment = Loadable(lazy(() =>import ("../../pages/merchant/forms/risk-assessment/risk-assess.jsx")));
 const KnowYourCustomer = Loadable(lazy(() =>import ("../../pages/merchant/forms/kyc/kyc.jsx")));
+const DeveloperSignatory = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/developer-signatory.jsx")));
+const FinancialSignatory = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/finance-signatory.jsx")));
 
 
 const publicRoutes = ([
@@ -83,6 +82,16 @@ const publicRoutes = ([
                 element: <SignatoryDetails />,
             },
 
+             {
+                path: "form/finance",
+                element: <FinancialSignatory />,
+            },
+
+            {
+                path: "form/developer",
+                element: <DeveloperSignatory />,
+            },
+
             {
                 path: "form/financial",
                 element: <FinancialInformation />,
@@ -109,35 +118,10 @@ const publicRoutes = ([
             },
 
             {
-                path: "form/valid-id",
-                element: <ValidId/>,
-            },
-
-            {
-                path: "form/address",
-                element: <Address />,
-            },
-
-            {
-                path: "form/reference",
-                element:<Reference />,
-            },
-
-            {
-                path: "form/reference",
-                element:<Reference />,
-            },
-
-            {
                 path: "form/declaration",
                 element: <Declaration />,
             },
 
-            {
-
-                path: "form/reference",
-                element:<Reference />,
-            },
 
             {
                 path: "form/risk-assessment",

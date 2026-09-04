@@ -3,12 +3,12 @@ import { api } from "./api";
 export const postAddress = async (present_address, permanent_address) => {
     try {
         const presentResponse = await api.post(
-            "/addresses",
+            "/address",
             present_address
         );
 
         const permanentResponse = await api.post(
-            "/addresses",
+            "/address",
             permanent_address
         );
 
