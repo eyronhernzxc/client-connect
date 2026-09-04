@@ -182,6 +182,7 @@ export default function SignatoryDetails() {
                 <input
                   name="signature"
                   type="file"
+                  id="signature"
                 />
                 <label htmlFor="signature" className="file-label">
                   <PenLine />

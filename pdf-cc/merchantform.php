@@ -104,6 +104,21 @@ function radio($pdf, $x, $y, $d = 3)
     }
 }
 
+// -----------------------------------------------------
+// PLACEHOLDER DATA HELPER
+// Draws a small italic gray "sample answer" string next
+// to a label so the layout can be previewed with data in
+// it. Purely cosmetic/demo — safe to delete later.
+// -----------------------------------------------------
+function ph($pdf, $x, $y, $txt, $size = 6.3)
+{
+    $pdf->SetFont('Arial', 'I', $size);
+    $pdf->SetTextColor(90, 90, 90);
+    $pdf->SetXY($x, $y);
+    $pdf->Cell(0, 4, $txt, 0, 0);
+    $pdf->SetTextColor(0, 0, 0);
+}
+
 function sectionBar($pdf, $y, $label, $h = 6.2, $size = 8.5)
 {
     $pdf->SetFillColor(0, 0, 0);
@@ -135,6 +150,13 @@ function fieldRow($pdf, $x, $y, $w, $h, $cols, $labelSize = 6.3)
             $pdf->SetFont('Arial', 'I', 5.2);
             $pdf->SetXY($cx + 1.5, $y + 4.4);
             $pdf->Cell($cw - 3, 3, $c[1], 0, 0);
+        }
+        // Placeholder sample data — pulled from an optional 4th
+        // array element $c[3] (see call sites for the field name
+        // this value belongs to, noted in the comment above each
+        // fieldRow() call).
+        if (!empty($c[3])) {
+            ph($pdf, $cx + 1.5, $y + 4.4, $c[3], 5.6);
         }
         $cx += $cw;
     }
@@ -229,6 +251,8 @@ $pdf->Cell(PAGE_W, 2, "e-MERCHANT'S DOCUMENTARY REQUIREMENTS", 0, 1, 'C');
 $pdf->SetFont('Arial', '', 8);
 $cy = 41.5;
 checkbox($pdf, 84, $cy, 3);
+// Placeholder: mark "PRIVATE" as the selected entity type
+ph($pdf, 84.5, $cy + 0.2, 'X', 6);
 text($pdf, 88, $cy - 0.4, 'PRIVATE', 8);
 checkbox($pdf, 110, $cy, 3);
 text($pdf, 114, $cy - 0.4, 'GOVERNMENT', 8);
@@ -248,35 +272,61 @@ for ($i = 1; $i < 5; $i++) {
 }
 
 text($pdf, $cx + 2, $cy0 + 1.8, 'COMPANY NAME:', 7);
+// Placeholder for COMPANY NAME
+ph($pdf, $cx + 32, $cy0 + 1.8, 'Juan Dela Cruz Trading Corp.');
 
 $r2 = $cy0 + $rh;
 line($pdf, $cx + 159.3, $r2, $cx + 159.3, $r2 + $rh);
 text($pdf, $cx + 2,     $r2 + 1.8, 'COMPLETE OFFICE ADDRESS:', 7);
+// Placeholder for COMPLETE OFFICE ADDRESS
+ph($pdf, $cx + 58, $r2 + 1.8, 'Unit 501, ABC Tower, Ayala Ave., Makati City');
 text($pdf, $cx + 161,   $r2 + 1.8, 'ZIP CODE:', 7);
+// Placeholder for ZIP CODE
+ph($pdf, $cx + 175, $r2 + 1.8, '1226');
 
 $r3 = $cy0 + $rh * 2;
 line($pdf, $cx + 93.8, $r3, $cx + 93.8, $r3 + $rh);
 text($pdf, $cx + 2,    $r3 + 0.8, 'DTI/SEC REGISTRATION NO.:', 6.3);
+// Placeholder for DTI/SEC REGISTRATION NO.
+ph($pdf, $cx + 47, $r3 + 0.8, 'CS201812345', 5.8);
 text($pdf, $cx + 2,    $r3 + 4.4, 'YEAR ESTABLISHED:', 6.3);
+// Placeholder for YEAR ESTABLISHED
+ph($pdf, $cx + 34, $r3 + 4.4, '2015', 5.8);
 text($pdf, $cx + 95.5, $r3 + 0.8, 'COMPANY TIN NO.:', 6.3);
+// Placeholder for COMPANY TIN NO.
+ph($pdf, $cx + 125, $r3 + 0.8, '123-456-789-000', 5.8);
 text($pdf, $cx + 95.5, $r3 + 4.4, 'TAX TYPE (Vat or Non-Vat):', 6.3);
+// Placeholder for TAX TYPE
+ph($pdf, $cx + 135, $r3 + 4.4, 'VAT', 5.8);
 
 $r4 = $cy0 + $rh * 3;
 line($pdf, $cx + 64.7,  $r4, $cx + 64.7,  $r4 + $rh);
 line($pdf, $cx + 121.4, $r4, $cx + 121.4, $r4 + $rh);
 text($pdf, $cx + 2,     $r4 + 1.8, 'BSP LICENSE/CERTIFICATE NUMBER:', 6);
 text($pdf, $cx + 2,     $r4 + 4,   '(put N/A if not applicable)', 5, 'I');
+// Placeholder for BSP LICENSE/CERTIFICATE NUMBER
+ph($pdf, $cx + 45, $r4 + 2, 'BSP-EMI-0456-2020', 5.4);
 text($pdf, $cx + 66.5,  $r4 + 1.8, 'BSP LICENSE TYPE:', 6);
 text($pdf, $cx + 66.5,  $r4 + 4,   '(put N/A if not applicable)', 5, 'I');
+// Placeholder for BSP LICENSE TYPE
+ph($pdf, $cx + 93, $r4 + 2, 'EMI-Others', 5.4);
 text($pdf, $cx + 123.2, $r4 + 1.8, 'BSP CERTIFICATE ISSUED DATE:', 6);
 text($pdf, $cx + 123.2, $r4 + 4,   '(put N/A if not applicable)', 5, 'I');
+// Placeholder for BSP CERTIFICATE ISSUED DATE
+ph($pdf, $cx + 160, $r4 + 2, '03/15/2020', 5.4);
 
 $r5 = $cy0 + $rh * 4;
 line($pdf, $cx + 64.7,  $r5, $cx + 64.7,  $r5 + $rh);
 line($pdf, $cx + 121.4, $r5, $cx + 121.4, $r5 + $rh);
 text($pdf, $cx + 2,     $r5 + 1.8, 'CONTACT NUMBER:', 7);
+// Placeholder for CONTACT NUMBER
+ph($pdf, $cx + 32, $r5 + 1.8, '0917-123-4567', 5.8);
 text($pdf, $cx + 66.5,  $r5 + 1.8, 'WEBSITE:', 7);
+// Placeholder for WEBSITE
+ph($pdf, $cx + 84, $r5 + 1.8, 'www.juandelacruztrading.com', 5.4);
 text($pdf, $cx + 123.2, $r5 + 1.8, 'EMAIL ADDRESS:', 7);
+// Placeholder for EMAIL ADDRESS
+ph($pdf, $cx + 153, $r5 + 1.8, 'info@jdctrading.com', 5.4);
 
 // TO BE CHECKED BY PISOPAY
 ctext($pdf, MX, 97, CW, 'TO BE CHECKED BY PISOPAY ONLY', 7, 'B');
@@ -340,6 +390,12 @@ foreach ($items as $it) {
         $reqY += $rowH;
     } else {
         $pdf->Rect($reqX, $reqY + 0.3, 2.6, 2.6);
+        // Placeholder: check the first requirement item under each
+        // header as a sample of a completed checklist ("Submitted")
+        if ($it['item'] === 'Signed Non-Disclosure Agreement') {
+            ph($pdf, $reqX + 0.2, $reqY + 0.5, 'X', 4.6);
+            ph($pdf, $rightX + 1, $reqY + 0.15, 'Submitted', 4.8);
+        }
         $pdf->SetFont('Arial', '', 5.6);
         $pdf->SetXY($reqX + 8, $reqY + 0.15);
         $pdf->Cell($leftW - 8, $rowH, $it['item'], 0, 0);
@@ -361,6 +417,10 @@ $pdf->Cell(25, 4, 'Conformed by:', 0, 0);
 line($pdf, MX + 30,  235.5, MX + 92,  235.5);
 line($pdf, MX + 99,  235.5, MX + 135, 235.5);
 line($pdf, MX + 142, 235.5, MX + 178, 235.5);
+// Placeholder for "Conformed by" signature block
+ph($pdf, MX + 53, 232, 'Juan Dela Cruz', 6.5);
+ph($pdf, MX + 108, 232, 'President', 6.5);
+ph($pdf, MX + 152, 232, '09/04/2026', 6.5);
 ctext($pdf, MX + 30,  236.3, 62, 'Signature over Printed Name', 6);
 ctext($pdf, MX + 99,  236.3, 36, 'Designation', 6);
 ctext($pdf, MX + 142, 236.3, 36, 'Date', 6);
@@ -379,16 +439,30 @@ line($pdf, MX - 1, 254, RX + 1, 254);
 
 $pdf->SetFont('Arial', '', 5.6);
 text($pdf, MX + 1, 249.8, 'Processed by:', 5.6);
+// Placeholder for "Processed by" row
+ph($pdf, MX + 16, 249.8, 'M. Santos', 5.2);
 text($pdf, 84,     249.8, 'Date:', 5.6);
+ph($pdf, 89, 249.8, '09/04/2026', 5.2);
 text($pdf, 115,    249.8, 'Time:', 5.6);
+ph($pdf, 120, 249.8, '2:30 PM', 5.2);
 text($pdf, 138,    249.8, 'Remarks:', 5.6);
+ph($pdf, 152, 249.8, 'Complete', 5.2);
 
 text($pdf, MX + 1, 255.1, 'Assessed and Screened by:', 5.6);
+// Placeholder for "Assessed and Screened by" row
+ph($pdf, MX + 27, 255.1, 'R. Cruz', 5.2);
 text($pdf, 84,     255.1, 'Date:', 5.6);
+ph($pdf, 89, 255.1, '09/05/2026', 5.2);
 text($pdf, 115,    255.1, 'Time:', 5.6);
+ph($pdf, 120, 255.1, '10:00 AM', 5.2);
 text($pdf, 138,    255.1, 'Remarks:', 5.6);
-text($pdf, 138,    259,   'PEP: Y/N    Watchlisted: Y/N    Blocked Customer: Y/N', 5.2);
-text($pdf, 138,    262.6, 'Risk Level: Low / Moderate / Above Average / High', 5.2);
+ph($pdf, 152, 255.1, 'Cleared', 5.2);
+text($pdf, 138,    257.2,   'PEP: Y/N    Watchlisted: Y/N    Blocked Customer: Y/N', 5.2);
+// Placeholder: sample screening result
+ph($pdf, 138, 259, 'PEP: N   Watchlisted: N   Blocked: N', 4.8);
+text($pdf, 138,    261, 'Risk Level: Low / Moderate / Above Average / High', 5.2);
+// Placeholder: sample risk level circled/selected
+ph($pdf, 138, 263.2, 'Risk Level: Low', 4.8);
 
 // SERVICES TO PROVIDE
 box($pdf, MX - 1, 267, CW + 2, 32.3);
@@ -399,30 +473,44 @@ text($pdf, MX + 9,  271.7, 'System', 6.3);
 text($pdf, MX + 26, 271.7, ':   A. Front End', 6.3);
 text($pdf, MX + 60, 271.7, 'B. Back End', 6.3);
 text($pdf, MX + 90, 271.7, 'C. Full Stack', 6.3);
+// Placeholder: mark "C. Full Stack" as selected
+ph($pdf, MX + 88.3, 271.6, 'X', 6);
 
 radio($pdf, MX + 5, 278.3, 2.6);
 text($pdf, MX + 9,   277.7, 'Payment Gateway:', 6.3);
 text($pdf, MX + 46,  277.7, 'A. Over-the-counter (Bank / Non-Bank)', 6.3);
 text($pdf, MX + 105, 277.7, 'B. Online Banking', 6.3);
 text($pdf, MX + 140, 277.7, 'C. e-Money', 6.3);
+// Placeholder: mark "B. Online Banking" as selected
+ph($pdf, MX + 103.3, 277.6, 'X', 6);
 
 radio($pdf, MX + 5, 283.6, 2.6);
 text($pdf, MX + 9, 283, 'Others:', 6.3);
 line($pdf, MX + 24, 285.7, MX + 82, 285.7);
+// Placeholder for "Others" services field
+ph($pdf, MX + 26, 282.8, 'API Integration', 6);
 
 text($pdf, MX + 12, 288, 'Approved by:', 5.8);
 line($pdf, MX + 34,  290.8, MX + 76,  290.8);
+// Placeholder for "Approved by" signature block
+ph($pdf, MX + 36, 288, 'A. Reyes', 6);
 text($pdf, MX + 80, 288, 'Designation:', 5.8);
 line($pdf, MX + 101, 290.8, MX + 139, 290.8);
+ph($pdf, MX + 103, 288, 'Operations Head', 6);
 text($pdf, MX + 143, 288, 'Date:', 5.8);
 line($pdf, MX + 154, 290.8, MX + 170, 290.8);
+ph($pdf, MX + 155, 288, '09/06/2026', 5.6);
 
 text($pdf, MX + 12, 292.2, 'Onboarded By:', 5.8);
 line($pdf, MX + 34,  294.6, MX + 76,  294.6);
+// Placeholder for "Onboarded By" signature block
+ph($pdf, MX + 36, 292, 'K. Villanueva', 6);
 text($pdf, MX + 80, 292.2, 'Designation:', 5.8);
 line($pdf, MX + 101, 294.6, MX + 139, 294.6);
+ph($pdf, MX + 103, 292, 'Account Officer', 6);
 text($pdf, MX + 143, 292.2, 'Date:', 5.8);
 line($pdf, MX + 154, 294.6, MX + 170, 294.6);
+ph($pdf, MX + 155, 292, '09/06/2026', 5.6);
 
 pageFooter($pdf, '1');
 
@@ -437,19 +525,21 @@ pageHeader($pdf, "e-MERCHANT'S INFORMATION SHEET - A1", 'APPLICATION FORM');
 
 $y = sectionBar($pdf, 50, 'COMPANY DETAILS', 5.3);
 
-$y = fieldRow($pdf, MX, $y, CW, 7.45, [['COMPANY NAME:', null, 1]]);
+// Placeholder values below use the 4th array slot in each column
+// definition, e.g. ['COMPANY NAME:', null, 1, 'Juan Dela Cruz Trading Corp.']
+$y = fieldRow($pdf, MX, $y, CW, 7.45, [['COMPANY NAME:', null, 1, 'Juan Dela Cruz Trading Corp.']]);
 $y = fieldRow($pdf, MX, $y, CW, 7.6, [
-    ['REGISTERED COMPANY ADDRESS:   (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-    ['ZIP CODE:', null, 0.142],
+    ['REGISTERED COMPANY ADDRESS:   (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858, 'Unit 501, ABC Tower, Ayala Ave., Makati City'],
+    ['ZIP CODE:', null, 0.142, '1226'],
 ]);
 $y = fieldRow($pdf, MX, $y, CW, 7.6, [
-    ['NATURE OF BUSINESS:', null, 0.858],
-    ['YEARS IN BUSINESS:', null, 0.142],
+    ['NATURE OF BUSINESS:', null, 0.858, 'Online Retail / E-commerce'],
+    ['YEARS IN BUSINESS:', null, 0.142, '9'],
 ]);
 $y = fieldRow($pdf, MX, $y, CW, 7.8, [
-    ['CONTACT NUMBER:', null, 1],
-    ['WEBSITE:', null, 1],
-    ['EMAIL ADDRESS:', null, 1],
+    ['CONTACT NUMBER:', null, 1, '0917-123-4567'],
+    ['WEBSITE:', null, 1, 'www.jdctrading.com'],
+    ['EMAIL ADDRESS:', null, 1, 'info@jdctrading.com'],
 ]);
 
 // DTI/SEC + Company TIN (2-line labels)
@@ -457,9 +547,17 @@ $rowY = $y;
 $pdf->Rect(MX, $rowY, CW, 7.8);
 $pdf->Line(MX + 93.7, $rowY, MX + 93.7, $rowY + 7.8);
 text($pdf, MX + 1.5, $rowY + 0.8, 'DTI/SEC REGISTRATION NO:', 6.3);
+// Placeholder for DTI/SEC REGISTRATION NO
+ph($pdf, MX + 47, $rowY + 0.8, 'CS201812345', 5.8);
 text($pdf, MX + 1.5, $rowY + 4.3, 'DATE ESTABLISHED:', 6.3);
+// Placeholder for DATE ESTABLISHED
+ph($pdf, MX + 34, $rowY + 4.3, '06/12/2015', 5.8);
 text($pdf, MX + 95.2, $rowY + 0.8, 'COMPANY TIN NO.:', 6.3);
+// Placeholder for COMPANY TIN NO.
+ph($pdf, MX + 124, $rowY + 0.8, '123-456-789-000', 5.8);
 text($pdf, MX + 95.2, $rowY + 4.3, 'TAX TYPE (Vat or Non-Vat):', 6.3);
+// Placeholder for TAX TYPE
+ph($pdf, MX + 142, $rowY + 4.3, 'VAT', 5.8);
 $y = $rowY + 7.8;
 
 // Purpose of application
@@ -469,61 +567,67 @@ $pdf->Rect(MX, $rowY, CW, $rh);
 $pdf->Line(MX + 126,   $rowY, MX + 126,   $rowY + $rh);
 $pdf->Line(MX + 156.5, $rowY, MX + 156.5, $rowY + $rh);
 text($pdf, MX + 1.5, $rowY + 1, 'PURPOSE OF APPLICATION/TRANSACTIONS WITH PISOPAY.COM INC.:', 6.3);
+// Placeholder for PURPOSE OF APPLICATION
+ph($pdf, MX + 1.5, $rowY + 6, 'Online payment collection for e-commerce store', 5.8);
 $pdf->SetFont('Arial', '', 5.8);
 $pdf->SetXY(MX + 127.5, $rowY + 1);
 $pdf->MultiCell(29, 3.1, "TOTAL NUMBER OF EXPECTED TRANSACTION PER DAY:", 0, 'L');
+// Placeholder for TOTAL NUMBER OF EXPECTED TRANSACTION PER DAY
+ph($pdf, MX + 127.5, $rowY + 9, '150', 6);
 $pdf->SetXY(MX + 158, $rowY + 1);
 $pdf->MultiCell(28, 3.1, "TOTAL AMOUNT OF EXPECTED TRANSACTION PER DAY (PHP):", 0, 'L');
+// Placeholder for TOTAL AMOUNT OF EXPECTED TRANSACTION PER DAY
+ph($pdf, MX + 158, $rowY + 9, '500,000.00', 6);
 $y = $rowY + $rh;
 
 // SIGNATORY'S PERSONAL DETAILS
 $y   = sectionBar($pdf, $y, "SIGNATORY'S PERSONAL DETAILS", 5.6);
 $rh  = 7.5;
 $y   = fieldRow($pdf, MX, $y, CW, $rh, [
-    ['FIRST NAME, MIDDLE NAME, LAST NAME:', null, 0.776],
-    ['SIGNATURE:', null, 0.224],
+    ['FIRST NAME, MIDDLE NAME, LAST NAME:', null, 0.776, 'Juan Santos Dela Cruz'],
+    ['SIGNATURE:', null, 0.224, null],
 ]);
 $y = fieldRow($pdf, MX, $y, CW, $rh, [
-    ['PRESENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-    ['ZIP CODE:', null, 0.142],
+    ['PRESENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858, '12 Mabini St., Brgy. San Isidro, Makati City'],
+    ['ZIP CODE:', null, 0.142, '1226'],
 ], 5.6);
 $y = fieldRow($pdf, MX, $y, CW, $rh, [
-    ['PERMANENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-    ['ZIP CODE:', null, 0.142],
+    ['PERMANENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858, '12 Mabini St., Brgy. San Isidro, Makati City'],
+    ['ZIP CODE:', null, 0.142, '1226'],
 ], 5.6);
 $y = fieldRow($pdf, MX, $y, CW, $rh, [
-    ['BIRTHDATE:', '(mm/dd/yyyy)', 0.40],
-    ['PLACE OF BIRTH:', null, 0.25],
-    ['NATIONALITY:', null, 0.23],
-    ['CITIZENSHIP:', null, 0.22],
+    ['BIRTHDATE:', '(mm/dd/yyyy)', 0.40, '05/14/1985'],
+    ['PLACE OF BIRTH:', null, 0.25, 'Manila'],
+    ['NATIONALITY:', null, 0.23, 'Filipino'],
+    ['CITIZENSHIP:', null, 0.22, 'Filipino'],
 ]);
 $y = fieldRow($pdf, MX, $y, CW, $rh, [
-    ['CONTACT NO:', null, 0.30],
-    ['EMAIL ADDRESS:', null, 0.25],
-    ['CIVIL STATUS:', null, 0.23],
-    ['GENDER:', null, 0.22],
+    ['CONTACT NO:', null, 0.30, '0917-123-4567'],
+    ['EMAIL ADDRESS:', null, 0.25, 'juan.delacruz@email.com'],
+    ['CIVIL STATUS:', null, 0.23, 'Married'],
+    ['GENDER:', null, 0.22, 'Male'],
 ]);
 $y = fieldRow($pdf, MX, $y, CW, $rh, [
-    ["MOTHER'S MAIDEN NAME:", null, 0.30],
-    ['DATE OF BIRTH:', null, 0.25],
-    ['PROFESSION:', null, 0.23],
-    ['NATIONALITY:', null, 0.22],
+    ["MOTHER'S MAIDEN NAME:", null, 0.30, 'Maria Santos'],
+    ['DATE OF BIRTH:', null, 0.25, '05/14/1985'],
+    ['PROFESSION:', null, 0.23, 'Businessman'],
+    ['NATIONALITY:', null, 0.22, 'Filipino'],
 ]);
 $spouseRh = 10.5;
 
 $y = fieldRow($pdf, MX, $y, CW, $spouseRh, [
-    ['SPOUSE NAME:', '(put N/A if not applicable)', 0.18],
-    ['DATE OF BIRTH:', null, 0.25],
-    ['PROFESSION:', null, 0.23],
-    ['NATIONALITY:', null, 0.22],
+    ['SPOUSE NAME:', '(put N/A if not applicable)', 0.20, 'Maria Dela Cruz'],
+    ['DATE OF BIRTH:', null, 0.25, '08/22/1987'],
+    ['PROFESSION:', null, 0.23, 'Teacher'],
+    ['NATIONALITY:', null, 0.22, 'Filipino'],
 ]);
 $y = fieldRow($pdf, MX, $y, CW, $rh, [
-    ['1. VALID ID PRESENTED:', null, 0.20],
-    ['ID NUMBER:', null, 0.15],
-    ['EXPIRATION DATE:', null, 0.15],
-    ['2. VALID ID PRESENTED:', null, 0.20],
-    ['ID NUMBER:', null, 0.15],
-    ['EXPIRATION DATE:', null, 0.15],
+    ['1. VALID ID PRESENTED:', null, 0.20, "Driver's License"],
+    ['ID NUMBER:', null, 0.15, 'N01-23-456789'],
+    ['EXPIRATION DATE:', null, 0.15, '05/14/2028'],
+    ['2. VALID ID PRESENTED:', null, 0.20, 'Passport'],
+    ['ID NUMBER:', null, 0.15, 'P1234567A'],
+    ['EXPIRATION DATE:', null, 0.15, '11/30/2029'],
 ], 5.6);
 
 // PERSONAL FINANCIAL INFORMATION
@@ -545,6 +649,8 @@ foreach ($occCols as $i => $ccx) {
 }
 checkbox($pdf, MX + 170, $occTop + 4, 2.6);
 text($pdf, MX + 172.6, $occTop + 4.1, 'Others:', 5.6);
+// Placeholder: mark "Self-Employed" as the selected occupation
+ph($pdf, MX + 2.4, $occTop + 6.9, 'X', 5.4);
 $y = $occTop + $occH;
 
 // TIN row
@@ -554,6 +660,8 @@ $pdf->SetFont('Arial', '', 6.3);
 $pdf->SetXY(MX + 1.5, $y + 1.2);
 $pdf->Cell(38, 3, 'Tax Identification Number (TIN) :', 0, 0);
 text($pdf, MX + 55, $y + 1.4, '___ ___ ___  -  ___ ___ ___  -  ___ ___ ___  -  ___ ___ ___ ___ ___', 6.3);
+// Placeholder for TIN
+ph($pdf, MX + 55, $y + 3.9, '123 - 456 - 789 - 00000', 5.6);
 $y += $rh;
 
 // Source of Wealth
@@ -570,6 +678,8 @@ foreach ($sowCols as $i => $ccx) {
     checkbox($pdf, $ccx, $sowTop + 8, 2.6);
     text($pdf, $ccx + 3.6, $sowTop + 7.7, $sowRow2[$i], 5.4);
 }
+// Placeholder: mark "Business" as the selected source of wealth
+ph($pdf, MX + 33.4, $sowTop + 4.1, 'X', 5.4);
 $y = $sowTop + $sowH;
 
 // Monthly Gross Income
@@ -582,6 +692,8 @@ foreach ($mgiX as $i => $ccx) {
     checkbox($pdf, $ccx, $y + 5.2, 2.6);
     text($pdf, $ccx + 3.6, $y + 4.9, $mgi[$i], 5.4);
 }
+// Placeholder: mark "Php 100,000.01-500,000.00" as the selected bracket
+ph($pdf, MX + 113.4, $y + 5.1, 'X', 5.4);
 $y += $rh;
 
 // Annual Gross Income
@@ -594,18 +706,20 @@ foreach ($agiX as $i => $ccx) {
     checkbox($pdf, $ccx, $y + 5.2, 2.6);
     text($pdf, $ccx + 3.6, $y + 4.9, $agi[$i], 5.4);
 }
+// Placeholder: mark "Php 1,200,000.01-6,000,000.00" as the selected bracket
+ph($pdf, MX + 116.4, $y + 5.1, 'X', 5.4);
 $y += $rh;
 
 // PERSONAL EMPLOYMENT INFORMATION
 $y = sectionBar($pdf, $y, 'PERSONAL EMPLOYMENT INFORMATION', 5.6);
 $y = fieldRow($pdf, MX, $y, CW, 7.45, [
-    ["EMPLOYER'S NAME:", null, 0.42],
-    ["EMPLOYER'S ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)", null, 0.58],
+    ["EMPLOYER'S NAME:", null, 0.42, 'Juan Dela Cruz Trading Corp.'],
+    ["EMPLOYER'S ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)", null, 0.58, 'Unit 501, ABC Tower, Ayala Ave., Makati City'],
 ], 5.8);
 $y = fieldRow($pdf, MX, $y, CW, 7.6, [
-    ['JOB TITLE:', null, 0.42],
-    ['EMPLOYMENT DATE: (mm/dd/yyyy)', null, 0.32],
-    ['TELEPHONE NO.:', null, 0.26],
+    ['JOB TITLE:', null, 0.42, 'President / Owner'],
+    ['EMPLOYMENT DATE: (mm/dd/yyyy)', null, 0.32, '06/12/2015'],
+    ['TELEPHONE NO.:', null, 0.26, '(02) 8888-1234'],
 ]);
 
 // Nature of Business checkbox grid
@@ -664,6 +778,8 @@ natureCol($pdf, MX + 1.5, $gridTop + 1, 45, $col1);
 natureCol($pdf, MX + 48,  $gridTop + 1, 45, $col2);
 natureCol($pdf, MX + 95,  $gridTop + 1, 45, $col3);
 natureCol($pdf, MX + 142, $gridTop + 1, 43, $col4);
+// Placeholder: mark "Wholesale and Retail Trade..." (col2, item 3) as selected
+ph($pdf, MX + 49.7, $gridTop + 1 + 0.7, 'X', 4.6);
 
 pageFooter($pdf, '2');
 
@@ -806,6 +922,15 @@ $rightPadding = 5;
 
 $dataStartY = $aiTop + 14.5;
 
+// Placeholder sample rows for the Company Affiliations /
+// Existing Bank Accounts grid below
+$affiliationPlaceholders = ['ABC Logistics Corp.', 'N/A', 'N/A'];
+$bankPlaceholders = [
+    ['BDO', 'Ayala Ave. Branch', 'Current'],
+    ['BPI', 'Makati Main', 'Savings'],
+    ['N/A', 'N/A', 'N/A'],
+];
+
 for ($r = 0; $r < $aiRows; $r++) {
 
     $ry = $dataStartY + ($aiRH * $r);
@@ -818,6 +943,8 @@ for ($r = 0; $r < $aiRows; $r++) {
         $leftLineX2,
         $ry
     );
+    // Placeholder for Company Affiliation row $r
+    ph($pdf, $leftLineX1 + 1, $ry - 3.2, $affiliationPlaceholders[$r], 5.4);
 
 
     // ── Bank line ──
@@ -828,6 +955,8 @@ for ($r = 0; $r < $aiRows; $r++) {
         $rColX + $subW - $rightPadding,
         $ry
     );
+    // Placeholder for Bank Name (row $r)
+    ph($pdf, $rColX + $rightPadding + 1, $ry - 3.2, $bankPlaceholders[$r][0], 5.4);
 
 
     // ── Branch Name line ──
@@ -838,6 +967,8 @@ for ($r = 0; $r < $aiRows; $r++) {
         $rColX + ($subW * 2) - $rightPadding,
         $ry
     );
+    // Placeholder for Branch Name (row $r)
+    ph($pdf, $rColX + $subW + $rightPadding + 1, $ry - 3.2, $bankPlaceholders[$r][1], 5.4);
 
 
     // ── Account Type line ──
@@ -848,6 +979,8 @@ for ($r = 0; $r < $aiRows; $r++) {
         $rColX + ($subW * 3) - $rightPadding,
         $ry
     );
+    // Placeholder for Account Type (row $r)
+    ph($pdf, $rColX + ($subW * 2) + $rightPadding + 1, $ry - 3.2, $bankPlaceholders[$r][2], 5.4);
 }
 
 $y = $aiTop + $aiH;
@@ -934,6 +1067,13 @@ $govLineGap = 7.5;
 
 $govPadding = 4;
 
+// Placeholder sample row: all N/A since no such relationship exists
+$govPlaceholders = [
+    ['N/A', 'N/A', 'N/A', 'N/A'],
+    ['N/A', 'N/A', 'N/A', 'N/A'],
+    ['N/A', 'N/A', 'N/A', 'N/A'],
+];
+
 for ($r = 0; $r < $govRows; $r++) {
 
     $ry = $govLineStartY + ($govLineGap * $r);
@@ -946,6 +1086,8 @@ for ($r = 0; $r < $govRows; $r++) {
         MX + $gColW - $govPadding,
         $ry
     );
+    // Placeholder for Full Name (row $r)
+    ph($pdf, MX + $govPadding + 1, $ry - 3.2, $govPlaceholders[$r][0], 5.4);
 
     // Relationship
     line(
@@ -955,6 +1097,8 @@ for ($r = 0; $r < $govRows; $r++) {
         MX + ($gColW * 2) - $govPadding,
         $ry
     );
+    // Placeholder for Relationship (row $r)
+    ph($pdf, MX + $gColW + $govPadding + 1, $ry - 3.2, $govPlaceholders[$r][1], 5.4);
 
     // Position
     line(
@@ -964,6 +1108,8 @@ for ($r = 0; $r < $govRows; $r++) {
         MX + ($gColW * 3) - $govPadding,
         $ry
     );
+    // Placeholder for Position (row $r)
+    ph($pdf, MX + ($gColW * 2) + $govPadding + 1, $ry - 3.2, $govPlaceholders[$r][2], 5.4);
 
     // Government Organization Name
     line(
@@ -973,6 +1119,8 @@ for ($r = 0; $r < $govRows; $r++) {
         MX + ($gColW * 4) - $govPadding,
         $ry
     );
+    // Placeholder for Government Organization Name (row $r)
+    ph($pdf, MX + ($gColW * 3) + $govPadding + 1, $ry - 3.2, $govPlaceholders[$r][3], 5.4);
 }
 
 $y += $govH;
@@ -988,20 +1136,32 @@ $pdf->MultiCell(CW - 3, 3.2, "For U.S person under Foreign Account Tax Complianc
 $pdf->SetFont('Arial', '', 6.3);
 $pdf->SetXY(MX + 1.5, $y + 6.5);
 $pdf->Cell(CW - 3, 3, "Are you a U.S Person?      ___Yes      ___No     (If Yes, please provide the following)", 0, 0);
+// Placeholder: mark "No" as the answer to the FATCA question
+ph($pdf, MX + 63, $y + 6.5, 'X', 6);
 
 $fat1 = $y + 11.5;
 line($pdf, MX, $fat1, MX + CW, $fat1);
 line($pdf, MX + 140, $fat1, MX + 140, $fat1 + 5.5);
 text($pdf, MX + 1.5, $fat1 + 1.2, 'U.S Address:', 6.3);
+// Placeholder for U.S Address
+ph($pdf, MX + 22, $fat1 + 1.2, 'N/A', 5.8);
 text($pdf, MX + 141.5, $fat1 + 1.2, 'ZIP Code:', 6.3);
+// Placeholder for ZIP Code (U.S.)
+ph($pdf, MX + 158, $fat1 + 1.2, 'N/A', 5.8);
 
 $fat2 = $fat1 + 5.5;
 line($pdf, MX, $fat2, MX + CW, $fat2);
 line($pdf, MX + 70, $fat2, MX + 70, $fat2 + 5.5);
 line($pdf, MX + 130, $fat2, MX + 130, $fat2 + 5.5);
 text($pdf, MX + 1.5, $fat2 + 1.2, 'U.S Phone No.: (Area Code+Telephone No.)', 6.3);
+// Placeholder for U.S Phone No.
+ph($pdf, MX + 1.5, $fat2 + 4, 'N/A', 5.8);
 text($pdf, MX + 71.5, $fat2 + 1.2, 'Length of Stay in the U.S:', 6.3);
+// Placeholder for Length of Stay in the U.S
+ph($pdf, MX + 71.5, $fat2 + 4, 'N/A', 5.8);
 text($pdf, MX + 131.5, $fat2 + 1.2, 'U.S TIN:', 6.3);
+// Placeholder for U.S TIN
+ph($pdf, MX + 131.5, $fat2 + 4, 'N/A', 5.8);
 $y += $fatH;
 
 // ── e-MERCHANT'S SETTLEMENT ACCOUNT INFO ───────────────────────
@@ -1018,13 +1178,24 @@ $setData = [
     ['Account Number:', 'Contact No.:'],
     ['Account Type:',   'Email address:'],
 ];
+// Placeholder settlement account values, paired with $setData above
+$setPlaceholders = [
+    ['BDO Unibank', 'Ayala Ave. Branch, Makati City'],
+    ['Juan Dela Cruz Trading Corp.', 'Ma. Cristina Reyes'],
+    ['0012-3456-7890', '0918-234-5678'],
+    ['Current Account', 'settlements@jdctrading.com'],
+];
 for ($i = 0; $i < $setRows; $i++) {
     $sy = $y + $setRH * $i;
     if ($i > 0) {
         line($pdf, MX, $sy, MX + CW, $sy);
     }
     text($pdf, MX + 1.5, $sy + 1.4, $setData[$i][0], 6.3);
+    // Placeholder for "{$setData[$i][0]}"
+    ph($pdf, MX + 1.5, $sy + 4.6, $setPlaceholders[$i][0], 5.6);
     text($pdf, MX + 93.5, $sy + 1.4, $setData[$i][1], 6.3);
+    // Placeholder for "{$setData[$i][1]}"
+    ph($pdf, MX + 93.5, $sy + 4.6, $setPlaceholders[$i][1], 5.6);
 }
 $y += $setRH * $setRows;
 
@@ -1040,65 +1211,107 @@ $csData = [
     ['CS CONTACT NUMBER:', 'CS CONTACT NUMBER:'],
     ['CS SCHEDULE:',        'CS SCHEDULE:'],
 ];
+// Placeholder customer support values
+$csPlaceholders = [
+    ['(02) 8888-1234', '0917-123-4567'],
+    ['Mon-Fri, 9AM-6PM', 'Mon-Sat, 8AM-8PM'],
+];
 foreach ($csData as $i => $pair) {
     $sy = $y + $csRH * $i;
     text($pdf, MX + 1.5,  $sy + 1.4, $pair[0], 6.3);
+    // Placeholder for "{$pair[0]}" (left column)
+    ph($pdf, MX + 40, $sy + 1.4, $csPlaceholders[$i][0], 5.6);
     text($pdf, MX + 93.5, $sy + 1.4, $pair[1], 6.3);
+    // Placeholder for "{$pair[1]}" (right column)
+    ph($pdf, MX + 132, $sy + 1.4, $csPlaceholders[$i][1], 5.6);
 }
 $y += $csRH * 2;
 
 // ── Reusable contact-person block ───────────────────────────────
-function contactPersonBlock($pdf, $y, $title)
+function contactPersonBlock($pdf, $y, $title, $data = [])
 {
     $y = sectionBar($pdf, $y, $title, 5.3);
 
     // Reduced from 7.5 to prevent footer overlap
     $rh = 6;
 
+    // Default placeholder values, used unless the caller overrides
+    // them via the $data array (keyed same as the field label).
+    $d = array_merge([
+        'name'        => 'Maria Lopez Reyes',
+        'signature'   => null,
+        'present'     => '25 Rizal St., Brgy. Poblacion, Makati City',
+        'presentZip'  => '1210',
+        'permanent'   => '25 Rizal St., Brgy. Poblacion, Makati City',
+        'permanentZip'=> '1210',
+        'birthdate'   => '03/10/1990',
+        'birthplace'  => 'Quezon City',
+        'nationality1'=> 'Filipino',
+        'citizenship' => 'Filipino',
+        'contact'     => '0918-765-4321',
+        'email'       => 'maria.reyes@jdctrading.com',
+        'civilStatus' => 'Single',
+        'gender'      => 'Female',
+        'motherName'  => 'Elena Lopez',
+        'dob2'        => '03/10/1990',
+        'profession'  => 'Accountant',
+        'nationality2'=> 'Filipino',
+        'spouseName'  => 'N/A',
+        'spouseDob'   => 'N/A',
+        'spouseProf'  => 'N/A',
+        'spouseNat'   => 'N/A',
+        'id1'         => "Driver's License",
+        'id1num'      => 'N02-34-567890',
+        'id1exp'      => '03/10/2028',
+        'id2'         => 'Passport',
+        'id2num'      => 'P7654321B',
+        'id2exp'      => '09/15/2030',
+    ], $data);
+
     $rows = [
         [
-            ['FIRST NAME, MIDDLE NAME, LAST NAME:', null, 0.776],
-            ['SIGNATURE:', null, 0.224],
+            ['FIRST NAME, MIDDLE NAME, LAST NAME:', null, 0.776, $d['name']],
+            ['SIGNATURE:', null, 0.224, null],
         ],
         [
-            ['PRESENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-            ['ZIP CODE:', null, 0.142],
+            ['PRESENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858, $d['present']],
+            ['ZIP CODE:', null, 0.142, $d['presentZip']],
         ],
         [
-            ['PERMANENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-            ['ZIP CODE:', null, 0.142],
+            ['PERMANENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858, $d['permanent']],
+            ['ZIP CODE:', null, 0.142, $d['permanentZip']],
         ],
         [
-            ['BIRTHDATE:', '(mm/dd/yyyy)', 0.215],
-            ['PLACE OF BIRTH:', null, 0.25],
-            ['NATIONALITY:', null, 0.27],
-            ['CITIZENSHIP:', null, 0.265],
+            ['BIRTHDATE:', '(mm/dd/yyyy)', 0.215, $d['birthdate']],
+            ['PLACE OF BIRTH:', null, 0.25, $d['birthplace']],
+            ['NATIONALITY:', null, 0.27, $d['nationality1']],
+            ['CITIZENSHIP:', null, 0.265, $d['citizenship']],
         ],
         [
-            ['CONTACT NO:', null, 0.215],
-            ['EMAIL ADDRESS:', null, 0.25],
-            ['CIVIL STATUS:', null, 0.27],
-            ['GENDER:', null, 0.265],
+            ['CONTACT NO:', null, 0.215, $d['contact']],
+            ['EMAIL ADDRESS:', null, 0.25, $d['email']],
+            ['CIVIL STATUS:', null, 0.27, $d['civilStatus']],
+            ['GENDER:', null, 0.265, $d['gender']],
         ],
         [
-            ["MOTHER'S MAIDEN NAME:", null, 0.215],
-            ['DATE OF BIRTH:', null, 0.25],
-            ['PROFESSION:', null, 0.27],
-            ['NATIONALITY:', null, 0.265],
+            ["MOTHER'S MAIDEN NAME:", null, 0.215, $d['motherName']],
+            ['DATE OF BIRTH:', null, 0.25, $d['dob2']],
+            ['PROFESSION:', null, 0.27, $d['profession']],
+            ['NATIONALITY:', null, 0.265, $d['nationality2']],
         ],
         [
-            ['SPOUSE NAME:', '(put N/A if not applicable)', 0.215],
-            ['DATE OF BIRTH:', null, 0.25],
-            ['PROFESSION:', null, 0.27],
-            ['NATIONALITY:', null, 0.265],
+            ['SPOUSE NAME:', '(put N/A if not applicable)', 0.215, $d['spouseName']],
+            ['DATE OF BIRTH:', null, 0.25, $d['spouseDob']],
+            ['PROFESSION:', null, 0.27, $d['spouseProf']],
+            ['NATIONALITY:', null, 0.265, $d['spouseNat']],
         ],
         [
-            ['1. VALID ID PRESENTED:', null, 0.20],
-            ['ID NUMBER:', null, 0.15],
-            ['EXPIRATION DATE:', null, 0.15],
-            ['2. VALID ID PRESENTED:', null, 0.20],
-            ['ID NUMBER:', null, 0.15],
-            ['EXPIRATION DATE:', null, 0.15],
+            ['1. VALID ID PRESENTED:', null, 0.20, $d['id1']],
+            ['ID NUMBER:', null, 0.15, $d['id1num']],
+            ['EXPIRATION DATE:', null, 0.15, $d['id1exp']],
+            ['2. VALID ID PRESENTED:', null, 0.20, $d['id2']],
+            ['ID NUMBER:', null, 0.15, $d['id2num']],
+            ['EXPIRATION DATE:', null, 0.15, $d['id2exp']],
         ],
     ];
 
@@ -1119,68 +1332,26 @@ function contactPersonBlock($pdf, $y, $title)
     return $y;
 }
 
-// function contactPersonBlock($pdf, $y, $title)
-// {
-//     $y   = sectionBar($pdf, $y, $title, 5.3);
-//     $rh  = 7.5;
-//     $rows = [
-//         // [ col definitions ]
-//         [
-//             ['FIRST NAME, MIDDLE NAME, LAST NAME:', null, 0.776],
-//             ['SIGNATURE:', null, 0.224],
-//         ],
-//         [
-//             ['PRESENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-//             ['ZIP CODE:', null, 0.142],
-//         ],
-//         [
-//             ['PERMANENT ADDRESS: (No./Street, Subd./Brgy./District/Municipality/City/Province)', null, 0.858],
-//             ['ZIP CODE:', null, 0.142],
-//         ],
-//         [
-//             ['BIRTHDATE:', '(mm/dd/yyyy)', 0.215],
-//             ['PLACE OF BIRTH:', null, 0.25],
-//             ['NATIONALITY:', null, 0.27],
-//             ['CITIZENSHIP:', null, 0.265],
-//         ],
-//         [
-//             ['CONTACT NO:', null, 0.215],
-//             ['EMAIL ADDRESS:', null, 0.25],
-//             ['CIVIL STATUS:', null, 0.27],
-//             ['GENDER:', null, 0.265],
-//         ],
-//         [
-//             ["MOTHER'S MAIDEN NAME:", null, 0.215],
-//             ['DATE OF BIRTH:', null, 0.25],
-//             ['PROFESSION:', null, 0.27],
-//             ['NATIONALITY:', null, 0.265],
-//         ],
-//         [
-//             ['SPOUSE NAME:', '(put N/A if not applicable)', 0.215],
-//             ['DATE OF BIRTH:', null, 0.25],
-//             ['PROFESSION:', null, 0.27],
-//             ['NATIONALITY:', null, 0.265],
-//         ],
-//         [
-//             ['1. VALID ID PRESENTED:', null, 0.20],
-//             ['ID NUMBER:', null, 0.15],
-//             ['EXPIRATION DATE:', null, 0.15],
-//             ['2. VALID ID PRESENTED:', null, 0.20],
-//             ['ID NUMBER:', null, 0.15],
-//             ['EXPIRATION DATE:', null, 0.15],
-//         ],
-//     ];
-
-//     $labelSizes = [6.3, 5.6, 5.6, 6.3, 6.3, 6.3, 6.3, 5.6];
-
-//     foreach ($rows as $i => $cols) {
-//         $y = fieldRow($pdf, MX, $y, CW, $rh, $cols, $labelSizes[$i]);
-//     }
-//     return $y;
-// }
-
-$y = contactPersonBlock($pdf, $y, 'FINANCE / ACCOUNTING CONTACT PERSON');
-$y = contactPersonBlock($pdf, $y, 'DEVELOPER / TECHNICAL CONTACT PERSON');
+// Placeholder data for FINANCE / ACCOUNTING CONTACT PERSON
+$y = contactPersonBlock($pdf, $y, 'FINANCE / ACCOUNTING CONTACT PERSON', [
+    'name'        => 'Maria Lopez Reyes',
+    'contact'     => '0918-765-4321',
+    'email'       => 'finance@jdctrading.com',
+    'profession'  => 'Finance Manager',
+]);
+// Placeholder data for DEVELOPER / TECHNICAL CONTACT PERSON
+$y = contactPersonBlock($pdf, $y, 'DEVELOPER / TECHNICAL CONTACT PERSON', [
+    'name'        => 'Carlos Miguel Tan',
+    'birthdate'   => '11/02/1992',
+    'birthplace'  => 'Cebu City',
+    'contact'     => '0920-345-6789',
+    'email'       => 'dev@jdctrading.com',
+    'civilStatus' => 'Single',
+    'gender'      => 'Male',
+    'motherName'  => 'Linda Tan',
+    'dob2'        => '11/02/1992',
+    'profession'  => 'IT/Web Developer',
+]);
 
 pageFooter($pdf, '3');
 
@@ -1201,23 +1372,32 @@ $y = sectionBar($pdf, $y, 'ONLINE/E-COMMERCE BUSINESS INFO (For Online Merchant 
 $obRH = 7.5;
 
 // Simple two-column row helper (local only)
-$drawObRow = function($lbl1, $lbl2, $h = null) use ($pdf, &$y, $obRH) {
+// Placeholder value is optional 3rd/4th args ($ph1, $ph2)
+$drawObRow = function($lbl1, $lbl2, $h = null, $ph1 = null, $ph2 = null) use ($pdf, &$y, $obRH) {
     $h = $h ?? $obRH;
     $pdf->Rect(MX, $y, CW, $h);
     $pdf->Line(MX + 92, $y, MX + 92, $y + $h);
     text($pdf, MX + 1.5, $y + 1.4, $lbl1, 6.3);
+    if ($ph1) {
+        // Placeholder value for "{$lbl1}"
+        ph($pdf, MX + 1.5, $y + 4.8, $ph1, 5.6);
+    }
     if ($lbl2 !== '') {
         text($pdf, MX + 93.5, $y + 1.4, $lbl2, 6.3);
+        if ($ph2) {
+            // Placeholder value for "{$lbl2}"
+            ph($pdf, MX + 93.5, $y + 4.8, $ph2, 5.6);
+        }
     }
     $y += $h;
 };
 
-$drawObRow('Trading Name / Doing Business as', 'No. of Years in Business');
-$drawObRow('Types of Products and Services', '');
-$drawObRow('URL/ Website Address', 'Target Market / Countries');
-$drawObRow('Estimated Monthly Online Sales / Sales Forecast (Php):', 'Current Transaction Fee Charged (%)');
-$drawObRow('Average Billing Amount:', 'Highest Billing Amount:');
-$drawObRow('Current Payment Gateway:', 'Current Acquirer Bank:');
+$drawObRow('Trading Name / Doing Business as', 'No. of Years in Business', null, 'JDC Online Store', '9 years');
+$drawObRow('Types of Products and Services', '', null, 'Apparel, footwear, and accessories');
+$drawObRow('URL/ Website Address', 'Target Market / Countries', null, 'www.jdconlinestore.com', 'Philippines');
+$drawObRow('Estimated Monthly Online Sales / Sales Forecast (Php):', 'Current Transaction Fee Charged (%)', null, 'Php 2,500,000.00', '2.5%');
+$drawObRow('Average Billing Amount:', 'Highest Billing Amount:', null, 'Php 1,500.00', 'Php 25,000.00');
+$drawObRow('Current Payment Gateway:', 'Current Acquirer Bank:', null, 'PayMongo', 'BDO Unibank');
 
 // Familiar with chargeback
 $h = $obRH;
@@ -1226,10 +1406,14 @@ line($pdf, MX + 92, $y, MX + 92, $y + $h);
 text($pdf, MX + 1.5, $y + 1.4, 'Familiar with Chargeback?', 6.3);
 radio($pdf, MX + 40, $y + 2.4, 2.6);
 text($pdf, MX + 43, $y + 2.1, 'YES', 5.6);
+// Placeholder: mark "YES" as familiar with chargeback
+ph($pdf, MX + 38.4, $y + 2.2, 'X', 6);
 radio($pdf, MX + 50,  $y + 2.4, 2.6);
 text($pdf, MX + 53, $y + 2.1, 'NO', 5.6);
 text($pdf, MX + 93.5, $y + 1.0, 'Average Chargeback Ratio Over Past 6 months', 6.3);
 text($pdf, MX + 93.5, $y + 3.5, 'Month 1: ____%   Month 2: ____%   Month 3: ____%', 5.6);
+// Placeholder for Average Chargeback Ratio (months 1-3)
+ph($pdf, MX + 93.5, $y + 6, 'Month 1: 0.2%   Month 2: 0.15%   Month 3: 0.1%', 5.2);
 $y += $h;
 
 // Credit card payments
@@ -1238,6 +1422,8 @@ box($pdf, MX, $y, CW, $h);
 text($pdf, MX + 1.5, $y + 1.2, 'Currently accepting Credit Card Payments?', 6.3);
 radio($pdf, MX + 61, $y + 2.1, 2.6);
 text($pdf, MX + 64, $y + 2.0, 'YES', 5.6);
+// Placeholder: mark "YES" as accepting credit card payments
+ph($pdf, MX + 59.4, $y + 1.9, 'X', 6);
 radio($pdf, MX + 74, $y + 2.2, 2.6);
 text($pdf, MX + 78, $y + 1.9, 'NO', 5.6);
 // Brand row
@@ -1254,6 +1440,9 @@ foreach ($brands as $br) {
 
     $bx += 25;
 }
+// Placeholder: mark "Visa" and "Mastercard" as accepted brands
+ph($pdf, MX + 16.4, $y + 5.4, 'X', 5.4);
+ph($pdf, MX + 41.4, $y + 5.4, 'X', 5.4);
 $y += $h;
 
 // Proof of delivery / Refund policy
@@ -1263,11 +1452,15 @@ line($pdf, MX + 92, $y, MX + 92, $y + $h);
 text($pdf, MX + 1.5, $y + 1.4, 'Do you get proof of delivery?', 6.3);
 radio($pdf, MX + 61, $y + 2.4, 2.6);
 text($pdf, MX + 64.5, $y + 2.1, 'YES', 5.6);
+// Placeholder: mark "YES" for proof of delivery
+ph($pdf, MX + 59.4, $y + 2.2, 'X', 6);
 radio($pdf, MX + 72, $y + 2.4, 2.6);
 text($pdf, MX + 75.5, $y + 2.1, 'NO', 5.6);
 text($pdf, MX + 93.5, $y + 1.4, 'Do you have a refund policy?', 6.3);
 radio($pdf, MX + 152, $y + 2.4, 2.6);
 text($pdf, MX + 155.5, $y + 2.1, 'YES', 5.6);
+// Placeholder: mark "YES" for refund policy
+ph($pdf, MX + 150.4, $y + 2.2, 'X', 6);
 radio($pdf, MX + 163, $y + 2.4, 2.6);
 text($pdf, MX + 166.5, $y + 2.1, 'NO', 5.6);
 $y += $h;
@@ -1276,7 +1469,11 @@ $y += $h;
 $h = $obRH;
 box($pdf, MX, $y, CW, $h);
 text($pdf, MX + 1.5, $y + 1.4, 'How long does customer wait before product is received (No. of days)', 6.3);
+// Placeholder for wait time (No. of days)
+ph($pdf, MX + 1.5, $y + 4.8, '3 to 5 business days', 5.6);
 text($pdf, MX + 118,  $y + 1.4, 'Percentage of sales in this category: ________%', 6);
+// Placeholder for percentage of sales in this category
+ph($pdf, MX + 118, $y + 4.8, '100%', 5.6);
 $y += $h;
 
 // Accept transactions before delivery
@@ -1285,9 +1482,13 @@ box($pdf, MX, $y, CW, $h);
 text($pdf, MX + 1.5, $y + 1.2, 'Does company accept transactions before the customer received product or services?', 6.3);
 radio($pdf, MX + 1.5, $y + 5.2, 2.6);
 text($pdf, MX + 5,    $y + 4.9, 'YES', 5.6);
+// Placeholder: mark "YES" for accepting transactions before delivery
+ph($pdf, MX, $y + 5.1, 'X', 6);
 radio($pdf, MX + 15,  $y + 5.2, 2.6);
 text($pdf, MX + 18.5, $y + 4.9, 'NO', 5.6);
 text($pdf, MX + 28, $y + 5, 'If YES, % of deposit customer prepaid by customers: __________%', 5.6);
+// Placeholder for % of deposit prepaid
+ph($pdf, MX + 125, $y + 5, '100%', 5.6);
 $y += $h;
 
 // Warranties / extended services
@@ -1298,7 +1499,11 @@ radio($pdf, MX + 1.5, $y + 5.2, 2.6);
 text($pdf, MX + 5,    $y + 4.9, 'YES', 5.6);
 radio($pdf, MX + 15,  $y + 5.2, 2.6);
 text($pdf, MX + 18.5, $y + 4.9, 'NO', 5.6);
+// Placeholder: mark "NO" for warranties/subscriptions
+ph($pdf, MX + 14.4, $y + 5.1, 'X', 6);
 text($pdf, MX + 28, $y + 5, 'If YES, Duration of extended service or benefits (in weeks): _________', 5.6);
+// Placeholder (N/A since "NO" was selected above)
+ph($pdf, MX + 148, $y + 5, 'N/A', 5.6);
 $y += $h;
 
 // Shopping cart / Mobile app
@@ -1311,10 +1516,15 @@ radio($pdf, MX + 1.5, $y + 5.2, 2.6);
 text($pdf, MX + 5,    $y + 4.9, 'NO', 5.6);
 radio($pdf, MX + 14,  $y + 5.2, 2.6);
 text($pdf, MX + 17.5, $y + 4.9, 'YES, please specify: __________________________', 5.6);
+// Placeholder: mark "YES" and name the shopping cart platform
+ph($pdf, MX + 12.4, $y + 5.1, 'X', 6);
+ph($pdf, MX + 45, $y + 4.9, 'Shopify', 5.4);
 // Right: mobile app
 text($pdf, MX + 93.5, $y + 1.2, 'Are you selling via Mobile App?', 6.3);
 radio($pdf, MX + 93.5, $y + 5.2, 2.6);
 text($pdf, MX + 97,    $y + 4.9, 'NO', 5.6);
+// Placeholder: mark "NO" for mobile app
+ph($pdf, MX + 92.4, $y + 5.1, 'X', 6);
 radio($pdf, MX + 106,  $y + 5.2, 2.6);
 text($pdf, MX + 109.5, $y + 4.9, 'YES, for OS platform of: _____________', 5.6);
 $y += $h;
@@ -1385,6 +1595,13 @@ foreach ($declarations as $letter => $content) {
     );
 
     $y = $pdf->GetY() + 1.2;
+
+    // Placeholder: for clause D, fill in the "identity of the owner,
+    // officer, director, or agent" blank with a sample N/A answer
+    if ($letter === 'D.') {
+        ph($pdf, $textX, $y - 1, 'N/A – No known Politically Exposed Person affiliation', 5.6);
+        $y += 3;
+    }
 }
 
 $y += 3;
@@ -1393,6 +1610,11 @@ $y += 3;
 line($pdf, MX + 15,   $y, MX + 50,  $y);
 line($pdf, MX + 80,  $y, MX + 135, $y);
 line($pdf, MX + 143, $y, RX - 2,   $y);
+
+// Placeholder for the Declaration signature block
+ph($pdf, MX + 17, $y - 2.2, 'Juan Dela Cruz', 6);
+ph($pdf, MX + 90, $y - 2.2, 'President', 6);
+ph($pdf, MX + 155, $y - 2.2, '09/04/2026', 6);
 
 $pdf->SetFont('Arial', '', 5.8);
 
@@ -1420,4 +1642,4 @@ pageFooter($pdf, '4');
 // =====================================================
 // OUTPUT
 // =====================================================
-$pdf->Output('I', 'e-merchant.pdf');
+$pdf->Output('I', 'emerchant.pdf');

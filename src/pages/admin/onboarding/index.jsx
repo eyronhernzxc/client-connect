@@ -50,16 +50,16 @@ export default function Onboarding() {
                   Category
                 </option>
                 <option value="1">GOCC</option>
-                <option value="2">Compliance</option>
-                <option value="3">Business Dept</option>
+                <option value="2">Government</option>
+                <option value="3">Private</option>
               </select>
 
               <select id="status" className="dropdown" defaultValue="">
                 <option disabled hidden value="">
-                  Role
+                  Status
                 </option>
-                <option value="1">Merchant</option>
-                <option value="2">Compliance</option>
+                <option value="1">Under Review</option>
+                <option value="2">Review</option>
                 <option value="3">Business Dept</option>
               </select>
 

@@ -95,9 +95,9 @@ return (
 <div className='form-card'>
 
 <Header>
-    <h1>Company Registration</h1>
+    <h1 className="companyf-title">Company Registration</h1>
     <span className="flex"></span>
-    <button>Clear</button>
+    {/* <button className="companyf-clear">Clear</button> */}
 </Header>
 
 <div className='form-container'>

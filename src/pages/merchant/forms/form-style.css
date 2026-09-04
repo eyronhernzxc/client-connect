@@ -1,76 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
 /* =========================
-   ROOT VARIABLES
+   DESIGN TOKENS
+   A single scale keeps every control the same
+   height/radius/font-size instead of each rule
+   inventing its own numbers.
 ========================= */
 
 :root {
-    --label-color: #4a6e8a;
-    --label-weight: 500;
-
-    --input-border: 1px solid rgba(167, 179, 206, 0.712);
-    --input-focus: 1px solid rgb(4, 50, 150);
-    --dotted-border: 1px dotted rgba(82, 119, 206, 0.925);
-
-    --placeholder-color: rgba(167, 179, 206, 0.589);
-    --text-color: #477faa;
-
-    --primary-color: #0090FF;
-
-}
-
-
-/* =========================
-   GLOBAL
-========================= */
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", sans-serif;
-}
-
-
-/* =========================
-   FORM HEADER
-========================= */
-
-.form-header {
-    width: 100%;
-    height: max-content;
-    padding: 40px 40px 10px 40px;
-    display: flex;
-    flex-direction: row;
-
-}
-
-.form-header .flex{
-
-    flex: 1;
-}
-
-.form-header button{
-
-    padding: 7px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    height: max-content;
-    width: max-content;
-    font-size: 16px;
-}
-
-.form-header h1 {
-    margin: 0;
-    padding: 0;
-
-    color: #477faa;
-    font-size: 1.5rem;
+    --control-height: 40px;
+    --control-radius: 8px;
+    --control-font-size: 14px;
+    --label-font-size: 13px;
+    --border-color: #d9dee7;
+    --border-color-hover: #b8c1ce;
+    --text-color: #344054;
+    --primary-color: #176b45;
+    --primary-color-hover: #125536;
+    --gap-sm: 8px;
+    --gap-md: 16px;
+    --gap-lg: 24px;
 }
 
 
@@ -81,12 +28,12 @@ body {
 .main-container {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
 
     width: 100%;
-    height: max-content;
+    min-height: calc(100vh - 80px);
 
-    padding: 120px 40px 40px 80px;
-    
+    padding: 105px 20px 30px;
 }
 
 
@@ -95,21 +42,18 @@ body {
 ========================= */
 
 .main-container .form-card {
-    display: flex;
-    flex-direction: column;
-
     width: 100%;
-    height: max-content;
+    max-width: 760px;
 
-    gap: 10px;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
 
-    border: 1px solid rgba(167, 179, 206, 0.521);
-    border-radius: 25px;
-
-    background-color: #fcfcfc;
+    background-color: #fff;
 
     overflow: hidden;
-    
+
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06),
+                0 1px 2px rgba(16, 24, 40, 0.04);
 }
 
 
@@ -119,9 +63,7 @@ body {
 
 .form-card .form-container {
     width: 100%;
-    height: max-content;
-
-    padding: 10px 40px;
+    padding: 32px 28px;
 }
 
 
@@ -135,268 +77,7 @@ body {
 
     width: 100%;
 
-    gap: 20px;
-}
-
-
-/* =========================
-   FORM TITLE
-========================= */
-
-.form-container h3 {
-    margin: 10px 0 0 0;
-    color: var(--text-color);
-}
-
-
-/* =========================
-   HR
-========================= */
-
-.form-container hr {
-    width: 100%;
-
-    margin: 0;
-
-    border: 1px solid var(--primary-color);
-}
-
-
-/* =========================
-   NORMAL FORM FIELD
-========================= */
-
-.form .form-field {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    height: max-content;
-
-    gap: 10px;
-}
-
-
-/* =========================
-   LABEL
-========================= */
-
-.form-field label {
-    color: var(--label-color);
-
-    font-size: 14px;
-    font-weight: var(--label-weight);
-}
-
-.form-field label span {
-    color: red;
-}
-
-
-/* =========================
-   INPUT
-========================= */
-
-.form-field input {
-    width: 100%;
-    height: 2.5rem;
-
-    padding: 10px 15px;
-
-    border: var(--input-border);
-    border-radius: 15px;
-
-    font-family: inherit;
-}
-
-.form-field textarea{
-
-    width: 100%;
-    height: 100px;
-
-    padding: 10px 15px;
-
-    border: var(--input-border);
-    border-radius: 15px;
-
-    font-family: inherit;
-    resize: none;
-
-
-}
-
-
-/* =========================
-   INPUT PLACEHOLDER
-========================= */
-
-.form-field input::placeholder,
-.input-field select,
-.form-field textarea::placeholder,
-.input-field input::placeholder,
-.input-field-large input::placeholder,
-.input-field-short input::placeholder   {
-    color: var(--placeholder-color);
-}
-
-
-/* =========================
-   INPUT FOCUS
-========================= */
-
-.form-field input:focus,
-.form-field textarea:focus,
-.form-field select:focus,
-.input-field input:focus,
-.input-field select:focus,
-.input-field-large input:focus,
-.input-field-short input:focus {
-    outline: none;
-
-    border: var(--input-focus);
-}
-
-
-/* =========================
-   SELECT
-========================= */
-
-.form-field select {
-    width: 100%;
-    height: 2.5rem;
-
-    padding: 10px;
-
-    color: var(--placeholder-color);
-
-    border: var(--input-border);
-    border-radius: 15px;
-
-    font-family: inherit;
-}
-
-.form-field select option, .input-field select option {
-    height: 2.5rem;
-
-    padding: 10px;
-
-    color: var(--text-color);
-}
-
-
-/* =========================
-   INPUT FIELD
-========================= */
-
-.input-field {
-    display: flex;
-    flex-direction: column;
-
-    width: 50%;
-
-    gap: 5px;
-}
-
-.input-field input,
-.input-field select {
-    width: 100%;
-    height: 2.5rem;
-
-    padding: 10px 15px;
-
-    border: var(--input-border);
-    border-radius: 15px;
-}
-
-.input-field .file-label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 100%;
-    height: 2.5rem;
-
-    padding: 10px 15px;
-
-    border: var(--dotted-border);
-    border-radius: 15px;
-
-    background-color: #005ea107;
-    color: var(--primary-color) !important;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    cursor: pointer;
-}
-
-.input-field .file-label svg{
-
-    height: 14px;
-    width: 14px;
-}
-
-.input-field .file-label:hover {
-    transition: all 0.3s ease;
-    background-color: #2f87c51e;
-}
-
-.input-field input[type="file"] {
-    display: none;
-}
-
-.input-field input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-
-/* =========================
-   LARGE INPUT FIELD
-========================= */
-
-.input-field-large {
-    display: flex;
-    flex-direction: column;
-
-    width: 80%;
-
-    gap: 5px;
-}
-
-.input-field-large input {
-    width: 100%;
-    height: 2.5rem;
-
-    padding: 10px 15px;
-
-    border: var(--input-border);
-    border-radius: 15px;
-}
-
-
-/* =========================
-   SHORT INPUT FIELD
-========================= */
-
-.input-field-short {
-    display: flex;
-    flex-direction: column;
-
-    width: 20%;
-
-    gap: 5px;
-}
-
-.input-field-short input {
-    width: 100%;
-    height: 2.5rem;
-
-    padding: 10px 15px;
-
-    border: var(--input-border);
-    border-radius: 15px;
+    gap: var(--gap-md);
 }
 
 
@@ -405,114 +86,382 @@ input[type="number"]::-webkit-outer-spin-button {
 ========================= */
 
 .form .form-row {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
     width: 100%;
 
-    gap: 20px;
+    column-gap: var(--gap-md);
+    row-gap: var(--gap-md);
 }
 
 
 /* =========================
-   FORM ROW LABELS
+   INPUT FIELD
 ========================= */
 
-.form-row .input-field label,
-.form-row .input-field-large label,
-.form-row .input-field-short label {
-    color: var(--label-color);
+.input-field,
+.input-field-large,
+.input-field-short,
+.form-field {
+    display: flex;
+    flex-direction: column;
 
-    font-size: 14px;
-    font-weight: var(--label-weight);
-}
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 
-.form-row .input-field label span,
-.form-row .input-field-large label span,
-.form-row .input-field-short label span {
-    color: red;
+    gap: 6px;
 }
 
 
 /* =========================
-   FORM FIELD GRID
+   LABELS
+========================= */
+
+.input-field label,
+.form-field label {
+    font-size: var(--label-font-size);
+    font-weight: 500;
+    color: var(--text-color);
+    line-height: 1.3;
+    padding: 10px 0px 0px;
+}
+
+
+/* =========================
+   INPUT / SELECT
+========================= */
+
+.input-field input,
+.input-field select,
+.form-field input,
+.form-field select {
+    box-sizing: border-box;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: var(--control-height);
+
+    padding: 0 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--control-radius);
+
+    font-family: inherit;
+    font-size: var(--control-font-size);
+    color: var(--text-color);
+
+    background: #fff;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-field input:hover,
+.input-field select:hover,
+.form-field input:hover,
+.form-field select:hover {
+    border-color: var(--border-color-hover);
+}
+
+.input-field input:focus-visible,
+.input-field select:focus-visible,
+.form-field input:focus-visible,
+.form-field select:focus-visible {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.12);
+}
+
+
+/* =========================
+   TEXTAREA
+========================= */
+
+.form-field textarea {
+    box-sizing: border-box;
+
+    width: 100%;
+    max-width: 100%;
+
+    min-height: 96px;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--control-radius);
+
+    font-family: inherit;
+    font-size: var(--control-font-size);
+    color: var(--text-color);
+    line-height: 1.5;
+
+    resize: vertical;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-field textarea:hover {
+    border-color: var(--border-color-hover);
+}
+
+.form-field textarea:focus-visible {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.12);
+}
+
+
+/* =========================
+   CHECKBOX GRID
 ========================= */
 
 .form .form-field-grid {
     display: grid;
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
     width: 100%;
 
-    gap: 10px;
+    column-gap: var(--gap-lg);
+    row-gap: 14px;
+
+    margin-top: 4px;
 }
 
 
 /* =========================
-   RADIO FIELD
+   CHECKBOX ITEM
 ========================= */
-
-.form-field hr {
-
-    width: 100%;
-
-    margin: 0;
-
-    border: 1px solid var(--primary-color);
-}
-
 
 .form-field-grid .radio-field {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
 
     width: 100%;
-    height: max-content;
+    min-width: 0;
 
-    padding: 10px;
-}
+    min-height: 20px;
 
-.form-field-grid .radio-field label {
-    color: var(--label-color);
-
-    font-size: 12px;
-}
-
-.form-field-grid .radio-field input {
-    width: max-content;
-    height: 100%;
-
-    padding: 10px;
-
-    accent-color: var(--primary-color);
+    padding: 0;
 }
 
 
 /* =========================
-   BUTTON
+   CHECKBOX
+========================= */
+
+.form-field-grid .radio-field input {
+    flex: 0 0 auto;
+
+    width: 16px;
+    height: 16px;
+
+    margin: 1px 8px 0 0;
+
+    accent-color: var(--primary-color);
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   CHECKBOX LABEL
+========================= */
+
+.form-field-grid .radio-field label {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+
+    color: var(--text-color);
+
+    font-size: var(--label-font-size);
+    font-weight: 400;
+
+    line-height: 1.4;
+
+    word-break: normal;
+    overflow-wrap: break-word;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   BUTTON CONTAINER
+========================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    width: 100%;
+
+    margin-top: 8px;
+    padding-top: 8px;
+
+    border-top: 1px solid #eef0f3;
+}
+
+
+/* =========================
+   SUBMIT BUTTON
 ========================= */
 
 .form button {
-    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: auto;
+    min-width: 140px;
+
+    height: var(--control-height);
+
+    padding: 0 24px;
 
     border: none;
-    border-radius: 10px;
+    border-radius: var(--control-radius);
 
     background-color: var(--primary-color);
 
     color: white;
 
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--control-font-size);
     font-weight: 600;
 
     cursor: pointer;
 
-    &:hover{
+    transition: background-color 0.15s ease, transform 0.05s ease;
+}
 
-        transition: all 0.3s ease;
-        background-color: #0771c2;
+.form button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+.form button:active {
+    transform: translateY(1px);
+}
+
+.form button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.25);
+}
+
+
+/* =========================
+   FILE UPLOAD
+========================= */
+
+.input-field .file-label {
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    max-width: 100%;
+
+    height: var(--control-height);
+
+    border: 1px dashed var(--border-color-hover);
+    border-radius: var(--control-radius);
+
+    font-size: var(--control-font-size);
+    color: #667085;
+
+    cursor: pointer;
+
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.input-field .file-label:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(23, 107, 69, 0.03);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 560px) {
+    .form-card .form-container {
+        padding: 20px 16px;
     }
+
+    .form .form-row,
+    .form .form-field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+
+    .form button {
+        width: 100%;
+    }
+}
+
+/* OTHER */
+
+.companyf-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+    min-height: 70px;
+    padding: 0 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Center title */
+.companyf-title {
+    grid-column: 2;
+    margin: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.3px;
+}
+
+/* Right side */
+.companyf-header-actions {
+    grid-column: 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Clear button */
+.companyf-clear {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.companyf-clear:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+.companyf-clear:active {
+    transform: scale(0.97);
 }
