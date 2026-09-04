@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-    createProductServicesQuestionnaire,
-    createRiskAssessmentQuestionnaire,
-    createQuestionnaireAnswer,
+    createRiskAssessmentProfile,
+    createClientCertification,
 } from "../../../../api/postRisk";
 import Header from '../header/header';
-import '../form-style.css'
-import './risk-assess.css'
+import '../form-style.css';
+import './risk-assess.css';
 
 const STORAGE_KEY = 'pisopay_risk_assessment_draft';
 const AUTOSAVE_DELAY_MS = 500;
@@ -111,7 +110,6 @@ export default function RiskAssessment() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const hasLoadedDraft = useRef(false);
 
-    // Restore any saved progress once, on first mount.
     useEffect(() => {
 
         try {
@@ -122,38 +120,83 @@ export default function RiskAssessment() {
 
                 const draft = JSON.parse(saved);
 
-                if (draft.simpleFields) setSimpleFields((prev) => ({ ...prev, ...draft.simpleFields }));
-                if (draft.natureOfBusiness) setNatureOfBusiness(draft.natureOfBusiness);
-                if (typeof draft.otherNature === "string") setOtherNature(draft.otherNature);
-                if (draft.sourceOfFund) setSourceOfFund(draft.sourceOfFund);
-                if (typeof draft.otherSource === "string") setOtherSource(draft.otherSource);
-                if (draft.countries) setCountries(draft.countries);
-                if (draft.isPep) setIsPep(draft.isPep);
-                if (typeof draft.pepName === "string") setPepName(draft.pepName);
-                if (typeof draft.pepPosition === "string") setPepPosition(draft.pepPosition);
-                if (draft.isBspRegulated) setIsBspRegulated(draft.isBspRegulated);
-                if (draft.licenses) setLicenses(draft.licenses);
-                if (draft.isAmlcRegistered) setIsAmlcRegistered(draft.isAmlcRegistered);
-                if (typeof draft.amlcYear === "string") setAmlcYear(draft.amlcYear);
-                if (typeof draft.conductsKyc === "string") setConductsKyc(draft.conductsKyc);
+                if (draft.simpleFields) {
+                    setSimpleFields((prev) => ({
+                        ...prev,
+                        ...draft.simpleFields
+                    }));
+                }
+
+                if (draft.natureOfBusiness) {
+                    setNatureOfBusiness(draft.natureOfBusiness);
+                }
+
+                if (typeof draft.otherNature === "string") {
+                    setOtherNature(draft.otherNature);
+                }
+
+                if (draft.sourceOfFund) {
+                    setSourceOfFund(draft.sourceOfFund);
+                }
+
+                if (typeof draft.otherSource === "string") {
+                    setOtherSource(draft.otherSource);
+                }
+
+                if (draft.countries) {
+                    setCountries(draft.countries);
+                }
+
+                if (draft.isPep) {
+                    setIsPep(draft.isPep);
+                }
+
+                if (typeof draft.pepName === "string") {
+                    setPepName(draft.pepName);
+                }
+
+                if (typeof draft.pepPosition === "string") {
+                    setPepPosition(draft.pepPosition);
+                }
+
+                if (draft.isBspRegulated) {
+                    setIsBspRegulated(draft.isBspRegulated);
+                }
+
+                if (draft.licenses) {
+                    setLicenses(draft.licenses);
+                }
+
+                if (draft.isAmlcRegistered) {
+                    setIsAmlcRegistered(draft.isAmlcRegistered);
+                }
+
+                if (typeof draft.amlcYear === "string") {
+                    setAmlcYear(draft.amlcYear);
+                }
+
+                if (typeof draft.conductsKyc === "string") {
+                    setConductsKyc(draft.conductsKyc);
+                }
 
                 setDraftRestored(true);
             }
-        }
 
-        catch (error) {
+        } catch (error) {
 
-            console.error("Failed to restore saved progress: ", error);
-        }
+            console.error(
+                "Failed to restore saved progress: ",
+                error
+            );
 
-        finally {
+        } finally {
 
             hasLoadedDraft.current = true;
+
         }
 
     }, []);
 
-    // Autosave, debounced, whenever any field of the form changes.
     useEffect(() => {
 
         if (!hasLoadedDraft.current) return;
@@ -180,12 +223,18 @@ export default function RiskAssessment() {
 
             try {
 
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
-            }
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(draft)
+                );
 
-            catch (error) {
+            } catch (error) {
 
-                console.error("Failed to save progress: ", error);
+                console.error(
+                    "Failed to save progress: ",
+                    error
+                );
+
             }
 
         }, AUTOSAVE_DELAY_MS);
@@ -193,57 +242,166 @@ export default function RiskAssessment() {
         return () => clearTimeout(timeout);
 
     }, [
-        simpleFields, natureOfBusiness, otherNature, sourceOfFund, otherSource,
-        countries, isPep, pepName, pepPosition, isBspRegulated, licenses,
-        isAmlcRegistered, amlcYear, conductsKyc
+        simpleFields,
+        natureOfBusiness,
+        otherNature,
+        sourceOfFund,
+        otherSource,
+        countries,
+        isPep,
+        pepName,
+        pepPosition,
+        isBspRegulated,
+        licenses,
+        isAmlcRegistered,
+        amlcYear,
+        conductsKyc
     ]);
 
     const handleFieldChange = (event) => {
 
         const { name, value } = event.target;
-        setSimpleFields((prev) => ({ ...prev, [name]: value }));
+        let validatedValue = value;
+
+        if (
+            ["transactions_per_day", "transactions_per_month"]
+                .includes(name)
+        ) {
+            validatedValue = value.replace(/\D/g, "");
+        }
+
+        if (
+            ["daily_transaction_amount", "monthly_transaction_amount"]
+                .includes(name)
+        ) {
+            validatedValue = value.replace(/[^0-9.]/g, "");
+        }
+
+        if (
+            name === "contact_person" ||
+            name === "certified_name"
+        ) {
+            validatedValue = value.replace(
+                /[^A-Za-zÀ-ÖØ-öø-ÿ\s'\-]/g,
+                ""
+            );
+        }
+
+        if (
+            name === "business_contact_number" ||
+            name === "contact_number"
+        ) {
+            validatedValue = value.replace(
+                /[^0-9+()\-\s]/g,
+                ""
+            );
+        }
+
+        setSimpleFields((prev) => ({
+            ...prev,
+            [name]: validatedValue
+        }));
     };
 
     const toggleNature = (option) => {
+
         setNatureOfBusiness((prev) =>
-            prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
+            prev.includes(option)
+                ? prev.filter((item) => item !== option)
+                : [...prev, option]
         );
+
     };
 
     const toggleSource = (option) => {
+
         setSourceOfFund((prev) =>
-            prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
+            prev.includes(option)
+                ? prev.filter((item) => item !== option)
+                : [...prev, option]
         );
+
     };
 
     const handleCountryChange = (index, value) => {
+
+        const validatedValue = value.replace(
+            /[^A-Za-zÀ-ÖØ-öø-ÿ\s.'\-]/g,
+            ""
+        );
+
         setCountries((prev) => {
+
             const updated = [...prev];
-            updated[index] = value;
+            updated[index] = validatedValue;
+
             return updated;
+
         });
+
     };
 
     const handleLicenseChange = (index, field, value) => {
+
+        let validatedValue = value;
+
+        if (field === "type") {
+
+            validatedValue = value
+                .replace(/[^A-Za-z0-9._\-]/g, "")
+                .slice(0, 11);
+
+        } else if (field === "number") {
+
+            validatedValue = value.replace(
+                /[^A-Za-z0-9._\-]/g,
+                ""
+            );
+
+        } else if (field === "year") {
+
+            validatedValue = value
+                .replace(/\D/g, "")
+                .slice(0, 4);
+
+        }
+
         setLicenses((prev) => {
+
             const updated = [...prev];
-            updated[index] = { ...updated[index], [field]: value };
+
+            updated[index] = {
+                ...updated[index],
+                [field]: validatedValue
+            };
+
             return updated;
+
         });
+
     };
 
     const clearSavedProgress = () => {
 
-        if (!window.confirm("Clear all progress on this form? This cannot be undone.")) return;
+        if (
+            !window.confirm(
+                "Clear all progress on this form? This cannot be undone."
+            )
+        ) {
+            return;
+        }
 
         try {
 
             localStorage.removeItem(STORAGE_KEY);
-        }
 
-        catch (error) {
+        } catch (error) {
 
-            console.error("Failed to clear saved progress: ", error);
+            console.error(
+                "Failed to clear saved progress: ",
+                error
+            );
+
         }
 
         setSimpleFields(INITIAL_SIMPLE_FIELDS);
@@ -261,9 +419,11 @@ export default function RiskAssessment() {
         setAmlcYear("");
         setConductsKyc("");
         setDraftRestored(false);
+
     };
 
     const handleRiskAssessmentSubmit = async (event) => {
+
         event.preventDefault();
 
         if (isSubmitting) return;
@@ -271,160 +431,216 @@ export default function RiskAssessment() {
         setIsSubmitting(true);
 
         try {
+
             /*
              * --------------------------------------------------
              * Get logged-in user
              * --------------------------------------------------
              */
+
             const storedUser = localStorage.getItem("user");
 
             if (!storedUser) {
+
                 throw new Error(
                     "No logged-in user was found."
                 );
+
             }
 
             const user = JSON.parse(storedUser);
 
             /*
-             * The API requires profile_id.
-             *
-             * We support the common cases where the profile ID
-             * is stored either directly on the user object or
-             * inside a profile object.
+             * The stored user is wrapped inside a "data" object.
+             * Therefore company_id needs to be checked inside
+             * user.data rather than directly on user.
              */
-            const profileId =
-                user?.profile_id ??
-                user?.profile?.id;
 
-            if (!profileId) {
-                console.error("Stored user:", user);
+            const companyId =
+                user?.data?.company_id ??
+                user?.data?.company?.id ??
+                user?.data?.profile?.company_id ??
+                user?.data?.profile?.company?.id ??
+                user?.company_id ??
+                user?.company?.id ??
+                user?.profile?.company_id ??
+                user?.profile?.company?.id;
+
+            if (!companyId) {
+
+                console.error(
+                    "Stored user:",
+                    user
+                );
 
                 throw new Error(
-                    "Unable to find profile_id for the logged-in user."
+                    "Unable to find company_id for the logged-in user."
                 );
+
             }
 
             /*
              * --------------------------------------------------
              * STEP 1
-             * Create Product Services Questionnaire
+             * Create Risk Assessment Profile
+             * POST /api/risk-assessment-profiles
              * --------------------------------------------------
              */
+
+            const connectedCountry = countries
+                .filter(
+                    (country) => country.trim() !== ""
+                )
+                .join(", ");
+
+            const businessNatureValues = [
+                ...natureOfBusiness,
+                ...(otherNature.trim()
+                    ? [`Other: ${otherNature.trim()}`]
+                    : [])
+            ];
+
+            const sourceOfFundValues = [
+                ...sourceOfFund,
+                ...(otherSource.trim()
+                    ? [`Other: ${otherSource.trim()}`]
+                    : [])
+            ];
+
+            const riskAssessmentResponse =
+                await createRiskAssessmentProfile({
+
+                    companyId,
+
+                    businessNature:
+                        businessNatureValues.join(", "),
+
+                    wealthSource:
+                        sourceOfFundValues.join(", "),
+
+                    monthlyGrossIncome:
+                        simpleFields.monthly_gross_income,
+
+                    annualGrossIncome:
+                        simpleFields.annual_gross_income,
+
+                    transactionPerDay:
+                        Number(
+                            simpleFields.transactions_per_day
+                        ),
+
+                    totalAmountPerDay:
+                        Number(
+                            simpleFields.daily_transaction_amount
+                        ),
+
+                    transactionPerMonth:
+                        Number(
+                            simpleFields.transactions_per_month
+                        ),
+
+                    totalAmountPerMonth:
+                        Number(
+                            simpleFields.monthly_transaction_amount
+                        ),
+
+                    connectedCountry,
+
+                    politicallyExposedPerson:
+                        isPep === "yes"
+                            ? "Yes"
+                            : "No",
+
+                    regulatedByBsp:
+                        isBspRegulated === "yes"
+                            ? "Yes"
+                            : "No",
+
+                    anonymityBoundaryRegistration: "No",
+
+                });
+
             console.log(
-                "Creating Product Services Questionnaire..."
+                "Risk Assessment Profile response:",
+                riskAssessmentResponse
             );
 
-            const productServicesResponse =
-                await createProductServicesQuestionnaire(
-                    profileId
-                );
+            const riskAssessmentProfileId =
+                riskAssessmentResponse?.data?.id ??
+                riskAssessmentResponse?.id;
 
-            console.log(
-                "Product Services Questionnaire response:",
-                productServicesResponse
-            );
+            if (!riskAssessmentProfileId) {
 
-            const productServicesQuestionnaireId =
-                productServicesResponse?.data?.id;
-
-            if (!productServicesQuestionnaireId) {
                 throw new Error(
-                    "The Product Services Questionnaire was created, but no ID was returned."
+                    "The Risk Assessment Profile was created, but no ID was returned."
                 );
+
             }
 
             /*
              * --------------------------------------------------
              * STEP 2
-             * Create Risk Assessment Questionnaire
+             * Create Client Certification
+             * POST /api/client-certifications
              * --------------------------------------------------
              */
-            console.log(
-                "Creating Risk Assessment Questionnaire..."
-            );
 
-            const declaration =
-                "I certify that the responses provided in this Risk Assessment Questionnaire are true and correct.";
+            const clientCertificationResponse =
+                await createClientCertification({
 
-            const riskAssessmentResponse =
-                await createRiskAssessmentQuestionnaire({
-                    productServicesQuestionnaireId,
-                    declaration,
+                    companyId,
+
+                    riskAssessmentProfileId,
+
+                    name:
+                        simpleFields.certified_name,
+
+                    designation:
+                        simpleFields.certified_designation,
+
+                    date:
+                        simpleFields.certified_date,
+
+                    signature:
+                        simpleFields.certified_name,
+
                 });
 
             console.log(
-                "Risk Assessment Questionnaire response:",
-                riskAssessmentResponse
+                "Client Certification response:",
+                clientCertificationResponse
             );
 
-            const riskAssessmentQuestionnaireId =
-                riskAssessmentResponse?.data?.id;
-
-            if (!riskAssessmentQuestionnaireId) {
-                throw new Error(
-                    "The Risk Assessment Questionnaire was created, but no ID was returned."
-                );
-            }
-
-            /*
-             * --------------------------------------------------
-             * STEP 3
-             * Questionnaire answers
-             * --------------------------------------------------
-             *
-             * The API requires:
-             *
-             * questionnaire_question_id
-             *
-             * for every answer.
-             *
-             * The API documentation provided does not give us
-             * the IDs for the questions in this form, so we do
-             * not invent them here.
-             *
-             * Once those IDs are available, answers can be
-             * submitted through createQuestionnaireAnswer().
-             */
-
-            console.log(
-                "Risk Assessment Questionnaire created:",
-                riskAssessmentQuestionnaireId
-            );
-
-            /*
-             * --------------------------------------------------
-             * Successful creation
-             * --------------------------------------------------
-             */
             alert(
-                "Risk assessment questionnaire submitted successfully."
+                "Risk assessment submitted successfully."
             );
 
-            /*
-             * Clear saved draft
-             */
             try {
-                localStorage.removeItem(STORAGE_KEY);
+
+                localStorage.removeItem(
+                    STORAGE_KEY
+                );
+
             } catch (storageError) {
+
                 console.error(
                     "Failed to clear saved progress:",
                     storageError
                 );
+
             }
 
-            /*
-             * Reset draft indicator
-             */
             setDraftRestored(false);
 
         } catch (error) {
+
             console.error(
                 "Risk assessment submission failed:",
                 error
             );
 
             if (error.response) {
+
                 console.error(
                     "API status:",
                     error.response.status
@@ -434,463 +650,850 @@ export default function RiskAssessment() {
                     "API response:",
                     error.response.data
                 );
+
             }
 
             alert(
                 error.response?.data?.message ||
                 error.message ||
-                "Failed to submit the risk assessment questionnaire."
+                "Failed to submit the risk assessment."
             );
 
         } finally {
+
             setIsSubmitting(false);
+
         }
+
     };
 
     return (
 
-    <div className='ra-root'>
-    <div className='ra-panel'>
+        <div className='ra-root'>
 
-    <Header>
-        <h1>Risk Assessment Questionnaire</h1>
-    </Header>
+            <div className='ra-panel'>
 
-    <div className="ra-panel-head">
-        <p className="ra-eyebrow">Compliance</p>
-        <h1>Risk Assessment Questionnaire</h1>
-        <p className="ra-sub">Tell us about your business so we can complete your merchant risk profile.</p>
-    </div>
+                <Header>
+                    <h1>Risk Assessment Questionnaire</h1>
+                </Header>
 
-    <div className='ra-panel-body'>
+                <div className="ra-panel-head">
 
-    <div className="autosave-bar">
-        <span>Your progress is saved automatically on this device.</span>
-        {draftRestored && <span className="autosave-restored">Draft restored from your last session.</span>}
-        <button type='button' className="autosave-clear" onClick={clearSavedProgress}>Clear form</button>
-    </div>
+                    <p className="ra-eyebrow">
+                        Compliance
+                    </p>
 
-    <form onSubmit={handleRiskAssessmentSubmit} className='ra-form'>
+                    <h1>
+                        Risk Assessment Questionnaire
+                    </h1>
 
-        <div className="ra-field">
-            <label>Business Name <span>*</span></label>
-            <input
-            type='text'
-            name='business_name'
-            placeholder="Enter business name"
-            value={simpleFields.business_name}
-            onChange={handleFieldChange}
-            />
-        </div>
+                    <p className="ra-sub">
+                        Tell us about your business so we can
+                        complete your merchant risk profile.
+                    </p>
 
-        <div className="ra-field">
-            <label>Business Address <span>*</span></label>
-            <input
-            type='text'
-            name='business_address'
-            placeholder="Enter business address"
-            value={simpleFields.business_address}
-            onChange={handleFieldChange}
-            />
-        </div>
+                </div>
 
-        <div className="ra-row">
-            <div className="ra-field">
-                <label>Business Contact Number <span>*</span></label>
-                <input
-                type='tel'
-                name='business_contact_number'
-                placeholder="Enter business contact number"
-                value={simpleFields.business_contact_number}
-                onChange={handleFieldChange}
-                />
-            </div>
+                <div className='ra-panel-body'>
 
-            <div className="ra-field">
-                <label>Contact Person <span>*</span></label>
-                <input
-                type='text'
-                name='contact_person'
-                placeholder="Enter contact person"
-                value={simpleFields.contact_person}
-                onChange={handleFieldChange}
-                />
-            </div>
-        </div>
+                    <div className="autosave-bar">
 
-        <div className="ra-field">
-            <label>Contact Number <span>*</span></label>
-            <input
-            type='tel'
-            name='contact_number'
-            placeholder="Enter contact number"
-            value={simpleFields.contact_number}
-            onChange={handleFieldChange}
-            />
-        </div>
+                        <span>
+                            Your progress is saved automatically
+                            on this device.
+                        </span>
 
-        <div className="ra-field">
-            <label>Nature of Business/Economic Activity <span>*</span></label>
-            <div className="checkbox-grid">
-                {BUSINESS_NATURE_OPTIONS.map((option) => (
-                    <label key={option} className="checkbox-option">
-                        <input
-                        type="checkbox"
-                        checked={natureOfBusiness.includes(option)}
-                        onChange={() => toggleNature(option)}
-                        />
-                        {option}
-                    </label>
-                ))}
-            </div>
-            <input
-            type='text'
-            placeholder="Others, please specify"
-            value={otherNature}
-            onChange={(e) => setOtherNature(e.target.value)}
-            />
-        </div>
+                        {draftRestored && (
+                            <span className="autosave-restored">
+                                Draft restored from your last session.
+                            </span>
+                        )}
 
-        <div className="ra-field">
-            <label>Source of Fund/Wealth <span>*</span></label>
-            <div className="checkbox-grid">
-                {SOURCE_OF_FUND_OPTIONS.map((option) => (
-                    <label key={option} className="checkbox-option">
-                        <input
-                        type="checkbox"
-                        checked={sourceOfFund.includes(option)}
-                        onChange={() => toggleSource(option)}
-                        />
-                        {option}
-                    </label>
-                ))}
-            </div>
-            <input
-            type='text'
-            placeholder="Others, please specify"
-            value={otherSource}
-            onChange={(e) => setOtherSource(e.target.value)}
-            />
-        </div>
+                        <button
+                            type='button'
+                            className="autosave-clear"
+                            onClick={clearSavedProgress}
+                        >
+                            Clear form
+                        </button>
 
-        <div className="ra-field">
-            <label>Monthly Gross Income <span>*</span></label>
-            <div className="radio-group">
-                {MONTHLY_INCOME_OPTIONS.map((option) => (
-                    <label key={option} className="radio-option">
-                        <input
-                        type="radio"
-                        name="monthly_gross_income"
-                        value={option}
-                        checked={simpleFields.monthly_gross_income === option}
-                        onChange={handleFieldChange}
-                        required
-                        />
-                        {option}
-                    </label>
-                ))}
-            </div>
-        </div>
-
-        <div className="ra-field">
-            <label>Annual Gross Income <span>*</span></label>
-            <div className="radio-group">
-                {ANNUAL_INCOME_OPTIONS.map((option) => (
-                    <label key={option} className="radio-option">
-                        <input
-                        type="radio"
-                        name="annual_gross_income"
-                        value={option}
-                        checked={simpleFields.annual_gross_income === option}
-                        onChange={handleFieldChange}
-                        required
-                        />
-                        {option}
-                    </label>
-                ))}
-            </div>
-        </div>
-
-        <div className="ra-row">
-            <div className="ra-field">
-                <label>Number of Transactions per Day <span>*</span></label>
-                <input
-                type='number'
-                name='transactions_per_day'
-                placeholder="Enter number of transactions"
-                value={simpleFields.transactions_per_day}
-                onChange={handleFieldChange}
-                />
-            </div>
-
-            <div className="ra-field">
-                <label>Number of Transactions per Month <span>*</span></label>
-                <input
-                type='number'
-                name='transactions_per_month'
-                placeholder="Enter number of transactions"
-                value={simpleFields.transactions_per_month}
-                onChange={handleFieldChange}
-                />
-            </div>
-        </div>
-
-        <div className="ra-row">
-            <div className="ra-field">
-                <label>Total Amount of Daily Transaction <span>*</span></label>
-                <input
-                type='number'
-                name='daily_transaction_amount'
-                placeholder="Enter total amount"
-                value={simpleFields.daily_transaction_amount}
-                onChange={handleFieldChange}
-                />
-            </div>
-
-            <div className="ra-field">
-                <label>Total Amount of Monthly Transaction <span>*</span></label>
-                <input
-                type='number'
-                name='monthly_transaction_amount'
-                placeholder="Enter total amount"
-                value={simpleFields.monthly_transaction_amount}
-                onChange={handleFieldChange}
-                />
-            </div>
-        </div>
-
-        <div className="ra-field">
-            <label>Countries Where You Provide Services/Transactions</label>
-            <div className="country-grid">
-                {countries.map((country, index) => (
-                    <input
-                    key={index}
-                    type='text'
-                    placeholder={`Country ${index + 1}`}
-                    value={country}
-                    onChange={(e) => handleCountryChange(index, e.target.value)}
-                    />
-                ))}
-            </div>
-        </div>
-
-        <div className="ra-field">
-            <label>Is your company connected/related to any Politically Exposed Person? <span>*</span></label>
-            <div className="radio-group inline">
-                <label className="radio-option">
-                    <input
-                    type="radio"
-                    name="is_pep"
-                    value="no"
-                    checked={isPep === "no"}
-                    onChange={() => setIsPep("no")}
-                    />
-                    No
-                </label>
-                <label className="radio-option">
-                    <input
-                    type="radio"
-                    name="is_pep"
-                    value="yes"
-                    checked={isPep === "yes"}
-                    onChange={() => setIsPep("yes")}
-                    />
-                    Yes
-                </label>
-            </div>
-
-            {isPep === "yes" && (
-                <div className="ra-row">
-                    <div className="ra-field">
-                        <label>Name</label>
-                        <input
-                        type='text'
-                        value={pepName}
-                        onChange={(e) => setPepName(e.target.value)}
-                        placeholder="Enter name"
-                        />
                     </div>
 
-                    <div className="ra-field">
-                        <label>Position</label>
-                        <input
-                        type='text'
-                        value={pepPosition}
-                        onChange={(e) => setPepPosition(e.target.value)}
-                        placeholder="Enter position"
-                        />
-                    </div>
-                </div>
-            )}
-        </div>
+                    <form
+                        onSubmit={handleRiskAssessmentSubmit}
+                        className='ra-form'
+                    >
 
-        <div className="ra-field">
-            <label>Is your company regulated by Bangko Sentral ng Pilipinas (BSP)? <span>*</span></label>
-            <div className="radio-group inline">
-                <label className="radio-option">
-                    <input
-                    type="radio"
-                    name="is_bsp_regulated"
-                    value="no"
-                    checked={isBspRegulated === "no"}
-                    onChange={() => setIsBspRegulated("no")}
-                    />
-                    No
-                </label>
-                <label className="radio-option">
-                    <input
-                    type="radio"
-                    name="is_bsp_regulated"
-                    value="yes"
-                    checked={isBspRegulated === "yes"}
-                    onChange={() => setIsBspRegulated("yes")}
-                    />
-                    Yes
-                </label>
-            </div>
-
-            {isBspRegulated === "yes" && (
-                <div className="license-table">
-                    {licenses.map((license, index) => (
-                        <div className="ra-row" key={index}>
-                            <div className="ra-field">
-                                <label>Type of License {index + 1}</label>
-                                <input
-                                type='text'
-                                value={license.type}
-                                onChange={(e) => handleLicenseChange(index, "type", e.target.value)}
-                                placeholder="Type of license"
-                                />
-                            </div>
-
-                            <div className="ra-field">
-                                <label>License No. {index + 1}</label>
-                                <input
-                                type='text'
-                                value={license.number}
-                                onChange={(e) => handleLicenseChange(index, "number", e.target.value)}
-                                placeholder="License number"
-                                />
-                            </div>
-
-                            <div className="ra-field">
-                                <label>Issued Year {index + 1}</label>
-                                <input
-                                type='number'
-                                value={license.year}
-                                onChange={(e) => handleLicenseChange(index, "year", e.target.value)}
-                                placeholder="Issued year"
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
-
-        {isBspRegulated === "yes" && (
-            <div className="ra-field">
-                <label>If you are regulated by BSP, are you registered with Anti-Money Laundering Council? <span>*</span></label>
-                <div className="radio-group inline">
-                    <label className="radio-option">
-                        <input
-                        type="radio"
-                        name="is_amlc_registered"
-                        value="no"
-                        checked={isAmlcRegistered === "no"}
-                        onChange={() => setIsAmlcRegistered("no")}
-                        />
-                        No
-                    </label>
-                    <label className="radio-option">
-                        <input
-                        type="radio"
-                        name="is_amlc_registered"
-                        value="yes"
-                        checked={isAmlcRegistered === "yes"}
-                        onChange={() => setIsAmlcRegistered("yes")}
-                        />
-                        Yes
-                    </label>
-                </div>
-
-                {isAmlcRegistered === "yes" && (
-                    <div className="ra-row">
                         <div className="ra-field">
-                            <label>AMLC Certificate of Registration Issued Year</label>
+
+                            <label>
+                                Business Name <span>*</span>
+                            </label>
+
                             <input
-                            type='number'
-                            value={amlcYear}
-                            onChange={(e) => setAmlcYear(e.target.value)}
-                            placeholder="Enter year"
+                                type='text'
+                                name='business_name'
+                                maxLength={200}
+                                placeholder="Enter business name"
+                                value={simpleFields.business_name}
+                                onChange={handleFieldChange}
+                                required
                             />
+
                         </div>
 
                         <div className="ra-field">
-                            <label>Do you conduct Know-Your-Customer?</label>
+
+                            <label>
+                                Business Address <span>*</span>
+                            </label>
+
                             <input
-                            type='text'
-                            value={conductsKyc}
-                            onChange={(e) => setConductsKyc(e.target.value)}
-                            placeholder="Enter details"
+                                type='text'
+                                name='business_address'
+                                maxLength={300}
+                                placeholder="Enter business address"
+                                value={simpleFields.business_address}
+                                onChange={handleFieldChange}
+                                required
                             />
+
                         </div>
-                    </div>
-                )}
+
+                        <div className="ra-row">
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Business Contact Number <span>*</span>
+                                </label>
+
+                                <input
+                                    type='tel'
+                                    name='business_contact_number'
+                                    maxLength={20}
+                                    pattern="[-0-9+()\s]{7,20}"
+                                    placeholder="Enter business contact number"
+                                    value={simpleFields.business_contact_number}
+                                    onChange={handleFieldChange}
+                                    required
+                                />
+
+                            </div>
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Contact Person <span>*</span>
+                                </label>
+
+                                <input
+                                    type='text'
+                                    name='contact_person'
+                                    maxLength={150}
+                                    pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s'\-]+"
+                                    placeholder="Enter contact person"
+                                    value={simpleFields.contact_person}
+                                    onChange={handleFieldChange}
+                                    required
+                                />
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Contact Number <span>*</span>
+                            </label>
+
+                            <input
+                                type='tel'
+                                name='contact_number'
+                                maxLength={20}
+                                pattern="[-0-9+()\s]{7,20}"
+                                placeholder="Enter contact number"
+                                value={simpleFields.contact_number}
+                                onChange={handleFieldChange}
+                                required
+                            />
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Nature of Business/Economic Activity <span>*</span>
+                            </label>
+
+                            <div className="checkbox-grid">
+
+                                {BUSINESS_NATURE_OPTIONS.map((option) => (
+
+                                    <label
+                                        key={option}
+                                        className="checkbox-option"
+                                    >
+
+                                        <input
+                                            type="checkbox"
+                                            checked={natureOfBusiness.includes(option)}
+                                            onChange={() => toggleNature(option)}
+                                        />
+
+                                        {option}
+
+                                    </label>
+
+                                ))}
+
+                            </div>
+
+                            <input
+                                type='text'
+                                placeholder="Others, please specify"
+                                value={otherNature}
+                                onChange={(e) =>
+                                    setOtherNature(e.target.value)
+                                }
+                            />
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Source of Fund/Wealth <span>*</span>
+                            </label>
+
+                            <div className="checkbox-grid">
+
+                                {SOURCE_OF_FUND_OPTIONS.map((option) => (
+
+                                    <label
+                                        key={option}
+                                        className="checkbox-option"
+                                    >
+
+                                        <input
+                                            type="checkbox"
+                                            checked={sourceOfFund.includes(option)}
+                                            onChange={() => toggleSource(option)}
+                                        />
+
+                                        {option}
+
+                                    </label>
+
+                                ))}
+
+                            </div>
+
+                            <input
+                                type='text'
+                                placeholder="Others, please specify"
+                                value={otherSource}
+                                onChange={(e) =>
+                                    setOtherSource(e.target.value)
+                                }
+                            />
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Monthly Gross Income <span>*</span>
+                            </label>
+
+                            <div className="radio-group">
+
+                                {MONTHLY_INCOME_OPTIONS.map((option) => (
+
+                                    <label
+                                        key={option}
+                                        className="radio-option"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="monthly_gross_income"
+                                            value={option}
+                                            checked={
+                                                simpleFields.monthly_gross_income === option
+                                            }
+                                            onChange={handleFieldChange}
+                                            required
+                                        />
+
+                                        {option}
+
+                                    </label>
+
+                                ))}
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Annual Gross Income <span>*</span>
+                            </label>
+
+                            <div className="radio-group">
+
+                                {ANNUAL_INCOME_OPTIONS.map((option) => (
+
+                                    <label
+                                        key={option}
+                                        className="radio-option"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="annual_gross_income"
+                                            value={option}
+                                            checked={
+                                                simpleFields.annual_gross_income === option
+                                            }
+                                            onChange={handleFieldChange}
+                                            required
+                                        />
+
+                                        {option}
+
+                                    </label>
+
+                                ))}
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-row">
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Number of Transactions per Day <span>*</span>
+                                </label>
+
+                                <input
+                                    type='number'
+                                    name='transactions_per_day'
+                                    inputMode="numeric"
+                                    placeholder="Enter number of transactions"
+                                    value={simpleFields.transactions_per_day}
+                                    onChange={handleFieldChange}
+                                    required
+                                    min="0"
+                                />
+
+                            </div>
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Number of Transactions per Month <span>*</span>
+                                </label>
+
+                                <input
+                                    type='number'
+                                    name='transactions_per_month'
+                                    inputMode="numeric"
+                                    placeholder="Enter number of transactions"
+                                    value={simpleFields.transactions_per_month}
+                                    onChange={handleFieldChange}
+                                    required
+                                    min="0"
+                                />
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-row">
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Total Amount of Daily Transaction <span>*</span>
+                                </label>
+
+                                <input
+                                    type='number'
+                                    name='daily_transaction_amount'
+                                    placeholder="Enter total amount"
+                                    value={simpleFields.daily_transaction_amount}
+                                    onChange={handleFieldChange}
+                                    required
+                                    min="0"
+                                    step="0.01"
+                                />
+
+                            </div>
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Total Amount of Monthly Transaction <span>*</span>
+                                </label>
+
+                                <input
+                                    type='number'
+                                    name='monthly_transaction_amount'
+                                    placeholder="Enter total amount"
+                                    value={simpleFields.monthly_transaction_amount}
+                                    onChange={handleFieldChange}
+                                    required
+                                    min="0"
+                                    step="0.01"
+                                />
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Countries Where You Provide Services/Transactions
+                            </label>
+
+                            <div className="country-grid">
+
+                                {countries.map((country, index) => (
+
+                                    <input
+                                        key={index}
+                                        type='text'
+                                        placeholder={`Country ${index + 1}`}
+                                        value={country}
+                                        onChange={(e) =>
+                                            handleCountryChange(
+                                                index,
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+
+                                ))}
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Is your company connected/related to any
+                                Politically Exposed Person? <span>*</span>
+                            </label>
+
+                            <div className="radio-group inline">
+
+                                <label className="radio-option">
+
+                                    <input
+                                        type="radio"
+                                        name="is_pep"
+                                        value="no"
+                                        checked={isPep === "no"}
+                                        onChange={() => setIsPep("no")}
+                                        required
+                                    />
+
+                                    No
+
+                                </label>
+
+                                <label className="radio-option">
+
+                                    <input
+                                        type="radio"
+                                        name="is_pep"
+                                        value="yes"
+                                        checked={isPep === "yes"}
+                                        onChange={() => setIsPep("yes")}
+                                    />
+
+                                    Yes
+
+                                </label>
+
+                            </div>
+
+                            {isPep === "yes" && (
+
+                                <div className="ra-row">
+
+                                    <div className="ra-field">
+
+                                        <label>Name</label>
+
+                                        <input
+                                            type='text'
+                                            value={pepName}
+                                            onChange={(e) =>
+                                                setPepName(
+                                                    e.target.value.replace(
+                                                        /[^A-Za-zÀ-ÖØ-öø-ÿ\s'\-]/g,
+                                                        ""
+                                                    )
+                                                )
+                                            }
+                                            placeholder="Enter name"
+                                        />
+
+                                    </div>
+
+                                    <div className="ra-field">
+
+                                        <label>Position</label>
+
+                                        <input
+                                            type='text'
+                                            value={pepPosition}
+                                            onChange={(e) =>
+                                                setPepPosition(
+                                                    e.target.value.replace(
+                                                        /[^A-Za-z0-9À-ÖØ-öø-ÿ\s.,'\-]/g,
+                                                        ""
+                                                    )
+                                                )
+                                            }
+                                            placeholder="Enter position"
+                                        />
+
+                                    </div>
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Is your company regulated by Bangko Sentral
+                                ng Pilipinas (BSP)? <span>*</span>
+                            </label>
+
+                            <div className="radio-group inline">
+
+                                <label className="radio-option">
+
+                                    <input
+                                        type="radio"
+                                        name="is_bsp_regulated"
+                                        value="no"
+                                        checked={isBspRegulated === "no"}
+                                        onChange={() => setIsBspRegulated("no")}
+                                        required
+                                    />
+
+                                    No
+
+                                </label>
+
+                                <label className="radio-option">
+
+                                    <input
+                                        type="radio"
+                                        name="is_bsp_regulated"
+                                        value="yes"
+                                        checked={isBspRegulated === "yes"}
+                                        onChange={() => setIsBspRegulated("yes")}
+                                    />
+
+                                    Yes
+
+                                </label>
+
+                            </div>
+
+                            {isBspRegulated === "yes" && (
+
+                                <div className="license-table">
+
+                                    {licenses.map((license, index) => (
+
+                                        <div
+                                            className="ra-row"
+                                            key={index}
+                                        >
+
+                                            <div className="ra-field">
+
+                                                <label>
+                                                    Type of License {index + 1}
+                                                </label>
+
+                                                <input
+                                                    type='text'
+                                                    value={license.type}
+                                                    onChange={(e) =>
+                                                        handleLicenseChange(
+                                                            index,
+                                                            "type",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="Type of license"
+                                                />
+
+                                            </div>
+
+                                            <div className="ra-field">
+
+                                                <label>
+                                                    License No. {index + 1}
+                                                </label>
+
+                                                <input
+                                                    type='text'
+                                                    value={license.number}
+                                                    onChange={(e) =>
+                                                        handleLicenseChange(
+                                                            index,
+                                                            "number",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="License number"
+                                                />
+
+                                            </div>
+
+                                            <div className="ra-field">
+
+                                                <label>
+                                                    Issued Year {index + 1}
+                                                </label>
+
+                                                <input
+                                                    type='number'
+                                                    value={license.year}
+                                                    onChange={(e) =>
+                                                        handleLicenseChange(
+                                                            index,
+                                                            "year",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="Issued year"
+                                                    min="1900"
+                                                    max="2100"
+                                                />
+
+                                            </div>
+
+                                        </div>
+
+                                    ))}
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+                        {isBspRegulated === "yes" && (
+
+                            <div className="ra-field">
+
+                                <label>
+                                    If you are regulated by BSP, are you
+                                    registered with Anti-Money Laundering
+                                    Council? <span>*</span>
+                                </label>
+
+                                <div className="radio-group inline">
+
+                                    <label className="radio-option">
+
+                                        <input
+                                            type="radio"
+                                            name="is_amlc_registered"
+                                            value="no"
+                                            checked={isAmlcRegistered === "no"}
+                                            onChange={() =>
+                                                setIsAmlcRegistered("no")
+                                            }
+                                            required
+                                        />
+
+                                        No
+
+                                    </label>
+
+                                    <label className="radio-option">
+
+                                        <input
+                                            type="radio"
+                                            name="is_amlc_registered"
+                                            value="yes"
+                                            checked={isAmlcRegistered === "yes"}
+                                            onChange={() =>
+                                                setIsAmlcRegistered("yes")
+                                            }
+                                        />
+
+                                        Yes
+
+                                    </label>
+
+                                </div>
+
+                                {isAmlcRegistered === "yes" && (
+
+                                    <div className="ra-row">
+
+                                        <div className="ra-field">
+
+                                            <label>
+                                                AMLC Certificate of Registration
+                                                Issued Year
+                                            </label>
+
+                                            <input
+                                                type='number'
+                                                value={amlcYear}
+                                                onChange={(e) =>
+                                                    setAmlcYear(
+                                                        e.target.value
+                                                            .replace(/\D/g, "")
+                                                            .slice(0, 4)
+                                                    )
+                                                }
+                                                placeholder="Enter year"
+                                                min="1900"
+                                                max="2100"
+                                            />
+
+                                        </div>
+
+                                        <div className="ra-field">
+
+                                            <label>
+                                                Do you conduct Know-Your-Customer?
+                                            </label>
+
+                                            <input
+                                                type='text'
+                                                value={conductsKyc}
+                                                onChange={(e) =>
+                                                    setConductsKyc(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                placeholder="Enter details"
+                                            />
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+                            </div>
+
+                        )}
+
+                        <div className="form-field certification">
+
+                            <label>
+                                Certification
+                            </label>
+
+                            <p>
+                                I certify that the responses provided in this
+                                Risk Assessment Questionnaire are true and correct.
+                            </p>
+
+                        </div>
+
+                        <div className="ra-row">
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Name <span>*</span>
+                                </label>
+
+                                <input
+                                    type='text'
+                                    name='certified_name'
+                                    maxLength={150}
+                                    pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s'\-]+"
+                                    placeholder="Enter name"
+                                    value={simpleFields.certified_name}
+                                    onChange={handleFieldChange}
+                                    required
+                                />
+
+                            </div>
+
+                            <div className="ra-field">
+
+                                <label>
+                                    Designation <span>*</span>
+                                </label>
+
+                                <input
+                                    type='text'
+                                    name='certified_designation'
+                                    maxLength={100}
+                                    placeholder="Enter designation"
+                                    value={simpleFields.certified_designation}
+                                    onChange={handleFieldChange}
+                                    required
+                                />
+
+                            </div>
+
+                        </div>
+
+                        <div className="ra-field">
+
+                            <label>
+                                Date <span>*</span>
+                            </label>
+
+                            <input
+                                type='date'
+                                name='certified_date'
+                                value={simpleFields.certified_date}
+                                onChange={handleFieldChange}
+                                required
+                            />
+
+                        </div>
+
+                        <div className="ra-actions">
+
+                            <button
+                                type="submit"
+                                className="ra-btn"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting
+                                    ? "Submitting..."
+                                    : "Submit"}
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
             </div>
-        )}
 
-        <div className="form-field certification">
-            <label>Certification</label>
-            <p>I certify that the responses provided in this Risk Assessment Questionnaire are true and correct.</p>
         </div>
-
-        <div className="ra-row">
-            <div className="ra-field">
-                <label>Name <span>*</span></label>
-                <input
-                type='text'
-                name='certified_name'
-                placeholder="Enter name"
-                value={simpleFields.certified_name}
-                onChange={handleFieldChange}
-                />
-            </div>
-
-            <div className="ra-field">
-                <label>Designation <span>*</span></label>
-                <input
-                type='text'
-                name='certified_designation'
-                placeholder="Enter designation"
-                value={simpleFields.certified_designation}
-                onChange={handleFieldChange}
-                />
-            </div>
-        </div>
-
-        <div className="ra-field">
-            <label>Date <span>*</span></label>
-            <input
-            type='date'
-            name='certified_date'
-            value={simpleFields.certified_date}
-            onChange={handleFieldChange}
-            />
-        </div>
-
-        <div className="ra-actions">
-            <button
-            type="submit"
-            className="ra-btn"
-            disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-        </div>
-
-    </form>
-    </div>
-    </div>
-    </div>
-    )
+    );
 }

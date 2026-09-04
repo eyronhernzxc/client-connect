@@ -7,6 +7,38 @@ import { getCurrentUser } from "../../../../api/auth";
 import PageHeader from "../../../../components/admin/header/page-header";
 import { PenLine } from "lucide-react";
 
+
+const sanitizeMerchantText = (event) => {
+    const input = event.target;
+    const { name } = input;
+
+    if (!name) return;
+
+    if (["phone", "cs_number", "us_phone", "telephone_number"].includes(name)) {
+        input.value = input.value.replace(/[^0-9+()\-\s]/g, "").slice(0, 20);
+    }
+
+    if (["us_zip_code"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "").slice(0, 5);
+    }
+
+    if (name === "us_tin") {
+        input.value = input.value.replace(/\D/g, "").slice(0, 12);
+    }
+
+    if (["account_number"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "");
+    }
+
+    if (["years_in_business", "estimated_sales", "average_billing_amount", "highest_billing_amount", "days_product_received"].includes(name)) {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+
+    if (name === "transaction_fee") {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+};
+
 export default function Declaration() {
 
   const navigate = useNavigate();
@@ -82,7 +114,8 @@ export default function Declaration() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={(e) => submitDeclaration(e)}>
+          <form className="form" onSubmit={(e) => submitDeclaration(e)}
+                onInput={sanitizeMerchantText}>
 
             <div className="form-field">
                 <label>Politically exposed person <span>*</span></label>

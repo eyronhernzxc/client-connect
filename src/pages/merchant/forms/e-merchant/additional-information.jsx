@@ -7,6 +7,38 @@ import Header from "../header/header";
 import "../form-style.css";
 import PageHeader from "../../../../components/admin/header/page-header";
 
+
+const sanitizeMerchantText = (event) => {
+    const input = event.target;
+    const { name } = input;
+
+    if (!name) return;
+
+    if (["phone", "cs_number", "us_phone", "telephone_number"].includes(name)) {
+        input.value = input.value.replace(/[^0-9+()\-\s]/g, "").slice(0, 20);
+    }
+
+    if (["us_zip_code"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "").slice(0, 5);
+    }
+
+    if (name === "us_tin") {
+        input.value = input.value.replace(/\D/g, "").slice(0, 12);
+    }
+
+    if (["account_number"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "");
+    }
+
+    if (["years_in_business", "estimated_sales", "average_billing_amount", "highest_billing_amount", "days_product_received"].includes(name)) {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+
+    if (name === "transaction_fee") {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+};
+
 export default function AdditionalInformation() {
 
     const [bankCategory, setBankCategory] = useState([]);
@@ -136,7 +168,8 @@ export default function AdditionalInformation() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={(e) => submitInformation(e)}>
+          <form className="form" onSubmit={(e) => submitInformation(e)}
+              onInput={sanitizeMerchantText}>
             <div className="form-field">
                 <label>List of Company/ies where you’re a Director/Officer/Stockholder/Authorized Signatory<span>*</span></label>
                 <input
@@ -219,7 +252,7 @@ export default function AdditionalInformation() {
                     <label>Phone Number <span>*</span></label>
                     <input
                     type="tel"
-                    name="phone"
+                    name="phone" maxLength={20} pattern="[0-9+()\-\s]{7,20}"
                     placeholder="e.g 09XXXXXXXXX"
                     />
                              </div>
@@ -320,7 +353,7 @@ export default function AdditionalInformation() {
                     <label>Zip Code <span>*</span></label>
                        <input
                         type="text"
-                        name="us_zip_code"
+                        name="us_zip_code" maxLength={5} inputMode="numeric" pattern="[0-9]{5}"
                         placeholder="e.g 1100"
                         />
                 </div>
@@ -362,7 +395,7 @@ export default function AdditionalInformation() {
                     <label>Customer Service Number<span>*</span></label>
                        <input
                         type="tel"
-                        name="cs_number"
+                        name="cs_number" maxLength={20} pattern="[0-9+()\-\s]{7,20}"
                         placeholder="e.g 09XXXXXXXXX"
                         />
                 </div>

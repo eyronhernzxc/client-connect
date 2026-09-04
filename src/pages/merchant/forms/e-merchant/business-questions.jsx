@@ -8,6 +8,38 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../../../../api/auth";
 import PageHeader from "../../../../components/admin/header/page-header";
 
+
+const sanitizeMerchantText = (event) => {
+    const input = event.target;
+    const { name } = input;
+
+    if (!name) return;
+
+    if (["phone", "cs_number", "us_phone", "telephone_number"].includes(name)) {
+        input.value = input.value.replace(/[^0-9+()\-\s]/g, "").slice(0, 20);
+    }
+
+    if (["us_zip_code"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "").slice(0, 5);
+    }
+
+    if (name === "us_tin") {
+        input.value = input.value.replace(/\D/g, "").slice(0, 12);
+    }
+
+    if (["account_number"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "");
+    }
+
+    if (["years_in_business", "estimated_sales", "average_billing_amount", "highest_billing_amount", "days_product_received"].includes(name)) {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+
+    if (name === "transaction_fee") {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+};
+
 export default function BusinessQuestion() {
 
 const navigate = useNavigate();
@@ -92,7 +124,7 @@ const submitBusinessQuestion  = async (event) => {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={(e) => submitBusinessQuestion(e)}>
+          <form className="form" onSubmit={(e) => submitBusinessQuestion(e)} onInput={sanitizeMerchantText}>
 
             <h3>Online/E-commerce business Info</h3>
             <hr/>
@@ -202,7 +234,7 @@ const submitBusinessQuestion  = async (event) => {
                 <label>How long does customer wait before product is received? (No. of days) <span>*</span></label>
                 <input
                 type="number"
-                name="days_product_received"
+                name="days_product_received" min="0" step="1"
                 />
             </div>
 

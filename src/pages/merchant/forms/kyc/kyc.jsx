@@ -13,6 +13,32 @@ import { postCertifiedBy } from "../../../../api/postCertifiedby";
 import "../form-style.css";
 import "./kyc.css";
 
+
+const handleKYCInputValidation = (event) => {
+    const input = event.target;
+    const { name } = input;
+    if (!name) return;
+
+    const digitsOnly = (max) => input.value.replace(/\D/g, "").slice(0, max);
+    const phoneValue = () => input.value.replace(/[^0-9+()\-\s]/g, "").slice(0, 20);
+
+    if (["telephone_no", "fax_no"].includes(name)) {
+        input.value = phoneValue();
+    } else if (name === "country") {
+        input.value = input.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s.'\-]/g, "");
+    } else if (["business_reg_no", "bir_reg_tin_no"].includes(name)) {
+        input.value = input.value.replace(/[^A-Za-z0-9.\-\s]/g, "");
+    } else if (name === "business_type_other") {
+        input.value = input.value.slice(0, 100);
+    } else if (["certified_name"].includes(name)) {
+        input.value = input.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'\-]/g, "").slice(0, 150);
+    } else if (name === "certified_position") {
+        input.value = input.value.slice(0, 100);
+    } else if (name === "certified_signature") {
+        input.value = input.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'\-]/g, "").slice(0, 150);
+    }
+};
+
 // ─────────────────────────────────────────────────────────────────────
 // BUSINESS TYPES
 // ─────────────────────────────────────────────────────────────────────
@@ -1237,6 +1263,12 @@ export default function KnowYourCustomer() {
 
             for (const el of requiredEls) {
                 if (
+                    !el.checkValidity()
+                ) {
+                    return false;
+                }
+
+                if (
                     el.type ===
                     "radio"
                 ) {
@@ -1849,6 +1881,9 @@ export default function KnowYourCustomer() {
                 onChange={
                     persistDraft
                 }
+                onInput={
+                    handleKYCInputValidation
+                }
                 onSubmit={
                     handleSubmit
                 }
@@ -1994,7 +2029,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="country"
+                                    name="country" maxLength={100} pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s.'\-]+"
                                     placeholder="Enter country"
                                     defaultValue={
                                         draft
@@ -2110,7 +2145,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="business_reg_no"
+                                    name="business_reg_no" maxLength={50} pattern="[A-Za-z0-9.\-\s]+"
                                     placeholder="Enter registration no."
                                     defaultValue={
                                         draft
@@ -2135,7 +2170,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="bir_reg_tin_no"
+                                    name="bir_reg_tin_no" maxLength={30} pattern="[A-Za-z0-9.\-\s]+"
                                     placeholder="Enter BIR/TIN no."
                                     defaultValue={
                                         draft
@@ -2263,7 +2298,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="tel"
-                                    name="telephone_no"
+                                    name="telephone_no" maxLength={20} pattern="[0-9+()\-\s]{7,20}"
                                     placeholder="Enter telephone no."
                                     defaultValue={
                                         draft
@@ -2282,7 +2317,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="fax_no"
+                                    name="fax_no" maxLength={20} pattern="[0-9+()\-\s]{7,20}"
                                     placeholder="Enter fax no."
                                     defaultValue={
                                         draft
@@ -2434,7 +2469,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="certified_name"
+                                    name="certified_name" maxLength={150} pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s'\-]+"
                                     placeholder="Enter name"
                                     defaultValue={
                                         draft
@@ -2456,7 +2491,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="certified_position"
+                                    name="certified_position" maxLength={100}
                                     placeholder="Enter position/rank"
                                     defaultValue={
                                         draft
@@ -2480,7 +2515,7 @@ export default function KnowYourCustomer() {
 
                                 <input
                                     type="text"
-                                    name="certified_signature"
+                                    name="certified_signature" maxLength={150} pattern="[A-Za-zÀ-ÖØ-öø-ÿ\s'\-]+"
                                     placeholder="Type full name as signature"
                                     defaultValue={
                                         draft

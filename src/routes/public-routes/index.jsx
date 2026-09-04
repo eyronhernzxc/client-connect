@@ -47,7 +47,7 @@ const publicRoutes = ([
                 element: <Home />,
             },
 
-             {
+            {
                 path: "/merchant/profile",
                 element: <Profile />,
             },

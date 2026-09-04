@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../styles/merchant/merchant.css";
 import pisopayLogo from "../../assets/pisopay_logo.png";
 import pisopayName from "../../assets/pisopay_name.png";
-import {createUser} from "../../api/userApi";
+import { createUser } from "../../api/userApi";
 
 function MerchantRegister() {
   const navigate = useNavigate();
@@ -19,6 +19,23 @@ function MerchantRegister() {
     document.title = "Pisopay | Merchant Register";
   }, []);
 
+  // Text validation only
+  const handleTextValidation = (event) => {
+    const target = event.target;
+
+    if (target.name === "firstname" || target.name === "lastname") {
+      target.value = target.value
+        .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/g, "")
+        .slice(0, 150);
+    }
+
+    if (target.name === "phone_num") {
+      target.value = target.value
+        .replace(/[^0-9+()\- ]/g, "")
+        .slice(0, 20);
+    }
+  };
+
   const handleMerchantRegister = async (event) => {
     event.preventDefault();
 
@@ -28,29 +45,24 @@ function MerchantRegister() {
     const year = formData.get("birth_year");
 
     const data = {
-    first_name: formData.get("firstname"),
-    last_name: formData.get("lastname"),
-    email: formData.get("email"),
+      first_name: formData.get("firstname"),
+      last_name: formData.get("lastname"),
+      email: formData.get("email"),
 
-    mobile_number:
+      mobile_number:
         formData.get("country-code") +
         formData.get("phone_num"),
 
-    birth_date: `${year}-${month}-${day}`,
+      birth_date: `${year}-${month}-${day}`,
 
-    password: formData.get("password"),
-    password_confirmation: formData.get("confirm_password")
-};
+      password: formData.get("password"),
+      password_confirmation: formData.get("confirm_password"),
+    };
 
-    try{
-
-        const result = await createUser(data);
-
-    }
-
-    catch(error){
-
-        console.error(error);
+    try {
+      const result = await createUser(data);
+    } catch (error) {
+      console.error(error);
     }
 
     // validation here
@@ -65,23 +77,26 @@ function MerchantRegister() {
           <div className="image-container"></div>
           <div className="form-container">
             <div className="logo-container">
-            <div className="login-logo">
-              <img src={pisopayLogo} alt="pisopay logo" />
-            </div>
-            <div className="login-name">
-              <img src={pisopayName} alt="pisopay name" />
-            </div>
+              <div className="login-logo">
+                <img src={pisopayLogo} alt="pisopay logo" />
+              </div>
+              <div className="login-name">
+                <img src={pisopayName} alt="pisopay name" />
+              </div>
             </div>
 
             <form
               className="merchant-register-form"
               onSubmit={handleMerchantRegister}
+              onInput={handleTextValidation}
             >
               <div className="name-container">
                 <input
                   type="text"
                   placeholder="First Name"
                   name="firstname"
+                  maxLength={150}
+                  pattern="[A-Za-zÀ-ÖØ-öø-ÿ' -]+"
                   required
                 />
 
@@ -89,6 +104,8 @@ function MerchantRegister() {
                   type="text"
                   placeholder="Last Name"
                   name="lastname"
+                  maxLength={150}
+                  pattern="[A-Za-zÀ-ÖØ-öø-ÿ' -]+"
                   required
                 />
               </div>
@@ -107,7 +124,9 @@ function MerchantRegister() {
 
               <div className="phone-container">
                 <select name="country-code">
-                  <option hidden value="">+</option>
+                  <option hidden value="">
+                    +
+                  </option>
                   <option value="+63">+63</option>
                   <option value="+1">+1</option>
                   <option value="+44">+44</option>
@@ -118,7 +137,13 @@ function MerchantRegister() {
                   <option value="+91">+91</option>
                 </select>
 
-                <input className="phone_num" name="phone_num" type="tel"/>
+                <input
+                  className="phone_num"
+                  name="phone_num"
+                  type="tel"
+                  maxLength={20}
+                  pattern="[0-9+()\\- ]{7,20}"
+                />
               </div>
 
               <div className="label-container">
@@ -159,6 +184,7 @@ function MerchantRegister() {
                     </option>
                   ))}
                 </select>
+
                 <select
                   name="birth_year"
                   value={birthYear}
@@ -217,6 +243,7 @@ function MerchantRegister() {
               <button className="register-btn" type="submit">
                 Register
               </button>
+
               <div className="log-container">
                 <p>
                   Already Have an account?? <Link to="/">Log In</Link>

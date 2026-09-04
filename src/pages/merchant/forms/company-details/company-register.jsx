@@ -6,6 +6,27 @@ import {useNavigate} from "react-router-dom";
 import '../form-style.css'
 import PageHeader from '../../../../components/admin/header/page-header';
 
+
+const sanitizeDigits = (value, max) => value.replace(/\D/g, "").slice(0, max);
+
+const formatCompanyTin = (value) => {
+    const digits = sanitizeDigits(value, 12);
+    return digits.replace(/(\d{3})(?=\d)/g, "$1-");
+};
+
+const handleCompanyInputValidation = (event) => {
+    const input = event.target;
+    const { name } = input;
+
+    if (name === "zip_code") input.value = sanitizeDigits(input.value, 4);
+    if (name === "year_established") input.value = sanitizeDigits(input.value, 4);
+    if (name === "dti_registration_number") input.value = sanitizeDigits(input.value, 8);
+    if (name === "company_tin") input.value = formatCompanyTin(input.value);
+    if (name === "phone") input.value = input.value.replace(/[^0-9+()\-\s]/g, "").slice(0, 20);
+    if (name === "expected_transaction") input.value = sanitizeDigits(input.value, 12);
+    if (name === "transaction_total_amount") input.value = input.value.replace(/[^0-9.]/g, "");
+};
+
 export default function CompanyRegistration() {
 
 const navigate = useNavigate();
@@ -101,7 +122,7 @@ return (
 </Header>
 
 <div className='form-container'>
-<form onSubmit={handleCompanyRegistration} className='form'>
+<form onSubmit={handleCompanyRegistration} onInput={handleCompanyInputValidation} className='form'>
 
 
     <div className="form-row">
@@ -154,7 +175,7 @@ return (
             <input
             type='tel'
             placeholder="e.g 09XXXXXXXXX"
-            name='phone'
+            name='phone' maxLength={20} pattern="[0-9+()\-\s]{7,20}"
             />
         </div>
 
@@ -175,7 +196,7 @@ return (
             <input
             type='number'
             placeholder="e.g 1090"
-            name='zip_code'
+            name='zip_code' maxLength={4} inputMode="numeric" pattern="[0-9]{4}"
             />
         </div>
 
@@ -184,7 +205,7 @@ return (
             <input
             type='number'
             placeholder="e.g 2010"
-            name='year_established'
+            name='year_established' maxLength={4} inputMode="numeric" pattern="[0-9]{4}"
             />
         </div>
     </div>
@@ -195,7 +216,7 @@ return (
             <input
             type='text'
             placeholder="e.g XXX-XXX-XXX"
-            name='dti_registration_number'
+            name='dti_registration_number' maxLength={8} inputMode="numeric" pattern="[0-9]{1,8}"
             />
         </div>
 
@@ -204,7 +225,7 @@ return (
             <input
             type='text'
             placeholder="e.g XXX-XXX-XXX"
-            name='company_tin'
+            name='company_tin' maxLength={15} inputMode="numeric" pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}-[0-9]{3}"
             />
         </div>
     </div>
