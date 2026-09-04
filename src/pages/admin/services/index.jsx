@@ -6,10 +6,15 @@ import TableHeader from '../../../components/admin/table/table-header';
 import SearchToolbar from '../../../components/admin/table/searchbar/searchbar';
 import Table from '../../../components/admin/table/table';
 import ServicesModal from '../../../components/admin/modals/services-application-modal/services-modal';
+import { getServices } from '../../../api/getServices';
+import { BarLoader } from 'react-spinners';
 
 export default function Services() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   const handleRowClick = (item) => {
     setSelectedItem(item);
@@ -18,8 +23,28 @@ export default function Services() {
 
      useEffect(() => {
     
+
             document.title = "Pisopay | Admin Services"
-        });
+
+            const fetchServices = async () => {
+
+              try{
+
+                const data = await getServices();
+                setServices(data);
+
+                console.log(data);
+              }catch(error){
+
+                console.error("Failed to fetch service applications", error);
+              }finally{
+
+                setLoading(false);
+              }
+            }
+
+            fetchServices();
+        }, []);
 
   return (
      <div className ='admin-container'>
@@ -47,7 +72,7 @@ export default function Services() {
                   />
     
                   <select id="category" className="dropdown">
-                    <option selected disabled hidden value="">
+                    <option value="">
                       Category
                     </option>
                     <option value="1">GOCC</option>
@@ -58,7 +83,7 @@ export default function Services() {
                   </select>
     
                   <select id="status" className="dropdown">
-                    <option selected disabled value="">
+                    <option value="">
                       Status
                     </option>
                     <option value="1">Under Review</option>
@@ -83,28 +108,53 @@ export default function Services() {
               
               <thead>
                   <tr className='tbl-header'>
+                    <th>SERVICE ID</th>
                     <th>COMPANY NAME</th>
-                    <th>CATEGORY</th>
-                    <th>DOCUMENTS</th>
-                    <th>SYSTEM</th>
-                    <th>PAYMENT GATEWAY</th>
-                    <th>OTHER SERVICES</th>
-                    <th>TOTAL</th>
+                    <th>APPLICATION NUMBER</th>
+                    <th>SERVICE NAME</th>
+                    <th>STATUS</th>
+                    <th>CREATED AT</th>
                   </tr>
               </thead>
               
               <tbody>
-                  <tr onClick={() => handleRowClick({companyName: 'VOLTEZ V', category: 'Government'})}>
-                    <td>VOLTEZ V</td>
-                    <td><span className='category-span government'>Government</span></td>
-                    <td><span className='document-span'>19/21</span></td>
-                    <td><span className='system-span backend'>Backend</span></td>
-                    <td><span className="gateway-span ol-banking">Online Banking</span></td>
-                    <td><span className='others-span'>payment_link</span></td>
-                    <td><span className='total-span'>2</span></td>
-              
-                  </tr>
-              </tbody>
+  {loading ? (
+    <tr>
+  <td colSpan="6" style={{ padding: "30px" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <BarLoader color="#0090FF" />
+    </div>
+  </td>
+</tr>
+  ) : services.length === 0 ? (
+    <tr>
+      <td colSpan="6" style={{ textAlign: "center", padding: "30px" }}>
+        No service applications found.
+      </td>
+    </tr>
+  ) : (
+    services.map((service) => (
+      <tr
+        key={service.id}
+        onClick={() => handleRowClick(service)}
+        style={{ cursor: "pointer" }}
+      >
+        <td>{service.id}</td>
+        <td>{service.company?.name}</td>
+        <td>{service.application_number}</td>
+        <td>{service.name}</td>
+        <td>{service.status}</td>
+        <td>{service.created_at?.split("T")[0] || ""}</td>
+      </tr>
+    ))
+  )}
+</tbody>
                 </table>
                       </>}
                       />

@@ -12,7 +12,6 @@ export default function FormLayout() {
   
   return (
     <div className='form-container'>
-      <Sidebar />
 
         <Outlet/>
 

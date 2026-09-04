@@ -12,7 +12,7 @@ import { PenLine, Upload } from "lucide-react";
 import PageHeader from "../../../../components/merchant/form/page-header";
 import { getIdTypes } from "../../../../api/getIdTypes";
 
-export default function SignatoryDetails() {
+export default function FinancialSignatory() {
   const navigate = useNavigate();
 
   const [IdTypes, setIdTypes] = useState([]);
@@ -514,7 +514,7 @@ export default function SignatoryDetails() {
 
       data.append(
         "personal_detail_type_id",
-        1
+        2
       );
 
       // =====================================================
@@ -815,7 +815,7 @@ data.append(
   );
 
 
-
+  
 
 // =====================================================
 // DEBUG FORM DATA
@@ -836,7 +836,7 @@ for (const [key, value] of data.entries()) {
         "Signatory details submitted successfully!"
       );
 
-      navigate("/form/finance");
+      navigate("/form/developer");
     } catch (error) {
       console.log(
         "STATUS:",
@@ -911,32 +911,15 @@ for (const [key, value] of data.entries()) {
         <div className="form-card">
 
           <Header>
-            <h1>Signatory Details</h1>
+            <h1>Finance Signatory</h1>
           </Header>
 
           <div className="form-container">
 
-<<<<<<< HEAD
-              <div className="input-field">
-                <label>
-                  Upload E-signature <span>*</span>
-                </label>
-                <input
-                  name="signature"
-                  type="file"
-                  id="signature"
-                />
-                <label htmlFor="signature" className="file-label">
-                  <PenLine />
-                </label>
-              </div>
-            </div>
-=======
             <form
               className="form"
               onSubmit={submitSignatory}
             >
->>>>>>> origin/updates
 
               {/* =================================================
                   PERSONAL INFORMATION

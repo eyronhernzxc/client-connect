@@ -7,7 +7,7 @@ export default function Header({ item }) {
         Application Review
       </div>
       <div className="header-subtitle">
-        APP-2024-001 · Submitted Aug 12, 2024
+        {item?.application_number} · Submitted {item?.created_at?.split("T")[0] || ""}
       </div>
     </div>
   );

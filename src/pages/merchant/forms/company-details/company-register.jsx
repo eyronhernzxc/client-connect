@@ -36,7 +36,7 @@ const handleCompanyRegistration = async (event) => {
     const formData = new FormData(event.currentTarget);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?.id;
+    const userId = user?.data?.id;
     const status = 'pending';
 
 
@@ -100,7 +100,7 @@ return (
     {/* <button className="companyf-clear">Clear</button> */}
 </Header>
 
-<div className='form-container'>
+<div className='company-form-container'>
 <form onSubmit={handleCompanyRegistration} className='form'>
 
 

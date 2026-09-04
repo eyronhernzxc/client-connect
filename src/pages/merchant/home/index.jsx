@@ -1,9 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../../../components/merchant/header/page-header";
 import "../../pages.css";
+<<<<<<< HEAD
 import { NavLink } from "react-router-dom";
+=======
+import { getCurrentUser } from "../../../api/auth";
+>>>>>>> origin/updates
 
 export default function Home() {
+
+  const [user, setUser] = useState(null);
+
+useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            const data = await getCurrentUser();
+            setUser(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    fetchUser();
+}, []);
+
   const application = {
     id: "APP-2026-0078",
     type: "Merchant Registration",
@@ -58,7 +78,7 @@ export default function Home() {
       <PageHeader>
         <div className="name-container">
           <h1 className="page-title">Hello,</h1>
-          <h1 className="admin-name">Jamaica</h1>
+          <h1 className="admin-name">{user?.data?.userdetail?.first_name}</h1>
         </div>
 
         <p className="page-desc">
@@ -82,11 +102,10 @@ export default function Home() {
                 </span>
               </div>
 
-              <p className="application-id">{application.id}</p>
+              <p className="application-id">User Id: {user?.data?.id}</p>
 
               <p className="application-description">
-                Your merchant account has been successfully approved and
-                activated.
+                Your merchant account has been successfully approved and activated.
               </p>
             </div>
 
@@ -134,34 +153,34 @@ export default function Home() {
           <section className="dashboard-card">
             <div className="section-header">
               <div>
-                <h3>Application Information</h3>
-                <p>Details about your merchant application.</p>
+                <h3>Company Registration</h3>
+                <p>Details about your company application.</p>
               </div>
             </div>
 
             <div className="info-grid">
               <div className="info-item">
-                <span className="info-label">Application ID</span>
+                <span className="info-label">Company ID</span>
 
-                <strong>{application.id}</strong>
+                <strong>{user?.data?.company?.id}</strong>
               </div>
 
               <div className="info-item">
-                <span className="info-label">Application Type</span>
+                <span className="info-label">Status</span>
 
-                <strong>{application.type}</strong>
+                <strong>{user?.data?.company?.status}</strong>
               </div>
 
               <div className="info-item">
                 <span className="info-label">Submitted</span>
 
-                <strong>{application.submitted}</strong>
+                <strong>{user?.data?.company?.created_at?.split("T")[0]}</strong>
               </div>
 
               <div className="info-item">
                 <span className="info-label">Last Updated</span>
 
-                <strong>{application.lastUpdated}</strong>
+                <strong>{user?.data?.company?.updated_at?.split("T")[0]}</strong>
               </div>
             </div>
           </section>
