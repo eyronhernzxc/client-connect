@@ -84,11 +84,11 @@ export default function Profile() {
                 <Check size={15} />
                 Categorized
               </button>
-
+{/* 
               <button className="profile-btn">
                 <Edit3 size={14} />
                 Edit Company Profile
-              </button>
+              </button> */}
 
               <button className="profile-btn active">
                 <span className="active-dot"></span>

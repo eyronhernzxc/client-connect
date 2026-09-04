@@ -5,9 +5,12 @@ import "../../styles/merchant/merchant.css";
 import pisopayLogo from "../../assets/pisopay_logo.png";
 import pisopayName from "../../assets/pisopay_name.png";
 import {createUser} from "../../api/userApi";
+import Spinner from "../../loader/spinner";
 
 function MerchantRegister() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
 
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
@@ -51,19 +54,19 @@ function MerchantRegister() {
     catch(error){
 
         console.error(error);
+    }finally {
+      setLoading(true);
     }
-
-    // validation here
 
     navigate("/");
   };
 
   return (
     <>
-      <div className="login-container">
-        <div className="login-card">
-          <div className="image-container"></div>
-          <div className="form-container">
+      <div className="log-in-container">
+        <div className="log-in-card">
+          <div className="login-image-container"></div>
+          <div className="login-form-container">
             <div className="logo-container">
             <div className="login-logo">
               <img src={pisopayLogo} alt="pisopay logo" />
@@ -215,7 +218,11 @@ function MerchantRegister() {
               </div>
 
               <button className="register-btn" type="submit">
-                Register
+                 {loading ? (
+                             <Spinner />
+                           ) : (
+                             "Register"
+                           )}
               </button>
               <div className="log-container">
                 <p>
@@ -248,7 +255,7 @@ function MerchantRegister() {
                 setShowTerms(false);
               }}
             >
-              I Agree
+             Agree
             </button>
           </div>
         </div>

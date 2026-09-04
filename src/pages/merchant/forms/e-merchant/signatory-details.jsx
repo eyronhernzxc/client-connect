@@ -916,10 +916,27 @@ for (const [key, value] of data.entries()) {
 
           <div className="form-container">
 
+<<<<<<< HEAD
+              <div className="input-field">
+                <label>
+                  Upload E-signature <span>*</span>
+                </label>
+                <input
+                  name="signature"
+                  type="file"
+                  id="signature"
+                />
+                <label htmlFor="signature" className="file-label">
+                  <PenLine />
+                </label>
+              </div>
+            </div>
+=======
             <form
               className="form"
               onSubmit={submitSignatory}
             >
+>>>>>>> origin/updates
 
               {/* =================================================
                   PERSONAL INFORMATION
