@@ -18,7 +18,7 @@ function Login() {
     document.title = "Pisopay | Merchant Login";
   }, []);
 
-  const [captchaToken, setCaptchaToken] = useState(null);
+  
 
   const handleMerchantLog = async (event) => {
     event.preventDefault();
@@ -28,12 +28,6 @@ function Login() {
     const password = formData.get("password");
 
     // validation here
-
-    if (!captchaToken) {
-      alert("Please verify that you are not a robot.");
-      setLoading(false);
-      return;
-    }
 
     try {
       const response = await api.post("/auth/login", {
@@ -69,19 +63,19 @@ function Login() {
   };
 
   return (
-    <div className="LoginContainer">
-      <div className="LoginCard">
-        <div className="ImageContainer"></div>
-        <div className="LogFormContainer">
-          <div className="LogInLogo">
+    <div className="log-in-container">
+      <div className="log-in-card">
+        <div className="login-image-container"></div>
+        <div className="login-form-container">
+          <div className="login-logo">
             <img src={pisopayLogo} alt="pisopay logo" />
           </div>
-          <div className="LogInName">
+          <div className="login-name">
             <img src={pisopayName} alt="pisopay name" />
           </div>
 
-          <form className="MerchantLogForm" onSubmit={handleMerchantLog}>
-            <div className="LogInputContainer">
+          <form className="merchant-log-form" onSubmit={handleMerchantLog}>
+            <div className="log-input-container">
               <input
                 id="merchant_email"
                 type="email"
@@ -98,23 +92,17 @@ function Login() {
                 name="password"
               />
             </div>
-            <div className="ForgotContainer">
+            <div className="forgot-container">
               <a href="/merchant/forgot-password">Forgot Password?</a>
             </div>
-            <div className="CaptchaContainer">
-              <ReCAPTCHA
-                sitekey={import.meta.env.VITE_APP_RECAPTCHA_SITE_KEY}
-                onChange={(token) => setCaptchaToken(token)}
-              />
-            </div>
-            <button className=" MerchantLogBtn" type="submit">
+            <button className="merchant-log-btn" type="submit">
               {loading ? (
                 <Spinner />
               ) : (
                 "Login"
               )}
             </button>
-            <div className="RegisterContainer">
+            <div className="register-container">
               <p>
                 Don't have an account?{" "}
                 <Link to="/register">Register Here</Link>
