@@ -37,13 +37,13 @@ export default function AdditionalInformation() {
 
         console.log("Authenticated User:", user);
         
-        if (!user?.id) {
+        if (!user?.data?.id) {
             throw new Error("User not authenticated");
         }
 
-        const company_id = user.company_id || user.company?.id;
+        const company_id = user?.data?.company_id || user?.data?.company?.id;
 
-        console.log("Authenticated user ID:", user.id);
+        console.log("Authenticated user ID:", user?.data?.id);
         console.log("Authenticated company ID:", company_id);
 
         if(!company_id) {

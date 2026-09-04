@@ -23,13 +23,13 @@ export default function FinancialInformation() {
     
           console.log("Authenticated User:", user);
     
-          if(!user?.id){
+          if(!user?.data?.id){
     
             throw new Error("User not authenticated");
     
           }
     
-          const personal_detail_id = user.personal_detail_id || user.personal_detail?.id;
+          const personal_detail_id = user?.data?.personal_detail_id || user?.data?.personal_detail?.id;
     
           console.log("Personal Detail ID:", personal_detail_id);
     
@@ -49,10 +49,18 @@ export default function FinancialInformation() {
 
           }
 
-          const response = await postFinancial(data);
-          console.log("Financial Information submitted successfully:", response);
-        alert("Financial Information submitted successfully");
-        navigate("/form/employment");
+        //   const response = await postFinancial(data);
+        //   console.log("Financial Information submitted successfully:", response);
+        // alert("Financial Information submitted successfully");
+        // navigate("/form/employment");
+
+        const response = await postFinancial(data);
+
+console.log("Financial Information submitted successfully:", response);
+
+alert("Financial Information submitted successfully");
+
+navigate("/form/employment");
 
 
   }catch(error){

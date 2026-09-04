@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useState, useEffect } from "react";
 import Header from "../header/header";
 import "../form-style.css";
 import { getCurrentUser } from "../../../../api/auth";
@@ -8,6 +9,38 @@ import { useNavigate } from "react-router-dom";
 import PageHeader from "../../../../components/admin/header/page-header";
 
 
+
+
+const sanitizeMerchantText = (event) => {
+    const input = event.target;
+    const { name } = input;
+
+    if (!name) return;
+
+    if (["phone", "cs_number", "us_phone", "telephone_number"].includes(name)) {
+        input.value = input.value.replace(/[^0-9+()\-\s]/g, "").slice(0, 20);
+    }
+
+    if (["us_zip_code"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "").slice(0, 5);
+    }
+
+    if (name === "us_tin") {
+        input.value = input.value.replace(/\D/g, "").slice(0, 12);
+    }
+
+    if (["account_number"].includes(name)) {
+        input.value = input.value.replace(/\D/g, "");
+    }
+
+    if (["years_in_business", "estimated_sales", "average_billing_amount", "highest_billing_amount", "days_product_received"].includes(name)) {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+
+    if (name === "transaction_fee") {
+        input.value = input.value.replace(/[^0-9.]/g, "");
+    }
+};
 
 export default function Employment() {
 
@@ -19,42 +52,55 @@ export default function Employment() {
   const formData = new FormData(event.currentTarget);
 
   try {
-    const user = await getCurrentUser();
+   const user = await getCurrentUser();
 
-    console.log("Authenticated User:", user);
+console.log("========== AUTH DEBUG ==========");
+console.log("FULL USER:", user);
+console.log("USER ID:", user?.data?.id);
+console.log("PERSONAL DETAIL:", user?.data?.personal_detail);
+console.log("PERSONAL DETAIL ID:", user?.data?.personal_detail?.id);
+console.log("================================");
 
-    if (!user?.id) {
-      throw new Error("User not authenticated");
-    }
+if (!user?.data?.id) {
+    throw new Error("User not authenticated");
+}
 
-    const personal_detail_id =
-      user.personal_detail_id || user.personal_detail?.id;
+const personal_detail_id = user.data.personal_detail?.id;
 
-    console.log("Personal Detail ID:", personal_detail_id);
+if (!personal_detail_id) {
+    throw new Error("Personal detail not found.");
+}
 
-    if (!personal_detail_id) {
-      throw new Error("Unable to determine the user's personal detail.");
-    }
+console.log("Personal Detail ID:", personal_detail_id);
 
-    const data = {
-      personal_detail_id: personal_detail_id,
-      employers_name: formData.get("employers_name"),
-      employers_address: formData.get("employers_address"),
-      job_title: formData.get("job_title"),
-      employment_date: formData.get("employment_date"),
-      telephone_number: formData.get("telephone_number"),
-      business_nature: formData.getAll("business_nature[]"),
-    };
+if (!personal_detail_id) {
+    console.error("User data:", user.data);
+    throw new Error("Unable to determine the user's personal detail.");
+}
 
-    const response = await postEmployment(data);
+  const data = {
+    personal_detail_id: personal_detail_id,
+    employers_name: formData.get("employers_name"),
+    employers_address: formData.get("employers_address"),
+    job_title: formData.get("job_title"),
+    employment_date: formData.get("employment_date"),
+    telephone_number: formData.get("telephone_number"),
+    business_nature: formData.getAll("business_nature[]"),
+};
+
+console.log("Employment Payload:", data);
+
+const response = await postEmployment(data);
     console.log("Employment Information submitted successfully:", response);
     alert("Employment Information submitted successfully");
     navigate("/form/business-info");
   } catch (error) {
+    console.error("Employment submission error:", error);
     console.error("STATUS:", error.response?.status);
     console.error("RESPONSE:", error.response?.data);
     console.error("ERRORS:", error.response?.data?.errors);
     console.error("Error Message:", error.message);
+
   }
 };
 
@@ -77,7 +123,7 @@ export default function Employment() {
         </Header>
 
         <div className="form-container">
-          <form className="form" onSubmit={(e) => submitEmployment(e)}>
+          <form className="form" onSubmit={(e) => submitEmployment(e)} onInput={sanitizeMerchantText}>
             <div className="form-row">
                 <div className="input-field">
                   <label>
@@ -118,7 +164,7 @@ export default function Employment() {
               <label>
                 Telephone Number <span>*</span>
               </label>
-              <input type="tel" name="telephone_number" 
+              <input type="tel" name="telephone_number" maxLength={20} pattern="[0-9+()\-\s]{7,20}" 
               placeholder="e.g 09XXXXXXXXX"
               />
             </div>

@@ -23,16 +23,16 @@ const submitBusinessInformation  = async (event) => {
 
         console.log("Authenticated User:", user);
 
-        if(!user?.id){
+        if(!user?.data?.id){
 
             throw new Error("User not authenticated");
             console.error("User not authenticated");        
         }
 
         console.log("Authenticated user ID:", user.id);
-        console.log("Authenticated company ID:", user.company_id);
+        console.log("Authenticated company ID:", user?.data?.company_id);
 
-        const company_id = user.company_id || user.company?.id;
+        const company_id = user?.data?.company_id || user?.data?.company?.id;
 
         if(!company_id){
 

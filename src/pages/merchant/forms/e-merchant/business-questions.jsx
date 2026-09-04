@@ -23,21 +23,21 @@ const submitBusinessQuestion  = async (event) => {
         
         console.log("Authenticated User:", user);
 
-        if(!user?.id){
+        if(!user?.data?.id){
 
             throw new Error("User not authenticated");
         }
 
-        const company_id = user.company_id || user.company?.id;
+        const company_id = user?.data?.company_id || user?.data?.company?.id;
 
-        console.log("Authenticated user ID:", user.id);
+        console.log("Authenticated user ID:", user?.data?.id);
         console.log("Authenticated company ID:", company_id);
 
         if(!company_id){
             throw new Error("Unable to determine the user's company.");
         }
 
-        const business_information_id = user.business_information_id || user.business_information?.id;
+        const business_information_id = user?.data?.business_information_id || user?.data?.business_information?.id;
 
         console.log("Authenticated business information ID:", business_information_id);
 
