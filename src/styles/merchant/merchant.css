@@ -75,9 +75,21 @@ body{
   width: max-content;
 }
 
+.login-form-container .login-logo.main img{
+
+  height: 60px;
+  width: max-content;
+}
+
 .login-name img{
 
   height: 40px;
+  width: max-content;
+}
+
+.login-name.main img{
+
+  height: 60px;
   width: max-content;
 }
 
@@ -117,8 +129,8 @@ body{
 
 .log-input-container input{
 
-  height: 2rem;
-  width: 75%;
+  height: 3rem;
+  width: 80%;
   border-radius: 50px;
   border: 1px solid gray;
   padding: 10px 20px;
@@ -130,7 +142,8 @@ body{
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  padding-right: 100px;
+  padding-right: 50px;
+  margin-bottom: 30px;
 }
 
 .forgot-container a{
@@ -340,5 +353,170 @@ body{
     text-decoration: underline;
 
   }
+}
+
+.terms-overlay{
+
+  position: fixed;
+  z-index: 1000;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(7, 7, 7, 0.322);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: 0;
+}
+
+.terms-modal{
+
+  border: 1px solid rgba(0, 0, 0, 0.459);
+  background-color: white;
+  height: max-content;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  gap: 10px;
+
+}
+
+.terms-header{
+
+  height: max-content;
+  width: 100%;
+  padding: 30px 10px;
+  background-color: #0090FF;
+  color: white;
+  border-bottom-right-radius: 50px;
+  
+}
+
+.terms-header h4{
+
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.terms-body{
+
+  width: 100%;
+  height: 300px;
+  overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.terms-body p{
+
+  max-width: 80%;
+  max-height: 100%;
+  text-align: justify;
+  background-color: rgba(145, 145, 145, 0.055);
+  padding: 20px;
+  border-radius: 20px;
+  color: rgb(65, 65, 65);
+}
+
+.terms-btn-container{
+
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: max-content;
+  padding: 10px;
+}
+
+.terms-btn-container button{
+
+  width: 50%;
+  padding: 10px 20px;
+  font-weight: 500;
+  border-radius: 30px;
+}
+
+.terms-btn.agree{
+
+  border: none;
+  background-color: #0090FF;
+  color: white;
+  
+  &:hover{
+
+    cursor: pointer;
+    background-color: #2a9ef7;
+    transition: all 0.3s ease;
+  }
+}
+
+.terms-btn.close{
+
+  border: 1px solid darkred;
+  color: darkred;
+  background: transparent;
+
+  &:hover{
+
+    cursor: pointer;
+    background-color: rgba(139, 0, 0, 0.192);
+    transition: all 0.3s ease;
+  }
+}
+
+.error-modal-overlay, .reg-error-modal-overlay  {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.error-modal, .reg-error-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  text-align: center;
+}
+
+.error-modal h2, .reg-error-modal h2 {
+  margin-bottom: 15px;
+}
+
+.error-modal p, .reg-error-modal p {
+  margin-bottom: 20px;
+}
+
+.error-modal button,.reg-error-modal button {
+  padding: 10px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background-color: #0090FF;
+  color: white;
+
+   &:hover{
+
+    cursor: pointer;
+    background-color: #2a9ef7;
+    transition: all 0.3s ease;
+  }
+
 }
 

@@ -5,11 +5,12 @@ import { postBank, postOrganization, postFatca, postCustomerSupport } from "../.
 
 import Header from "../header/header";
 import "../form-style.css";
-import PageHeader from "../../../../components/admin/header/page-header";
+import Spinner from "../../../../loader/spinner";
 
 export default function AdditionalInformation() {
 
     const [bankCategory, setBankCategory] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
     
@@ -28,6 +29,7 @@ export default function AdditionalInformation() {
 
     const submitInformation = async (event) => {
     event.preventDefault();
+    setLoading(true)
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -110,25 +112,19 @@ export default function AdditionalInformation() {
 
         
     } catch (error) {
+
         console.error("Error submitting additional information:", error);
         console.error("RESPONSE:", error.response?.data);
         console.error("STATUS:", error.response?.status);
+        alert("RESPONSE:", error.response?.data)
+    }finally{
+
+        setLoading(false);
     }
 
 };
 
   return (
-<>
-    <PageHeader>
-                <div className="name-container">
-                  <h1 className="page-title">Hello,</h1>
-                  <h1 className="admin-name">Jamaica</h1>
-                </div>
-                
-                <p className="page-desc">
-                 We’re happy to have you here. Let’s get your merchant and company application started!
-                </p>
-            </PageHeader>
     <div className="main-container">
       <div className="form-card">
         <Header>
@@ -377,7 +373,13 @@ export default function AdditionalInformation() {
                 </div>
 </div>
             
-    <button type="submit">Submit</button>
+    <button type="submit">
+        {loading ?(
+            <Spinner/>
+        ): (
+            "Submit"
+        )}
+    </button>
 
             
            
@@ -385,6 +387,6 @@ export default function AdditionalInformation() {
         </div>
       </div>
     </div>
-    </>
+
   );
 }

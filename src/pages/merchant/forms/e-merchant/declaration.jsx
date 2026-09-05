@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../header/header";
 import "../form-style.css";
 import { postDeclaration } from "../../../../api/postDeclaration";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../../../../api/auth";
-import PageHeader from "../../../../components/admin/header/page-header";
 import { PenLine } from "lucide-react";
 
 export default function Declaration() {
+
+  const [loading, setLoading] = useState(false);  
 
   const navigate = useNavigate();
 
   const submitDeclaration  = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(event.currentTarget);
 
@@ -57,6 +59,9 @@ export default function Declaration() {
       console.log("RESPONSE:", error.response?.data);
       console.log("ERRORS:", error.response?.data?.errors);
       console.log("Error:", error);
+    }finally{
+
+      setLoading(false);
     }
 
 
@@ -64,17 +69,7 @@ export default function Declaration() {
 
 
   return (
-    <>
-     <PageHeader>
-                    <div className="name-container">
-                      <h1 className="page-title">Hello,</h1>
-                      <h1 className="admin-name">Jamaica</h1>
-                    </div>
-                    
-                    <p className="page-desc">
-                     We’re happy to have you here. Let’s get your merchant and company application started!
-                    </p>
-                </PageHeader>
+
     <div className="main-container">
       <div className="form-card">
         <Header>
@@ -156,6 +151,6 @@ export default function Declaration() {
         </div>
       </div>
     </div>
-    </>
+
   );
 }

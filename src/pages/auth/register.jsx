@@ -17,6 +17,15 @@ function MerchantRegister() {
   const [birthYear, setBirthYear] = useState("");
   const [showTerms, setShowTerms] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
+const [showErrorModal, setShowErrorModal] = useState(false);
+
+    const handleTextInput = (event) => {
+    event.target.value = event.target.value.replace(
+      /[^\p{L}\s'-]/gu,
+      ""
+    );
+  };
 
   useEffect(() => {
     document.title = "Pisopay | Merchant Register";
@@ -24,6 +33,7 @@ function MerchantRegister() {
 
   const handleMerchantRegister = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(event.currentTarget);
     const month = formData.get("birth_month");
@@ -51,11 +61,24 @@ function MerchantRegister() {
 
     }
 
-    catch(error){
+    catch (error) {
+  
+  console.error("ERROR:", error);
+  console.error("RESPONSE:", error.response?.data);
+  console.error("STATUS:", error.response?.status);
 
-        console.error(error);
+  const message =
+    error.response?.data?.message ||
+    Object.values(error.response?.data?.errors || {})
+      .flat()
+      .join("\n") ||
+    "Something went wrong.";
+
+  setErrorMessage(message);
+  setShowErrorModal(true);
+
     }finally {
-      setLoading(true);
+      setLoading(false);
     }
 
     navigate("/");
@@ -82,6 +105,7 @@ function MerchantRegister() {
             >
               <div className="name-container">
                 <input
+                  onInput={handleTextInput}
                   type="text"
                   placeholder="First Name"
                   name="firstname"
@@ -89,6 +113,7 @@ function MerchantRegister() {
                 />
 
                 <input
+                 onInput={handleTextInput}
                   type="text"
                   placeholder="Last Name"
                   name="lastname"
@@ -237,29 +262,72 @@ function MerchantRegister() {
       {/* Terms Modal */}
 
       {showTerms && (
-        <div className="TermsOverlay">
-          <div className="TermsModal">
-            <p>
-              {" "}
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
+        <div className="terms-overlay">
+          <div className="terms-modal">
 
-            <button
-              type="button"
-              className="AgreeTermsBtn"
-              onClick={() => {
-                setAcceptedTerms(true);
-                setShowTerms(false);
-              }}
-            >
-             Agree
-            </button>
+            <div className="terms-header">
+              <h4>Terms and Conditions</h4>
+            </div>
+            
+            <div className="terms-body">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </p>
+            </div>
+
+            <div className="terms-btn-container">
+
+               <button
+                type="button"
+                className="terms-btn close"
+                onClick={() => {
+                  setShowTerms(false);
+                }}
+              >
+               Close
+              </button>
+
+              <button
+                type="button"
+                className="terms-btn agree"
+                onClick={() => {
+                  setAcceptedTerms(true);
+                  setShowTerms(false);
+                }}
+              >
+               Agree
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+
+      {showErrorModal && (
+  <div className="-reg-error-modal-overlay">
+    <div className="reg-error-modal">
+      <h2>Error</h2>
+
+      <p>{errorMessage}</p>
+
+      <button onClick={() => setShowErrorModal(false)}>
+        OK
+      </button>
+    </div>
+  </div>
+)}
+
     </>
   );
 }

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../../../components/merchant/header/page-header";
 import "../../pages.css";
-<<<<<<< HEAD
 import { NavLink } from "react-router-dom";
-=======
 import { getCurrentUser } from "../../../api/auth";
->>>>>>> origin/updates
 
 export default function Home() {
 

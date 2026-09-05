@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { postBusinessInfo } from "../../../../api/postBusinessInfo";
 import Header from "../header/header";
 import "../form-style.css";
 import { getCurrentUser } from "../../../../api/auth";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../../../../components/admin/header/page-header";
+import Spinner from "../../../../loader/spinner";
 
 export default function BusinessInformation() {
 
 const navigate = useNavigate();
+const [loading, setLoading] = useState(false);
 
 
 const submitBusinessInformation  = async (event) => {
     event.preventDefault();
+    setLoading(true)
 
     const form = event.currentTarget;
     const formData = new FormData(form);
@@ -66,21 +68,14 @@ const submitBusinessInformation  = async (event) => {
         console.error("RESPONSE:", error.response?.data);
         console.error("ERRORS:", error.response?.data?.errors);
         console.error("Error Message:", error.message);
+    }finally{
+
+        setLoading(false);
     }
 };
 
   return (
-<>
-     <PageHeader>
-                    <div className="name-container">
-                      <h1 className="page-title">Hello,</h1>
-                      <h1 className="admin-name">Jamaica</h1>
-                    </div>
-                    
-                    <p className="page-desc">
-                     We’re happy to have you here. Let’s get your merchant and company application started!
-                    </p>
-                </PageHeader>
+
     <div className="main-container">
       <div className="form-card">
         <Header>
@@ -175,7 +170,7 @@ const submitBusinessInformation  = async (event) => {
             </div>
 
             <div className="form-field">
-                <label>Famialiar with chargeback? <span>*</span></label>
+                <label>Familiar with chargeback? <span>*</span></label>
                 <div className="form-field-grid">
                     <div className="radio-field">
                         <label><input
@@ -196,7 +191,13 @@ const submitBusinessInformation  = async (event) => {
                 </div>
 
 
-    <button type="submit">Submit</button>
+    <button type="submit">
+        {loading ?(
+            <Spinner/>
+        ): (
+            "Submit"
+        )}
+    </button>
 
             
            
@@ -204,6 +205,6 @@ const submitBusinessInformation  = async (event) => {
         </div>
       </div>
     </div>
-    </>
+
   );
 }

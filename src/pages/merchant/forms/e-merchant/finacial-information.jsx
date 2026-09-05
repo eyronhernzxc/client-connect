@@ -1,20 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Header from "../header/header";
 import "../form-style.css";
 import { getCurrentUser } from "../../../../api/auth";
 import { postFinancial } from "../../../../api/postFinancial";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../../../../components/admin/header/page-header";
+import Spinner from "../../../../loader/spinner";
 
 
 export default function FinancialInformation() {
 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const submitFinancial = async (event) =>{
   event.preventDefault();
-
+  setLoading(false);
   const formData = new FormData(event.currentTarget);
 
   try{
@@ -49,10 +50,6 @@ export default function FinancialInformation() {
 
           }
 
-        //   const response = await postFinancial(data);
-        //   console.log("Financial Information submitted successfully:", response);
-        // alert("Financial Information submitted successfully");
-        // navigate("/form/employment");
 
         const response = await postFinancial(data);
 
@@ -69,22 +66,14 @@ navigate("/form/employment");
         console.error("RESPONSE:", error.response?.data);
         console.error("ERRORS:", error.response?.data?.errors);
         console.error("Error Message:", error.message);
+  }finally{
+
+    setLoading(false);
   }
 }
 
 
   return (
-<>
-     <PageHeader>
-                    <div className="name-container">
-                      <h1 className="page-title">Hello,</h1>
-                      <h1 className="admin-name">Jamaica</h1>
-                    </div>
-                    
-                    <p className="page-desc">
-                     We’re happy to have you here. Let’s get your merchant and company application started!
-                    </p>
-      </PageHeader>
 
     <div className="main-container">
       <div className="form-card">
@@ -523,11 +512,17 @@ navigate("/form/employment");
               </div>
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit">
+            {loading ? (
+            <Spinner/>
+            ): (
+            "Submit"
+            )}
+            </button>
           </form>
         </div>
       </div>
     </div>
-    </>
+
   );
 }

@@ -72,18 +72,7 @@ const protectedRoutes = ([
         ],
     },
 
-    //   {
-    //     path: "*",
-    //     element: <NotFound />,
-    //   },
-    //   {
-    //     path: "/400",
-    //     element: <BadRequest />,
-    //   },
-    //   {
-    //     path: "/401",
-    //     element: <Unauthorized />,
-    //   },
+    
 ]);
 
 export default protectedRoutes;

@@ -9,10 +9,13 @@ import { getCurrentUser } from "../../../../api/auth";
 import { useNavigate } from "react-router-dom";
 import { PenLine, Upload } from "lucide-react";
 
-import PageHeader from "../../../../components/merchant/form/page-header";
 import { getIdTypes } from "../../../../api/getIdTypes";
+import Spinner from "../../../../loader/spinner";
 
 export default function DeveloperSignatory() {
+
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const [IdTypes, setIdTypes] = useState([]);
@@ -68,6 +71,29 @@ export default function DeveloperSignatory() {
       ""
     );
   };
+
+  const nationalities = [
+    "Filipino",
+    "American",
+    "Australian",
+    "British",
+    "Canadian",
+    "Chinese",
+    "French",
+    "German",
+    "Indian",
+    "Indonesian",
+    "Italian",
+    "Japanese",
+    "Malaysian",
+    "Mexican",
+    "New Zealander",
+    "Singaporean",
+    "South Korean",
+    "Spanish",
+    "Thai",
+    "Vietnamese",
+  ];
 
   // =========================================================
   // ADDRESS FIELD MAPPING
@@ -419,6 +445,7 @@ export default function DeveloperSignatory() {
 
   const submitSignatory = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const form = event.currentTarget;
 
@@ -854,6 +881,9 @@ for (const [key, value] of data.entries()) {
       );
 
       console.error(error);
+    }finally{
+
+      setLoading(false);
     }
   };
 
@@ -881,31 +911,7 @@ for (const [key, value] of data.entries()) {
       : "";
   };
 
-
-  // =========================================================
-  // RENDER
-  // =========================================================
-
   return (
-    <>
-      <PageHeader>
-        <div className="name-container">
-          <h1 className="page-title">
-            Hello,
-          </h1>
-
-          <h1 className="admin-name">
-            {user?.userdetail?.first_name ||
-              "Jamaica"}
-          </h1>
-        </div>
-
-        <p className="page-desc">
-          We’re happy to have you here. Let’s get
-          your merchant and company application
-          started!
-        </p>
-      </PageHeader>
 
       <div className="main-container">
         <div className="form-card">
@@ -1096,9 +1102,11 @@ for (const [key, value] of data.entries()) {
                       Select Nationality
                     </option>
 
-                    <option value="filipino">
-                      Filipino
+                    {nationalities.map((nationality) => (
+                    <option key={nationality} value={nationality}>
+                      {nationality}
                     </option>
+                  ))}
                   </select>
 
                   <ErrorMessage
@@ -1121,10 +1129,11 @@ for (const [key, value] of data.entries()) {
                     <option value="">
                       Select Citizenship
                     </option>
-
-                    <option value="filipino">
-                      Filipino
+ {nationalities.map((nationality) => (
+                    <option key={nationality} value={nationality}>
+                      {nationality}
                     </option>
+                  ))}
                   </select>
 
                   <ErrorMessage
@@ -1989,17 +1998,12 @@ for (const [key, value] of data.entries()) {
                       Select nationality
                     </option>
 
-                    <option value="Filipino">
-                      Filipino
+          
+                   {nationalities.map((nationality) => (
+                    <option key={nationality} value={nationality}>
+                      {nationality}
                     </option>
-
-                    <option value="American">
-                      American
-                    </option>
-
-                    <option value="Canadian">
-                      Canadian
-                    </option>
+                  ))}
                   </select>
 
                   <ErrorMessage
@@ -2116,17 +2120,11 @@ for (const [key, value] of data.entries()) {
                       Select nationality
                     </option>
 
-                    <option value="Filipino">
-                      Filipino
+                   {nationalities.map((nationality) => (
+                    <option key={nationality} value={nationality}>
+                      {nationality}
                     </option>
-
-                    <option value="American">
-                      American
-                    </option>
-
-                    <option value="Canadian">
-                      Canadian
-                    </option>
+                  ))}
                   </select>
 
                   <ErrorMessage
@@ -2161,7 +2159,12 @@ for (const [key, value] of data.entries()) {
               ================================================= */}
 
               <button type="submit">
-                Submit
+                {loading ?(
+
+                  <Spinner/>
+                ): (
+                  "Submit"
+                )}
               </button>
 
             </form>
@@ -2169,6 +2172,6 @@ for (const [key, value] of data.entries()) {
           </div>
         </div>
       </div>
-    </>
+
   );
 }

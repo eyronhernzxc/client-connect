@@ -263,24 +263,9 @@ export default function Onboarding() {
                 <option disabled hidden value="">
                   Category
                 </option>
-<<<<<<< HEAD
-
-                <option value="1">
-                  GOCC
-                </option>
-
-                <option value="2">
-                  Compliance
-                </option>
-
-                <option value="3">
-                  Business Dept
-                </option>
-=======
                 <option value="1">GOCC</option>
                 <option value="2">Government</option>
                 <option value="3">Private</option>
->>>>>>> origin/jamaica/feature/convert-pdf
               </select>
 
               <select
@@ -291,24 +276,9 @@ export default function Onboarding() {
                 <option disabled hidden value="">
                   Status
                 </option>
-<<<<<<< HEAD
-
-                <option value="1">
-                  Merchant
-                </option>
-
-                <option value="2">
-                  Compliance
-                </option>
-
-                <option value="3">
-                  Business Dept
-                </option>
-=======
                 <option value="1">Under Review</option>
                 <option value="2">Review</option>
                 <option value="3">Business Dept</option>
->>>>>>> origin/jamaica/feature/convert-pdf
               </select>
 
               <div className="result-container">

@@ -4,9 +4,11 @@ import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
 import {useNavigate} from "react-router-dom";
 import '../form-style.css'
-import PageHeader from '../../../../components/admin/header/page-header';
+import Spinner from '../../../../loader/spinner';
 
 export default function CompanyRegistration() {
+
+const [loading, setLoading] = useState(false);
 
 const navigate = useNavigate();
 
@@ -32,6 +34,7 @@ useEffect(() => {
 const handleCompanyRegistration = async (event) => {
 
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(event.currentTarget);
 
@@ -74,22 +77,13 @@ const handleCompanyRegistration = async (event) => {
   console.log("DATA:", error.response?.data);
   console.log("MESSAGE:", error.response?.data?.message);
   console.log("FULL ERROR:", error);
+    }finally{
+        setLoading(false);
     }
 
 }
 
 return (
-<>
-    <PageHeader>
-        <div className="name-container">
-          <h1 className="page-title">Hello,</h1>
-          <h1 className="admin-name">Jamaica</h1>
-        </div>
-        
-        <p className="page-desc">
-         We’re happy to have you here. Let’s get your merchant and company application started!
-        </p>
-    </PageHeader>
 
 <div className='main-container'>
 <div className='form-card'>
@@ -249,12 +243,18 @@ return (
         
     </div>
 
-    <button type='submit'>Submit</button>
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
+            "Submit"
+        )
+        }
+    </button>
 
 </form>
 </div>
 </div>
 </div>
-</>
 )
 }

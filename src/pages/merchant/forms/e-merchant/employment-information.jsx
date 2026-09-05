@@ -6,7 +6,7 @@ import "../form-style.css";
 import { getCurrentUser } from "../../../../api/auth";
 import { postEmployment } from "../../../../api/postEmployment";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../../../../components/admin/header/page-header";
+import Spinner from "../../../../loader/spinner";
 
 
 
@@ -44,10 +44,13 @@ const sanitizeMerchantText = (event) => {
 
 export default function Employment() {
 
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const submitEmployment = async (event) => {
   event.preventDefault();
+  setLoading(true);
 
   const formData = new FormData(event.currentTarget);
 
@@ -101,21 +104,13 @@ const response = await postEmployment(data);
     console.error("ERRORS:", error.response?.data?.errors);
     console.error("Error Message:", error.message);
 
+  }finally{
+
+    setLoading(false);
   }
 };
 
   return (
-    <>
-     <PageHeader>
-                    <div className="name-container">
-                      <h1 className="page-title">Hello,</h1>
-                      <h1 className="admin-name">Jamaica</h1>
-                    </div>
-                    
-                    <p className="page-desc">
-                     We’re happy to have you here. Let’s get your merchant and company application started!
-                    </p>
-                </PageHeader>
     <div className="main-container">
       <div className="form-card">
         <Header>
@@ -484,11 +479,18 @@ const response = await postEmployment(data);
                 </div>
               </div>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit">
+              {loading ? (
+
+                <Spinner />
+              ): (
+                "Submit"
+              )}
+            </button>
           </form>
         </div>
       </div>
     </div>
-    </>
+
   );
 }
