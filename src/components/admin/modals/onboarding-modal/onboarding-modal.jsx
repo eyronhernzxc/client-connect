@@ -13,7 +13,7 @@ import ReqDocs from "./components/req-documents";
 export default function OnboardingDrawer({
   isOpen,
   onClose,
-  item,
+  company,
 }) {
   const [activeTab, setActiveTab] = useState("company");
   
@@ -37,15 +37,15 @@ export default function OnboardingDrawer({
           ×
         </button>
         
-        <Header item={item} />
+        <Header company={company} />
         
         <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
         
         <div className="modal-content">
-          {activeTab === "company" && <CompanyDetails item={item} />}
-          {activeTab === "emerchant" && <EMerchantForm item={item} />}
-          {activeTab === "categorize" && <Categorize item={item} />}
-          {activeTab === "req-documents" && <ReqDocs item={item} />}
+          {activeTab === "company" && <CompanyDetails company={company} />}
+          {activeTab === "emerchant" && <EMerchantForm company={company} />}
+          {activeTab === "categorize" && <Categorize company={company} />}
+          {activeTab === "req-documents" && <ReqDocs company={company} />}
         </div>
       </div>
     </div>

@@ -117,12 +117,6 @@ export default function Applications() {
                 <th>EMAIL</th>
                 <th>WEBSITE URL</th>
                 <th>Status</th>
-                {/* <th>PHONE</th>
-                <th>ADDRESS</th>
-                <th>ZIP CODE</th>
-                <th>DTI REG NUMBER</th>
-                <th>COMPANY TIN</th>
-                <th>TAX TYPE</th> */}
               </tr>
           </thead>
           

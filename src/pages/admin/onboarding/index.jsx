@@ -9,226 +9,45 @@ import Table from "../../../components/admin/table/table.jsx";
 import OnboardingDrawer from "../../../components/admin/modals/onboarding-modal/onboarding-modal.jsx";
 
 import { Dot, IdCard } from "lucide-react";
+import { BarLoader } from "react-spinners";
+import { getCompany } from "../../../api/getCompany.js";
 
-import {
-  getCompanies,
-  getCompanyTypes,
-  getApplicationServices,
-} from "../../../api/getOnboarding.js";
 
 export default function Onboarding() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const [onboardingData, setOnboardingData] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+ 
 
   const handleRowClick = (item) => {
     setSelectedItem(item);
     setIsDrawerOpen(true);
   };
 
+
   useEffect(() => {
     document.title = "Pisopay | Admin Onboarding";
-  }, []);
 
-  useEffect(() => {
-    const fetchOnboardingData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    const fetchCompany = async () => {
 
-        // Fetch companies and company types first
-        const [
-          companiesResponse,
-          companyTypesResponse,
-        ] = await Promise.all([
-          getCompanies(),
-          getCompanyTypes(),
-        ]);
+      try{
 
-        // Normalize API responses
-        const companies =
-          companiesResponse?.data ||
-          companiesResponse ||
-          [];
+        const data = await getCompany();
+        setCompanies(data);
+      }catch(error){
 
-        const companyTypes =
-          companyTypesResponse?.data ||
-          companyTypesResponse ||
-          [];
+        console.error("Failed to fetch company", error);
+      }finally{
 
-        // Fetch application services separately
-        // so the other API calls do not fail because of it.
-        let applicationServicesResponse;
-
-        try {
-          applicationServicesResponse =
-            await getApplicationServices();
-        } catch (applicationError) {
-          console.error(
-            "Failed to fetch application services:",
-            applicationError
-          );
-
-          throw new Error(
-            "Failed to fetch application services. Please check the backend endpoint."
-          );
-        }
-
-        const applicationServices =
-          applicationServicesResponse?.data ||
-          applicationServicesResponse ||
-          [];
-
-        // Combine the three API responses
-        const combinedData = applicationServices.map(
-          (application) => {
-            /*
-             * APPLICATION -> COMPANY
-             *
-             * application-services:
-             * company_id
-             *
-             * companies:
-             * company_id OR id
-             */
-            const company = companies.find(
-              (company) => {
-                const companyId =
-                  company.company_id ??
-                  company.id;
-
-                return (
-                  String(companyId) ===
-                  String(application.company_id)
-                );
-              }
-            );
-
-            /*
-             * COMPANY -> COMPANY TYPE
-             *
-             * companies:
-             * company_type_id
-             *
-             * company-types:
-             * id OR company_type_id
-             */
-            const companyType = companyTypes.find(
-              (type) => {
-                const typeId =
-                  type.id ??
-                  type.company_type_id;
-
-                return (
-                  String(typeId) ===
-                  String(company?.company_type_id)
-                );
-              }
-            );
-
-            return {
-              /*
-               * Reference ID
-               *
-               * API:
-               * application_number
-               *
-               * Example:
-               * APP-2026-00067
-               */
-              referenceId:
-                application.application_number ||
-                "—",
-
-              /*
-               * Company Name
-               *
-               * IMPORTANT:
-               * Use the company record's name.
-               * Do NOT use application.name because
-               * that is the application name.
-               */
-              companyName:
-                company?.name ||
-                "N/A",
-
-              /*
-               * Company Category / Type
-               */
-              category:
-                companyType?.name ||
-                "N/A",
-
-              /*
-               * Application Status
-               */
-              status:
-                application.status ||
-                "N/A",
-
-              /*
-               * Application Date
-               */
-              date:
-                application.confirmed_date ||
-                application.onboarded_date ||
-                application.created_at ||
-                "N/A",
-
-              /*
-               * IDs for the drawer
-               */
-              companyId:
-                application.company_id,
-
-              applicationServiceId:
-                application.application_service_id,
-
-              /*
-               * Keep the original application data
-               * available to the drawer.
-               */
-              applicationNumber:
-                application.application_number,
-
-              remarks:
-                application.remarks || "",
-
-              designation:
-                application.designation || "",
-
-              signature:
-                application.signature || "",
-            };
-          }
-        );
-
-        console.log(
-          "Onboarding Data:",
-          combinedData
-        );
-
-        setOnboardingData(combinedData);
-      } catch (err) {
-        console.error(
-          "Error loading onboarding data:",
-          err
-        );
-
-        setError(
-          err.message ||
-            "Failed to load onboarding data."
-        );
-      } finally {
         setLoading(false);
       }
-    };
+    }
 
-    fetchOnboardingData();
+    fetchCompany();
   }, []);
+
 
   return (
     <div className="admin-container">
@@ -283,7 +102,7 @@ export default function Onboarding() {
 
               <div className="result-container">
                 <p id="ob-result">
-                  {onboardingData.length}
+                  {companies.length}
                 </p>
 
                 <p>results</p>
@@ -297,78 +116,59 @@ export default function Onboarding() {
             <table className="table-content">
               <thead>
                 <tr className="tbl-header">
-                  <th>REFERENCE ID</th>
+                  <th>USER ID</th>
+                  <th>COMPANY ID</th>
                   <th>COMPANY NAME</th>
-                  <th>CATEGORY</th>
                   <th>STATUS</th>
-                  <th>DATE</th>
-                  <th></th>
+                  <th>CREATED AT</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
               <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="6">
-                      Loading...
-                    </td>
-                  </tr>
-                ) : error ? (
-                  <tr>
-                    <td colSpan="6">
-                      {error}
-                    </td>
-                  </tr>
-                ) : onboardingData.length === 0 ? (
-                  <tr>
-                    <td colSpan="6">
-                      No onboarding records found.
-                    </td>
-                  </tr>
-                ) : (
-                  onboardingData.map((item, index) => (
-                    <tr
-                      key={
-                        item.applicationServiceId ||
-                        index
-                      }
-                    >
-                      {/* Reference ID */}
-                      <td>
-                        {item.referenceId}
-                      </td>
-
-                      {/* Company Name */}
-                      <td>
-                        {item.companyName}
-                      </td>
-
-                      {/* Category */}
-                      <td>
-                        <span className="category-span">
-                          {item.category}
-                        </span>
-                      </td>
-
-                      {/* Status */}
-                      <td>
-                        <span className="status-span review">
-                          <Dot size={24} />
-                          {item.status}
-                        </span>
-                      </td>
-
-                      {/* Date */}
-                      <td>
-                        {item.date}
-                      </td>
-
+                 {loading ? (
+    <tr>
+      <td colSpan="7" style={{ padding: "30px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <BarLoader color="#0090FF" />
+        </div>
+      </td>
+    </tr>
+  ) : companies.length === 0 ? (
+    <tr>
+      <td
+        colSpan="6"
+        style={{
+          textAlign: "center",
+          padding: "30px",
+        }}
+      >
+        No Onboarding found.
+      </td>
+    </tr>
+  )  : (
+                  companies.map((company) => (
+                    <tr key={company.id?.status === "Pending"} 
+                    onClick={() => handleRowClick(company)}
+                    style={{ cursor: "pointer" }}>
+        <td>{company.user_id}</td>
+        <td>{company.id}</td>
+        <td>{company.name}</td>
+        <td>{company.status}</td>
+        <td>{company.created_at}</td>
+        
                       {/* View / Open */}
                       <td>
                         <button
                           className="onboard-prof"
                           onClick={() =>
-                            handleRowClick(item)
+                            handleRowClick(companies)
                           }
                         >
                           <IdCard />
@@ -389,7 +189,7 @@ export default function Onboarding() {
         onClose={() =>
           setIsDrawerOpen(false)
         }
-        item={selectedItem}
+        company={selectedItem}
       />
     </div>
   );

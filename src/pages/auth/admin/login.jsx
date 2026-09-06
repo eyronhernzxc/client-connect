@@ -38,15 +38,13 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(user));
 
       const companies = await getCompany();
-      const hasCompany = companies.some((company) => company.user_id === user.id);
 
-      if(hasCompany){
-
-        navigate('merchant/home');
-      } else {
-
-        navigate('form/company')
+       if (user?.data?.userdetail?.role_id !== 1 && user?.data?.userdetail?.role_id !== 2 ) {
+        navigate("/401");
+        return;
       }
+
+        navigate("/dashboard");
       
     } catch (error) {
     console.error("LOGIN ERROR:", error);
@@ -59,17 +57,17 @@ function Login() {
   };
 
   return (
-    <div className="LoginContainer">
-      <div className="LoginCard">
-      <div className="LogFormContainer">
-          <div className="LogInLogo">
+    <div className="login-container">
+      <div className="login-card">
+      <div className="log-form-container">
+          <div className="login-logo">
             <img src={pisopayLogo} alt="pisopay logo" />
           </div>
-          <div className="LogInName">
+          <div className="login-name">
             <img src={pisopayName} alt="pisopay name" />
           </div>
-          <form className="MerchantLogForm" onSubmit={handleMerchantLog}>
-            <div className="LogInputContainer">
+          <form className="admin-log-form" onSubmit={handleMerchantLog}>
+            <div className="log-input-container">
               <input
                 id="merchant_email"
                 type="email"
@@ -79,17 +77,14 @@ function Login() {
               />
 
               <input
-                id="merchant_password"
+                
                 type="password"
                 placeholder="Password"
                 required
                 name="password"
               />
             </div>
-            <div className="ForgotContainer">
-              <a href="/merchant/forgot-password">Forgot Password?</a>
-            </div>
-            <button className=" MerchantLogBtn" type="submit">
+            <button className="admin-btn" type="submit">
               {loading ? (
                 <Spinner />
               ) : (

@@ -27,6 +27,10 @@ const [showErrorModal, setShowErrorModal] = useState(false);
     );
   };
 
+  const handleNumberInput = (e) => {
+  e.target.value = e.target.value.replace(/\D/g, "");
+};
+
   useEffect(() => {
     document.title = "Pisopay | Merchant Register";
   }, []);
@@ -43,6 +47,7 @@ const [showErrorModal, setShowErrorModal] = useState(false);
     const data = {
     first_name: formData.get("firstname"),
     last_name: formData.get("lastname"),
+    middle_name: formData.get("middlename"),
     email: formData.get("email"),
 
     mobile_number:
@@ -115,11 +120,20 @@ const [showErrorModal, setShowErrorModal] = useState(false);
                 <input
                  onInput={handleTextInput}
                   type="text"
-                  placeholder="Last Name"
-                  name="lastname"
-                  required
+                  placeholder="Middle Name"
+                  name="middlename"
+                  
                 />
               </div>
+
+              <input
+                 onInput={handleTextInput}
+                  type="text"
+                  placeholder="Last Name"
+                  name="lastname"
+                  className="lastname"
+                  required
+                />
 
               <input
                 type="email"
@@ -146,7 +160,10 @@ const [showErrorModal, setShowErrorModal] = useState(false);
                   <option value="+91">+91</option>
                 </select>
 
-                <input className="phone_num" name="phone_num" type="tel"/>
+                <input className="phone_num" name="phone_num" type="tel"
+                onInput={handleNumberInput}
+                placeholder="Phone Number"
+                />
               </div>
 
               <div className="label-container">

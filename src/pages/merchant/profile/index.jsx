@@ -17,11 +17,13 @@ import {
   Edit3,
 } from "lucide-react";
 import { getCurrentUser } from "../../../api/auth.js";
+import { BarLoader } from "react-spinners";
 
 export default function Profile() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
    const [user, setUser] = useState(null);
+   const [loading, setLoading] = useState(true)
 
 
 
@@ -29,6 +31,7 @@ export default function Profile() {
     setSelectedItem(item);
     setIsDrawerOpen(true);
   };
+
 
   useEffect(() => {
     document.title = "Pisopay | Merchant Profile";
@@ -38,11 +41,16 @@ export default function Profile() {
              setUser(data);
          } catch (error) {
              console.error(error);
+         }finally{
+
+          setLoading(false);
          }
      };
  
      fetchUser();
  }, []);
+
+ const signatories = user?.data?.personal_details ?? [];
 
   return (
     <div className="admin-container">
@@ -165,7 +173,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="page-gap"></div>
+      
 
       <div className="table-container">
         <SearchToolbar
@@ -202,21 +210,47 @@ export default function Profile() {
               </thead>
 
               <tbody>
-                <tr>
-                  <td>Ryan Dexter Libres</td>
-                  <td>Manager</td>
-                  <td>
-                    {/* <span className="category-span">
-                    </span> */}
-                    #12456
-                  </td>
-                  <td>
-                    {/* <span className="status-span review">
-                      <Dot size={24} /> 
-                    </span> */}
-                    +6397529023956
-                  </td>
-                  <td>ryan.libres@example.com</td>
+
+              {loading ? (
+                  <tr>
+                    <td colSpan="7" style={{ padding: "30px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <BarLoader color="#0090FF" />
+                      </div>
+                    </td>
+                  </tr>
+                ) : signatories.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      style={{
+                        textAlign: "center",
+                        padding: "30px",
+                      }}
+                    >
+                      No signatories found
+                    </td>
+                  </tr>
+                ) : (
+                  user.map((signatory) => (
+                    <tr
+                      key={signatory.user?.data?.personal_detail?.id}
+                      onClick={() => handleRowClick(company)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>{signatory.user?.data?.personal_detail?.id}</td>
+                       <td>{signatory.user?.data?.personal_detail?.firstname}</td>
+                     
+                    </tr>
+                  ))
+                )}
+                {/* <tr>
                   <td>
                     <button
                       className="onboard-prof"
@@ -225,7 +259,7 @@ export default function Profile() {
                       <p>⋮</p>
                     </button>
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           }

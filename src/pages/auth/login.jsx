@@ -7,7 +7,6 @@ import pisopayName from "../../assets/pisopay_name.png";
 import { api } from "../../api/api";
 import Spinner from "../../loader/spinner";
 import { getCurrentUser } from "../../api/auth";
-import { getCompany } from "../../api/getCompany";
 
 function Login() {
   const navigate = useNavigate();
@@ -41,16 +40,55 @@ const [showErrorModal, setShowErrorModal] = useState(false);
       const user = await getCurrentUser();
       localStorage.setItem("user", JSON.stringify(user));
 
-      const companies = await getCompany();
-      const hasCompany = companies.some((company) => company.user_id === user.id);
+       const hasCompany = !!user?.data?.company?.id;
+      const personalDetails = user?.data?.personal_details || [];
 
-      if(hasCompany){
+const hasSignatory = personalDetails.some(
+  (detail) => detail.personal_detail_type_id === 1
+);
 
-        navigate('form/signatory');
-      } else {
+const hasFinance = personalDetails.some(
+  (detail) => detail.personal_detail_type_id === 2
+);
 
-        navigate('form/company')
+const hasDeveloper = personalDetails.some(
+  (detail) => detail.personal_detail_type_id === 3
+);
+
+ const roleId = Number(user?.data?.userdetail?.role_id);
+
+if (roleId !== 3) {
+  navigate("/401");
+  return;
+}
+      if(!hasCompany ){
+
+        navigate('/form/company');
+        return;
       }
+      if(!hasSignatory){
+
+        navigate('/form/signatory');
+        return;
+      }
+
+      if(!hasFinance){
+
+        navigate('/form/finance');
+        return;
+      }
+
+      if(!hasDeveloper){
+
+        navigate('/form/developer');
+        return;
+      }
+
+      else {
+
+        navigate('/merchant/home')
+      }
+    
       
     }catch (error) {
   
