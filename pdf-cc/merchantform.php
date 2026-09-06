@@ -1400,7 +1400,7 @@ $drawObRow('Average Billing Amount:', 'Highest Billing Amount:', null, 'Php 1,50
 $drawObRow('Current Payment Gateway:', 'Current Acquirer Bank:', null, 'PayMongo', 'BDO Unibank');
 
 // Familiar with chargeback
-$h = $obRH;
+$h = $obRH;     
 box($pdf, MX, $y, CW, $h);
 line($pdf, MX + 92, $y, MX + 92, $y + $h);
 text($pdf, MX + 1.5, $y + 1.4, 'Familiar with Chargeback?', 6.3);
