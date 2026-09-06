@@ -3,8 +3,13 @@ import {postCompany} from "../../../../api/postCompany";
 import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
 import {useNavigate} from "react-router-dom";
+<<<<<<< Updated upstream
 import '../form-style.css'
 import Spinner from '../../../../loader/spinner';
+=======
+import '../company-register.css'
+import PageHeader from '../../../../components/admin/header/page-header';
+>>>>>>> Stashed changes
 
 export default function CompanyRegistration() {
 
