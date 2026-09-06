@@ -82,7 +82,7 @@ export default function Sidebar() {
                 <span>Forms</span>
               </NavLink>
             </li>
-            {/* <li>
+            <li>
               <NavLink
                 className={({ isActive }) =>
                   `navlink ${isActive ? "active" : ""}`
@@ -90,10 +90,10 @@ export default function Sidebar() {
                 to="/merchant/services"
                 title="Services"
               >
-                <Services />
+                <Handshake />
                 <span>Services</span>
               </NavLink>
-            </li> */}
+            </li>
 
             <li>
               <NavLink

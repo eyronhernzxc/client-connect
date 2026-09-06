@@ -60,7 +60,7 @@ export default function CompanyDetails({ company }) {
           <input
             type="text"
             id="dateOfRegistration"
-            value={company?.created_at || ""}
+            value={company?.created_at?.split("T")[0] || ""}
             onChange={handleChange}
           />
         </div>
@@ -140,11 +140,37 @@ export default function CompanyDetails({ company }) {
           />
         </div>
 
+        <div className="form-group">
+          <label htmlFor="transaction">Expected Transaction </label>
+          <input
+            type="text"
+            id="transaction"
+           
+            value={company?.company_detail?.expected_transaction}
+            
+            onChange={handleChange}
+            placeholder=""
+          />
+        </div>
+
+
+        <div className="form-group">
+          <label htmlFor="total">Transaction Total Amount</label>
+          <input
+            type="text"
+            id="total"
+            value={company?.company_detail?.transaction_total_amount}
+            
+            onChange={handleChange}
+            placeholder=""
+          />
+        </div>
+
         <div className="form-group full-width">
-          <label htmlFor="remarks">Remarks</label>
+          <label htmlFor="purpose">Purpose of Application</label>
           <textarea
-            id="remarks"
-            name="remarks"
+            id="purpose"
+            value={company?.company_detail?.application_purpose}
             
             onChange={handleChange}
             placeholder=""

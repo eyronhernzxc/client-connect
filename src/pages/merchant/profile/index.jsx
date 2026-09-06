@@ -50,7 +50,10 @@ export default function Profile() {
      fetchUser();
  }, []);
 
- const signatories = user?.data?.personal_details ?? [];
+const signatories =
+  user?.data?.personal_detail?.filter(
+    (detail) => [1, 2, 3].includes(detail.personal_detail_type_id)
+  ) || [];
 
   return (
     <div className="admin-container">
@@ -200,56 +203,66 @@ export default function Profile() {
             <table className="table-content">
               <thead>
                 <tr className="tbl-header">
-                  <th>CONTACT PERSON</th>
-                  <th>POSITION</th>
-                  <th>ID #</th>
+                  <th>SIGNATORY</th>
+                  <th>EMAIL</th>
                   <th>CONTACT NUMBER</th>
-                  <th>EMAIL ADDRESS</th>
-                  <th></th>
+                  <th>GENDER</th>
+                  <th>CREATED AT</th>
+                  
                 </tr>
               </thead>
 
               <tbody>
 
-              {loading ? (
-                  <tr>
-                    <td colSpan="7" style={{ padding: "30px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <BarLoader color="#0090FF" />
-                      </div>
-                    </td>
-                  </tr>
-                ) : signatories.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan="7"
-                      style={{
-                        textAlign: "center",
-                        padding: "30px",
-                      }}
-                    >
-                      No signatories found
-                    </td>
-                  </tr>
-                ) : (
-                  user.map((signatory) => (
-                    <tr
-                      key={signatory.user?.data?.personal_detail?.id}
-                      onClick={() => handleRowClick(company)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td>{signatory.user?.data?.personal_detail?.id}</td>
-                       <td>{signatory.user?.data?.personal_detail?.firstname}</td>
-                     
-                    </tr>
-                  ))
-                )}
+             {loading ? (
+  <tr>
+    <td colSpan="7" style={{ padding: "30px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BarLoader color="#0090FF" />
+      </div>
+    </td>
+  </tr>
+) : signatories.length === 0 ? (
+  <tr>
+    <td
+      colSpan="5"
+      style={{
+        textAlign: "center",
+        padding: "30px",
+      }}
+    >
+      No signatories found
+    </td>
+  </tr>
+) : (
+  signatories.map((signatory) => (
+    <tr
+      key={signatory.id}
+      onClick={() => handleRowClick(signatory)}
+      style={{ cursor: "pointer" }}
+    >
+      <td>
+        {signatory?.first_name}{" "}
+        {signatory?.middle_name}{" "}
+        {signatory?.last_name}
+      </td>
+
+      <td>{signatory?.email}</td>
+
+      <td>{signatory?.phone_number}</td>
+
+      <td>{signatory?.gender}</td>
+
+      <td>{signatory?.created_at?.split("T")[0]}</td>
+    </tr>
+  ))
+)}
                 {/* <tr>
                   <td>
                     <button

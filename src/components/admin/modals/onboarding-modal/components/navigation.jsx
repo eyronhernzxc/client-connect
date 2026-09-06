@@ -11,20 +11,12 @@ export default function Navigation({activeTab, setActiveTab}) {
           <span className="nav-number">1</span>
           <p>Company Details</p>
         </button>
-      
-      <button
-        className={`nav ${activeTab === "emerchant" ? "active" : ""}`}
-        onClick={() => setActiveTab("emerchant")}
-        >
-          <span className="nav-number">2</span>
-          <p>E-Merchant Form</p>
-        </button>
 
       <button
         className={`nav ${activeTab === "categorize" ? "active" : ""}`}
         onClick={() => setActiveTab("categorize")}
         >
-          <span className="nav-number">3</span>
+          <span className="nav-number">2</span>
           <p>Categorize</p>
         </button>
       
@@ -32,7 +24,7 @@ export default function Navigation({activeTab, setActiveTab}) {
         className={`nav ${activeTab === "req-documents" ? "active" : ""}`}
         onClick={() => setActiveTab("req-documents")}
         >
-          <span className="nav-number">4</span>
+          <span className="nav-number">3</span>
           <p>Required Documents</p>
         </button>
     </div>

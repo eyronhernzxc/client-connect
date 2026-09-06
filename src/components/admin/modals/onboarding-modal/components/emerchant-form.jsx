@@ -60,24 +60,24 @@ export default function EMerchantForm({ company }) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="signature">Signature</label>
-          {/* <input
-            type="file"
-            id="signature"
-            value={signatory?.signature}
+          <label htmlFor="birthdate">Birthdate</label>
+          <input
+            type="text"
+            id="birthdate"
+            value={signatory?.birthdate}
 
             onChange={handleChange}
             placeholder=""
-          /> */}
-          <a id="signature"href={signatory?.signature}>signature</a>
+          />
+
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Phone Number *</label>
+          <label htmlFor="nationality">Nationality</label>
           <input
-            type="tel"
-            id="phone"
-            name="phone"
+            type="text"
+            id="nationality"
+            value={signatory?.nationality}
 
             onChange={handleChange}
             placeholder=""

@@ -12,11 +12,10 @@ const FormLayout = Loadable(lazy(() => import("../../pages/layout/form-layout.js
 const Profile = Loadable(lazy(() => import("../../pages/merchant/profile/index.jsx")));
 const Forms = Loadable(lazy(() => import("../../pages/merchant/forms/index.jsx")));
 const Services = Loadable(lazy(() => import("../../pages/merchant/services/index.jsx")));
-const Settings = Loadable(lazy(() => import("../../pages/merchant/settings/index.jsx")));
 
 const CompanyRegistration = Loadable(lazy(() => import ("../../pages/merchant/forms/company-details/company-register.jsx")));
 const SignatoryDetails = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/signatory-details.jsx")));
-const FinancialInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/finacial-information.jsx")));
+const FinancialInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/financial-information.jsx")));
 const AdditionalInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/additional-information.jsx")));
 const BusinessInformation = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-information.jsx")));
 const BusinessQuestion = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-questions.jsx")));
@@ -67,10 +66,6 @@ const publicRoutes = ([
                 element: <Services />,
             },
 
-            {
-                path: "/merchant/settings",
-                element: <Settings />,
-            }
         ]
     },
       
