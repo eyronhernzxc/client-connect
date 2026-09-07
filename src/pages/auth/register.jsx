@@ -32,6 +32,38 @@ const PHONE_MAX_LENGTH = {
 
 const DEFAULT_PHONE_MAX_LENGTH = 12;
 
+// Minimum age required to register an account.
+const MIN_AGE = 18;
+
+/*
+ * Returns true only if the given birth date makes the person
+ * MIN_AGE or older as of today. Requires all three parts
+ * (year, month, day) to be present.
+ */
+function isOldEnough(year, month, day) {
+  if (!year || !month || !day) return false;
+
+  const birthDate = new Date(Number(year), Number(month) - 1, Number(day));
+
+  // Guard against invalid dates (e.g. Feb 30).
+  if (Number.isNaN(birthDate.getTime())) return false;
+
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+
+  const hasHadBirthdayThisYear =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() &&
+      today.getDate() >= birthDate.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age >= MIN_AGE;
+}
+
 function MerchantRegister() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -85,6 +117,15 @@ const [showErrorModal, setShowErrorModal] = useState(false);
     const month = formData.get("birth_month");
     const day = formData.get("birth_day");
     const year = formData.get("birth_year");
+
+    if (!isOldEnough(year, month, day)) {
+      setErrorMessage(
+        `You must be at least ${MIN_AGE} years old to register.`
+      );
+      setShowErrorModal(true);
+      setLoading(false);
+      return;
+    }
 
     const data = {
     first_name: formData.get("firstname"),
