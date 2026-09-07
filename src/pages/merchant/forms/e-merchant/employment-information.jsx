@@ -479,14 +479,14 @@ const response = await postEmployment(data);
                 </div>
               </div>
             </div>
-            <button type="submit">
-              {loading ? (
-
-                <Spinner />
-              ): (
-                "Submit"
-              )}
-            </button>
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
+            "Submit"
+        )
+        }
+    </button>
           </form>
         </div>
       </div>

@@ -511,14 +511,14 @@ navigate("/form/employment");
                 </div>
               </div>
             </div>
-
-            <button type="submit">
-            {loading ? (
-            <Spinner/>
-            ): (
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
             "Submit"
-            )}
-            </button>
+        )
+        }
+    </button>
           </form>
         </div>
       </div>

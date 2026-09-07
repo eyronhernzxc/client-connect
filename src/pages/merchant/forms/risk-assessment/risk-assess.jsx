@@ -879,15 +879,14 @@ export default function RiskAssessment() {
             />
         </div>
 
-        <div className="ra-actions">
-            <button
-            type="submit"
-            className="ra-btn"
-            disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-        </div>
-
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
+            "Submit"
+        )
+        }
+    </button>
     </form>
     </div>
     </div>

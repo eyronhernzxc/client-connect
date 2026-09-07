@@ -1,17 +1,21 @@
 /* =========================
-   COMPANY DETAILS
-   ========================= */
+   COMPANY REGISTRATION
+========================= */
 
 :root {
     --control-height: 40px;
     --control-radius: 8px;
     --control-font-size: 14px;
     --label-font-size: 13px;
+
     --border-color: #d9dee7;
     --border-color-hover: #b8c1ce;
+
     --text-color: #344054;
+
     --primary-color: #176b45;
     --primary-color-hover: #125536;
+
     --gap-sm: 8px;
     --gap-md: 16px;
     --gap-lg: 24px;
@@ -22,7 +26,7 @@
    MAIN CONTAINER
 ========================= */
 
-.company-details-container {
+.main-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -30,7 +34,9 @@
     width: 100%;
     min-height: calc(100vh - 80px);
 
-    padding: 105px 20px 30px;
+    padding: 40px 20px 30px;
+
+    box-sizing: border-box;
 }
 
 
@@ -38,14 +44,14 @@
    FORM CARD
 ========================= */
 
-.company-details-container .form-card {
+.main-container .form-card {
     width: 100%;
     max-width: 760px;
 
+    background: #ffffff;
+
     border: 1px solid #e4e7ec;
     border-radius: 12px;
-
-    background-color: #fff;
 
     overflow: hidden;
 
@@ -59,9 +65,11 @@
    FORM CONTAINER
 ========================= */
 
-.company-details-container .form-container {
+.main-container .form-container {
     width: 100%;
-    padding: 32px 28px;
+    padding: 28px;
+
+    box-sizing: border-box;
 }
 
 
@@ -69,7 +77,7 @@
    FORM
 ========================= */
 
-.company-details-container .form {
+.main-container .form {
     display: flex;
     flex-direction: column;
 
@@ -83,7 +91,7 @@
    FORM ROW
 ========================= */
 
-.company-details-container .form-row {
+.main-container .form-row {
     display: grid;
 
     grid-template-columns:
@@ -101,15 +109,12 @@
    INPUT FIELD
 ========================= */
 
-.company-details-container .input-field,
-.company-details-container .input-field-large,
-.company-details-container .input-field-short,
-.company-details-container .form-field {
+.main-container .input-field,
+.main-container .form-field {
     display: flex;
     flex-direction: column;
 
     width: 100%;
-    max-width: 100%;
     min-width: 0;
 
     gap: 6px;
@@ -120,8 +125,8 @@
    LABELS
 ========================= */
 
-.company-details-container .input-field label,
-.company-details-container .form-field label {
+.main-container .input-field label,
+.main-container .form-field label {
     font-size: var(--label-font-size);
     font-weight: 500;
 
@@ -129,7 +134,14 @@
 
     line-height: 1.3;
 
-    padding: 10px 0 0;
+    padding: 0;
+}
+
+
+/* REQUIRED ASTERISK */
+
+.main-container label span {
+    color: #d92d20;
 }
 
 
@@ -137,10 +149,10 @@
    INPUT / SELECT
 ========================= */
 
-.company-details-container .input-field input,
-.company-details-container .input-field select,
-.company-details-container .form-field input,
-.company-details-container .form-field select {
+.main-container .input-field input,
+.main-container .input-field select,
+.main-container .form-field input,
+.main-container .form-field select {
     box-sizing: border-box;
 
     width: 100%;
@@ -153,29 +165,51 @@
     border: 1px solid var(--border-color);
     border-radius: var(--control-radius);
 
+    background: #ffffff;
+
     font-family: inherit;
     font-size: var(--control-font-size);
 
     color: var(--text-color);
-
-    background: #fff;
 
     transition:
         border-color 0.15s ease,
         box-shadow 0.15s ease;
 }
 
-.company-details-container .input-field input:hover,
-.company-details-container .input-field select:hover,
-.company-details-container .form-field input:hover,
-.company-details-container .form-field select:hover {
+
+/* =========================
+   PLACEHOLDER
+========================= */
+
+.main-container input::placeholder,
+.main-container textarea::placeholder {
+    color: #98a2b3;
+}
+
+
+/* =========================
+   HOVER
+========================= */
+
+.main-container .input-field input:hover,
+.main-container .input-field select:hover,
+.main-container .form-field input:hover,
+.main-container .form-field select:hover,
+.main-container .form-field textarea:hover {
     border-color: var(--border-color-hover);
 }
 
-.company-details-container .input-field input:focus-visible,
-.company-details-container .input-field select:focus-visible,
-.company-details-container .form-field input:focus-visible,
-.company-details-container .form-field select:focus-visible {
+
+/* =========================
+   FOCUS
+========================= */
+
+.main-container .input-field input:focus-visible,
+.main-container .input-field select:focus-visible,
+.main-container .form-field input:focus-visible,
+.main-container .form-field select:focus-visible,
+.main-container .form-field textarea:focus-visible {
     outline: none;
 
     border-color: var(--primary-color);
@@ -189,18 +223,20 @@
    TEXTAREA
 ========================= */
 
-.company-details-container .form-field textarea {
+.main-container .form-field textarea {
     box-sizing: border-box;
 
     width: 100%;
     max-width: 100%;
 
-    min-height: 96px;
+    min-height: 100px;
 
     padding: 10px 12px;
 
     border: 1px solid var(--border-color);
     border-radius: var(--control-radius);
+
+    background: #ffffff;
 
     font-family: inherit;
     font-size: var(--control-font-size);
@@ -216,128 +252,19 @@
         box-shadow 0.15s ease;
 }
 
-.company-details-container .form-field textarea:hover {
-    border-color: var(--border-color-hover);
-}
-
-.company-details-container .form-field textarea:focus-visible {
-    outline: none;
-
-    border-color: var(--primary-color);
-
-    box-shadow:
-        0 0 0 3px rgba(23, 107, 69, 0.12);
-}
-
-
-/* =========================
-   CHECKBOX GRID
-========================= */
-
-.company-details-container .form-field-grid {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr);
-
-    width: 100%;
-
-    column-gap: var(--gap-lg);
-    row-gap: 14px;
-
-    margin-top: 4px;
-}
-
-
-/* =========================
-   CHECKBOX ITEM
-========================= */
-
-.company-details-container .radio-field {
-    display: flex;
-    align-items: flex-start;
-
-    width: 100%;
-    min-width: 0;
-
-    min-height: 20px;
-
-    padding: 0;
-}
-
-
-/* =========================
-   CHECKBOX
-========================= */
-
-.company-details-container .radio-field input {
-    flex: 0 0 auto;
-
-    width: 16px;
-    height: 16px;
-
-    margin: 1px 8px 0 0;
-
-    accent-color: var(--primary-color);
-
-    cursor: pointer;
-}
-
-
-/* =========================
-   CHECKBOX LABEL
-========================= */
-
-.company-details-container .radio-field label {
-    display: block;
-
-    width: 100%;
-    min-width: 0;
-
-    color: var(--text-color);
-
-    font-size: var(--label-font-size);
-    font-weight: 400;
-
-    line-height: 1.4;
-
-    word-break: normal;
-    overflow-wrap: break-word;
-
-    cursor: pointer;
-}
-
-
-/* =========================
-   BUTTON CONTAINER
-========================= */
-
-.company-details-container .form-actions {
-    display: flex;
-    justify-content: flex-end;
-
-    width: 100%;
-
-    margin-top: 8px;
-    padding-top: 8px;
-
-    border-top: 1px solid #eef0f3;
-}
-
 
 /* =========================
    SUBMIT BUTTON
 ========================= */
 
-.company-details-container .form button {
+.main-container .form button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    width: auto;
-    min-width: 140px;
+    align-self: flex-end;
 
+    min-width: 140px;
     height: var(--control-height);
 
     padding: 0 24px;
@@ -346,8 +273,7 @@
     border-radius: var(--control-radius);
 
     background-color: var(--primary-color);
-
-    color: white;
+    color: #ffffff;
 
     font-family: inherit;
     font-size: var(--control-font-size);
@@ -360,15 +286,18 @@
         transform 0.05s ease;
 }
 
-.company-details-container .form button:hover {
+
+.main-container .form button:hover {
     background-color: var(--primary-color-hover);
 }
 
-.company-details-container .form button:active {
+
+.main-container .form button:active {
     transform: translateY(1px);
 }
 
-.company-details-container .form button:focus-visible {
+
+.main-container .form button:focus-visible {
     outline: none;
 
     box-shadow:
@@ -377,69 +306,7 @@
 
 
 /* =========================
-   FILE UPLOAD
-========================= */
-
-.company-details-container .file-label {
-    box-sizing: border-box;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
-    max-width: 100%;
-
-    height: var(--control-height);
-
-    border: 1px dashed var(--border-color-hover);
-    border-radius: var(--control-radius);
-
-    font-size: var(--control-font-size);
-
-    color: #667085;
-
-    cursor: pointer;
-
-    transition:
-        border-color 0.15s ease,
-        background-color 0.15s ease;
-}
-
-.company-details-container .file-label:hover {
-    border-color: var(--primary-color);
-
-    background-color: rgba(23, 107, 69, 0.03);
-}
-
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 560px) {
-
-    .company-details-container .form-container {
-        padding: 20px 16px;
-    }
-
-    .company-details-container .form-row,
-    .company-details-container .form-field-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .company-details-container .form-actions {
-        justify-content: stretch;
-    }
-
-    .company-details-container .form button {
-        width: 100%;
-    }
-}
-
-
-/* =========================
-   COMPANY HEADER
+   HEADER
 ========================= */
 
 .companyf-header {
@@ -453,7 +320,9 @@
     width: 100%;
     min-height: 70px;
 
-    padding: 0 60px;
+    padding: 0 28px;
+
+    box-sizing: border-box;
 
     background: #ffffff;
 
@@ -461,16 +330,18 @@
 }
 
 
-/* Center title */
+/* =========================
+   HEADER TITLE
+========================= */
 
 .companyf-title {
     grid-column: 2;
 
-    margin: 20px;
+    margin: 0;
 
     text-align: center;
 
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
 
     color: #1f2937;
@@ -479,7 +350,9 @@
 }
 
 
-/* Right side */
+/* =========================
+   HEADER ACTIONS
+========================= */
 
 .companyf-header-actions {
     grid-column: 3;
@@ -491,7 +364,9 @@
 }
 
 
-/* Clear button */
+/* =========================
+   CLEAR BUTTON
+========================= */
 
 .companyf-clear {
     border: 1px solid #d1d5db;
@@ -512,11 +387,91 @@
     transition: all 0.2s ease;
 }
 
+
 .companyf-clear:hover {
     background: #f3f4f6;
     border-color: #9ca3af;
 }
 
+
 .companyf-clear:active {
     transform: scale(0.97);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+    .main-container {
+        padding: 20px 12px;
+    }
+
+    .main-container .form-container {
+        padding: 20px 16px;
+    }
+
+    .main-container .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .companyf-header {
+        min-height: 60px;
+        padding: 0 16px;
+    }
+
+    .companyf-title {
+        font-size: 19px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .main-container {
+        padding: 10px;
+    }
+
+    .main-container .form-card {
+        border-radius: 10px;
+    }
+
+    .main-container .form-container {
+        padding: 18px 14px;
+    }
+
+    .companyf-header {
+        grid-template-columns: 1fr;
+        justify-content: center;
+        padding: 14px;
+    }
+
+    .companyf-title {
+        grid-column: 1;
+        font-size: 18px;
+    }
+
+    .main-container .form button {
+        width: 100%;
+    }
+}
+
+.form-header{
+
+    background-color: #005FA1;
+    padding: 10px;
+    width: 100%;
+    height: max-content;
+
+}
+
+.form-header h1{
+
+    margin: 0;
+    padding: 15px;
+    color: white;
+    font-size: 1.5rem;
+    text-align: left;
 }

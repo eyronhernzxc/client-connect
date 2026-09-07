@@ -1,0 +1,163 @@
+.registration-stepper {
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    padding: 30px 35px 10px;
+
+    background: #ffffff;
+}
+
+
+/* =========================
+   STEP
+========================= */
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    min-width: 85px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================
+   CIRCLE
+========================= */
+
+.step-circle {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+
+    border: 2px solid #d0d5dd;
+
+    background: #ffffff;
+
+    color: #98a2b3;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: all 0.25s ease;
+}
+
+
+/* ACTIVE */
+
+.step-item.active .step-circle {
+    background: #005fa1;
+
+    border-color: #005fa1;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 0 5px rgba(0, 95, 161, 0.10);
+}
+
+
+/* COMPLETED */
+
+.step-item.completed .step-circle {
+    background: #005fa1;
+
+    border-color: #005fa1;
+
+    color: #ffffff;
+}
+
+
+/* =========================
+   LABEL
+========================= */
+
+.step-label {
+    margin-top: 8px;
+
+    color: #98a2b3;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    text-align: center;
+}
+
+.step-item.active .step-label {
+    color: #005fa1;
+    font-weight: 700;
+}
+
+.step-item.completed .step-label {
+    color: #344054;
+    font-weight: 600;
+}
+
+
+/* =========================
+   LINE
+========================= */
+
+.step-line {
+    flex: 1;
+
+    max-width: 110px;
+
+    height: 2px;
+
+    margin-top: 18px;
+
+    background: #e4e7ec;
+
+    transition: background 0.25s ease;
+}
+
+.step-line.completed {
+    background: #005fa1;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .registration-stepper {
+        padding: 25px 10px 10px;
+    }
+
+    .step-item {
+        min-width: 55px;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+
+        font-size: 11px;
+    }
+
+    .step-label {
+        font-size: 9px;
+    }
+
+    .step-line {
+        margin-top: 15px;
+    }
+}

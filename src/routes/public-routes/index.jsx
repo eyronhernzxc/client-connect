@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import Loadable from "../../loader/loadable-routes";
 
-
 const Login = Loadable(lazy(() => import("../../pages/auth/login.jsx")));
 const Register = Loadable(lazy(() => import("../../pages/auth/register.jsx")));
 const MerchantLayout = Loadable(lazy(() => import("../../pages/layout/merchant-layout.jsx")));
