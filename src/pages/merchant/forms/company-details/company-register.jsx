@@ -6,6 +6,15 @@ import {useNavigate} from "react-router-dom";
 import '../form-style.css'
 import Spinner from '../../../../loader/spinner';
 
+/*
+ * Caps a local Philippine phone number input at 11 digits
+ * (the standard format including the leading zero, e.g. 09171234567).
+ * Strips any non-digit characters as the user types.
+ */
+const handlePHNumberInput = (event) => {
+  event.target.value = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
+
 export default function CompanyRegistration() {
 
 const [loading, setLoading] = useState(false);
@@ -149,6 +158,8 @@ return (
             type='tel'
             placeholder="e.g 09XXXXXXXXX"
             name='phone'
+            onInput={handlePHNumberInput}
+            maxLength={11}
             />
         </div>
 
