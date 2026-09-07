@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-import "../../styles/merchant/merchant.css";
-import pisopayLogo from "../../assets/pisopay_logo.png";
-import pisopayName from "../../assets/pisopay_name.png";
-import { api } from "../../api/api";
-import Spinner from "../../loader/spinner";
-import { getCurrentUser } from "../../api/auth";
+import "../../../styles/merchant/merchant.css";
+import pisopayLogo from "../../../assets/pisopay_logo.png";
+import pisopayName from "../../../assets/pisopay_name.png";
+import { api } from "../../../api/api";
+import Spinner from "../../../loader/spinner";
+import { getCurrentUser } from "../../../api/auth";
 
 function Login() {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const hasDeveloper = personalDetails.some(
 
  const roleId = Number(user?.data?.userdetail?.role_id);
 
-if (roleId !== 3) {
+if (roleId == 3) {
   navigate("/401");
   return;
 }
