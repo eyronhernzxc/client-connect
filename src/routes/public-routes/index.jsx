@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import Loadable from "../../loader/loadable-routes";
 
-
 const Login = Loadable(lazy(() => import("../../pages/auth/login.jsx")));
 const Register = Loadable(lazy(() => import("../../pages/auth/register.jsx")));
 const MerchantLayout = Loadable(lazy(() => import("../../pages/layout/merchant-layout.jsx")));
@@ -12,11 +11,10 @@ const FormLayout = Loadable(lazy(() => import("../../pages/layout/form-layout.js
 const Profile = Loadable(lazy(() => import("../../pages/merchant/profile/index.jsx")));
 const Forms = Loadable(lazy(() => import("../../pages/merchant/forms/index.jsx")));
 const Services = Loadable(lazy(() => import("../../pages/merchant/services/index.jsx")));
-const Settings = Loadable(lazy(() => import("../../pages/merchant/settings/index.jsx")));
 
 const CompanyRegistration = Loadable(lazy(() => import ("../../pages/merchant/forms/company-details/company-register.jsx")));
 const SignatoryDetails = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/signatory-details.jsx")));
-const FinancialInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/finacial-information.jsx")));
+const FinancialInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/financial-information.jsx")));
 const AdditionalInformation = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/additional-information.jsx")));
 const BusinessInformation = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-information.jsx")));
 const BusinessQuestion = Loadable(lazy(() =>import ("../../pages/merchant/forms/e-merchant/business-questions.jsx")));
@@ -26,6 +24,12 @@ const RiskAssessment = Loadable(lazy(() =>import ("../../pages/merchant/forms/ri
 const KnowYourCustomer = Loadable(lazy(() =>import ("../../pages/merchant/forms/kyc/kyc.jsx")));
 const DeveloperSignatory = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/developer-signatory.jsx")));
 const FinancialSignatory = Loadable(lazy(() => import ("../../pages/merchant/forms/e-merchant/finance-signatory.jsx")));
+
+// ERRORS
+
+const NotFound = Loadable(lazy(() => import ("../../pages/errors/notfound.jsx")));
+const BadRequest = Loadable(lazy(() => import ("../../pages/errors/badrequest.jsx")));
+const Unauthorized = Loadable(lazy(() => import ("../../pages/errors/unauthorized.jsx")));
 
 
 const publicRoutes = ([
@@ -61,10 +65,6 @@ const publicRoutes = ([
                 element: <Services />,
             },
 
-            {
-                path: "/merchant/settings",
-                element: <Settings />,
-            }
         ]
     },
       
@@ -134,6 +134,21 @@ const publicRoutes = ([
             }
         ]
     },
+
+    
+      {
+        path: "/400",
+        element: <BadRequest />,
+      },
+      {
+        path: "/401",
+        element: <Unauthorized />,
+      },
+
+       {
+        path: "*",
+        element: <NotFound />,
+      },
 
 
     // {

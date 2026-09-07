@@ -7,6 +7,63 @@ import pisopayName from "../../assets/pisopay_name.png";
 import {createUser} from "../../api/userApi";
 import Spinner from "../../loader/spinner";
 
+/*
+ * Max number of digits allowed in the local phone_num field,
+ * keyed by the selected country dial code.
+ *
+ * PH (+63): local mobile numbers are 11 digits with the leading
+ * zero (e.g. 09171234567) or 10 digits without it (9171234567).
+ * Since the dial code +63 already replaces the leading 0, the
+ * phone_num field itself should cap at 10 digits so that
+ * "+63" + phone_num == "+639171234567" (12 chars total).
+ *
+ * Add/adjust entries here if other countries need their own cap.
+ */
+const PHONE_MAX_LENGTH = {
+  "+63": 10, // Philippines
+  "+1": 10,  // US/Canada
+  "+44": 10, // UK
+  "+61": 9,  // Australia
+  "+81": 10, // Japan
+  "+82": 10, // South Korea
+  "+65": 8,  // Singapore
+  "+91": 10, // India
+};
+
+const DEFAULT_PHONE_MAX_LENGTH = 12;
+
+// Minimum age required to register an account.
+const MIN_AGE = 18;
+
+/*
+ * Returns true only if the given birth date makes the person
+ * MIN_AGE or older as of today. Requires all three parts
+ * (year, month, day) to be present.
+ */
+function isOldEnough(year, month, day) {
+  if (!year || !month || !day) return false;
+
+  const birthDate = new Date(Number(year), Number(month) - 1, Number(day));
+
+  // Guard against invalid dates (e.g. Feb 30).
+  if (Number.isNaN(birthDate.getTime())) return false;
+
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+
+  const hasHadBirthdayThisYear =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() &&
+      today.getDate() >= birthDate.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age >= MIN_AGE;
+}
+
 function MerchantRegister() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -17,6 +74,36 @@ function MerchantRegister() {
   const [birthYear, setBirthYear] = useState("");
   const [showTerms, setShowTerms] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+   const [errorMessage, setErrorMessage] = useState("");
+const [showErrorModal, setShowErrorModal] = useState(false);
+
+  // Tracks the currently selected dial code so the phone_num
+  // input's maxLength/onInput cap can be recalculated.
+  const [countryCode, setCountryCode] = useState("");
+
+    const handleTextInput = (event) => {
+    event.target.value = event.target.value.replace(
+      /[^\p{L}\s'-]/gu,
+      ""
+    );
+  };
+
+  const handleNumberInput = (e) => {
+    const digitsOnly = e.target.value.replace(/\D/g, "");
+    const max =
+      PHONE_MAX_LENGTH[countryCode] || DEFAULT_PHONE_MAX_LENGTH;
+
+    e.target.value = digitsOnly.slice(0, max);
+  };
+
+  /*
+   * Hard-caps whatever is typed into a password field at 16 characters.
+   * Paired with minLength={8} + required on the input for the
+   * browser's native "too short" validation on submit.
+   */
+  const handlePasswordInput = (event) => {
+    event.target.value = event.target.value.slice(0, 16);
+  };
 
   useEffect(() => {
     document.title = "Pisopay | Merchant Register";
@@ -24,15 +111,26 @@ function MerchantRegister() {
 
   const handleMerchantRegister = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(event.currentTarget);
     const month = formData.get("birth_month");
     const day = formData.get("birth_day");
     const year = formData.get("birth_year");
 
+    if (!isOldEnough(year, month, day)) {
+      setErrorMessage(
+        `You must be at least ${MIN_AGE} years old to register.`
+      );
+      setShowErrorModal(true);
+      setLoading(false);
+      return;
+    }
+
     const data = {
     first_name: formData.get("firstname"),
     last_name: formData.get("lastname"),
+    middle_name: formData.get("middlename"),
     email: formData.get("email"),
 
     mobile_number:
@@ -51,11 +149,24 @@ function MerchantRegister() {
 
     }
 
-    catch(error){
+    catch (error) {
+  
+  console.error("ERROR:", error);
+  console.error("RESPONSE:", error.response?.data);
+  console.error("STATUS:", error.response?.status);
 
-        console.error(error);
+  const message =
+    error.response?.data?.message ||
+    Object.values(error.response?.data?.errors || {})
+      .flat()
+      .join("\n") ||
+    "Something went wrong.";
+
+  setErrorMessage(message);
+  setShowErrorModal(true);
+
     }finally {
-      setLoading(true);
+      setLoading(false);
     }
 
     navigate("/");
@@ -82,6 +193,7 @@ function MerchantRegister() {
             >
               <div className="name-container">
                 <input
+                  onInput={handleTextInput}
                   type="text"
                   placeholder="First Name"
                   name="firstname"
@@ -89,12 +201,22 @@ function MerchantRegister() {
                 />
 
                 <input
+                 onInput={handleTextInput}
+                  type="text"
+                  placeholder="Middle Name"
+                  name="middlename"
+                  
+                />
+              </div>
+
+              <input
+                 onInput={handleTextInput}
                   type="text"
                   placeholder="Last Name"
                   name="lastname"
+                  className="lastname"
                   required
                 />
-              </div>
 
               <input
                 type="email"
@@ -109,7 +231,11 @@ function MerchantRegister() {
               </div>
 
               <div className="phone-container">
-                <select name="country-code">
+                <select
+                  name="country-code"
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                >
                   <option hidden value="">+</option>
                   <option value="+63">+63</option>
                   <option value="+1">+1</option>
@@ -121,7 +247,17 @@ function MerchantRegister() {
                   <option value="+91">+91</option>
                 </select>
 
-                <input className="phone_num" name="phone_num" type="tel"/>
+                <input
+                  className="phone_num"
+                  name="phone_num"
+                  type="tel"
+                  onInput={handleNumberInput}
+                  maxLength={
+                    PHONE_MAX_LENGTH[countryCode] ||
+                    DEFAULT_PHONE_MAX_LENGTH
+                  }
+                  placeholder="Phone Number"
+                />
               </div>
 
               <div className="label-container">
@@ -186,6 +322,9 @@ function MerchantRegister() {
                 className="register-input"
                 name="password"
                 required
+                minLength={8}
+                maxLength={16}
+                onInput={handlePasswordInput}
               />
 
               <input
@@ -194,6 +333,9 @@ function MerchantRegister() {
                 name="confirm_password"
                 className="register-input"
                 required
+                minLength={8}
+                maxLength={16}
+                onInput={handlePasswordInput}
               />
 
               <div className="terms-container">
@@ -237,29 +379,72 @@ function MerchantRegister() {
       {/* Terms Modal */}
 
       {showTerms && (
-        <div className="TermsOverlay">
-          <div className="TermsModal">
-            <p>
-              {" "}
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
+        <div className="terms-overlay">
+          <div className="terms-modal">
 
-            <button
-              type="button"
-              className="AgreeTermsBtn"
-              onClick={() => {
-                setAcceptedTerms(true);
-                setShowTerms(false);
-              }}
-            >
-             Agree
-            </button>
+            <div className="terms-header">
+              <h4>Terms and Conditions</h4>
+            </div>
+            
+            <div className="terms-body">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </p>
+            </div>
+
+            <div className="terms-btn-container">
+
+               <button
+                type="button"
+                className="terms-btn close"
+                onClick={() => {
+                  setShowTerms(false);
+                }}
+              >
+               Close
+              </button>
+
+              <button
+                type="button"
+                className="terms-btn agree"
+                onClick={() => {
+                  setAcceptedTerms(true);
+                  setShowTerms(false);
+                }}
+              >
+               Agree
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+
+      {showErrorModal && (
+  <div className="-reg-error-modal-overlay">
+    <div className="reg-error-modal">
+      <h2>Error</h2>
+
+      <p>{errorMessage}</p>
+
+      <button onClick={() => setShowErrorModal(false)}>
+        OK
+      </button>
+    </div>
+  </div>
+)}
+
     </>
   );
 }

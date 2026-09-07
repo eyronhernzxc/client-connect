@@ -1,7 +1,9 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./sidebar.css";
+import { logoutUser } from "../../../api/auth";
+
 import {
   Timer,
   Settings,
@@ -20,6 +22,18 @@ import { PiUsersThreeBold } from "react-icons/pi";
 
 export default function Sidebar() {
   const [isCollapse, setIsCollapse] = useState(true);
+  const navigate = useNavigate();
+
+
+   const handleLogout = async () => {
+    try {
+      await logoutUser();
+
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div className="sidebar-main">
@@ -82,7 +96,7 @@ export default function Sidebar() {
                 <span>Forms</span>
               </NavLink>
             </li>
-            {/* <li>
+            <li>
               <NavLink
                 className={({ isActive }) =>
                   `navlink ${isActive ? "active" : ""}`
@@ -90,29 +104,17 @@ export default function Sidebar() {
                 to="/merchant/services"
                 title="Services"
               >
-                <Services />
+                <Handshake />
                 <span>Services</span>
               </NavLink>
-            </li> */}
-
-            <li>
-              <NavLink
-                className={({ isActive }) =>
-                  `navlink ${isActive ? "active" : ""}`
-                }
-                to="/merchant/settings"
-                title="Settings"
-              >
-                <Settings />
-                <span>Settings</span>
-              </NavLink>
             </li>
+
           </ul>
         </nav>
 
         <span className="flex"></span>
         <div className="logout-container">
-          <button className="logout-btn" title="Log Out">
+          <button className="logout-btn" title="Log Out" onClick={handleLogout}>
             <LogOut />
             <span>Logout</span>
           </button>

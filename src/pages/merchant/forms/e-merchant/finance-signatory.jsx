@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import Header from "../header/header";
 import "../form-style.css";
@@ -9,8 +9,8 @@ import { getCurrentUser } from "../../../../api/auth";
 import { useNavigate } from "react-router-dom";
 import { PenLine, Upload } from "lucide-react";
 
-import PageHeader from "../../../../components/merchant/form/page-header";
 import { getIdTypes } from "../../../../api/getIdTypes";
+import Spinner from "../../../../loader/spinner";
 
 export default function FinancialSignatory() {
   const navigate = useNavigate();
@@ -19,6 +19,9 @@ export default function FinancialSignatory() {
   const [user, setUser] = useState(null);
   const [errors, setErrors] = useState({});
   const [sameAsPresent, setSameAsPresent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const signatureInputRef = useRef(null);
 
   // =========================================================
   // FETCH CURRENT USER
@@ -68,6 +71,29 @@ export default function FinancialSignatory() {
       ""
     );
   };
+
+  const nationalities = [
+    "Filipino",
+    "American",
+    "Australian",
+    "British",
+    "Canadian",
+    "Chinese",
+    "French",
+    "German",
+    "Indian",
+    "Indonesian",
+    "Italian",
+    "Japanese",
+    "Malaysian",
+    "Mexican",
+    "New Zealander",
+    "Singaporean",
+    "South Korean",
+    "Spanish",
+    "Thai",
+    "Vietnamese",
+  ];
 
   // =========================================================
   // ADDRESS FIELD MAPPING
@@ -119,13 +145,17 @@ export default function FinancialSignatory() {
   const handlePresentAddressChange = (event) => {
     if (!sameAsPresent) return;
 
-    const field = event.target.name.replace("present_", "");
+    const field =
+      event.target.name.replace("present_", "");
 
     const permanentInput =
-      event.target.form?.elements[`permanent_${field}`];
+      event.target.form?.elements[
+        `permanent_${field}`
+      ];
 
     if (permanentInput) {
-      permanentInput.value = event.target.value;
+      permanentInput.value =
+        event.target.value;
     }
   };
 
@@ -136,36 +166,41 @@ export default function FinancialSignatory() {
   const validateForm = (formData) => {
     const newErrors = {};
 
-    // =======================================================
-    // NAME PATTERN
-    // =======================================================
-
-    const namePattern = /^[\p{L}\s'-]+$/u;
+    const namePattern =
+      /^[\p{L}\s'-]+$/u;
 
     // =======================================================
     // PERSONAL INFORMATION
     // =======================================================
 
-    const firstName = formData.get("firstname")?.trim();
-    const middleName = formData.get("middlename")?.trim();
-    const lastName = formData.get("lastname")?.trim();
+    const firstName =
+      formData.get("firstname")?.trim();
+
+    const middleName =
+      formData.get("middlename")?.trim();
+
+    const lastName =
+      formData.get("lastname")?.trim();
 
     if (!firstName) {
-      newErrors.firstname = "First name is required.";
+      newErrors.firstname =
+        "First name is required.";
     } else if (!namePattern.test(firstName)) {
       newErrors.firstname =
         "First name can only contain letters, spaces, hyphens, and apostrophes.";
     }
 
     if (!lastName) {
-      newErrors.lastname = "Last name is required.";
+      newErrors.lastname =
+        "Last name is required.";
     } else if (!namePattern.test(lastName)) {
       newErrors.lastname =
         "Last name can only contain letters, spaces, hyphens, and apostrophes.";
     }
 
     if (!middleName) {
-      newErrors.middlename = "Middle name is required.";
+      newErrors.middlename =
+        "Middle name is required.";
     } else if (!namePattern.test(middleName)) {
       newErrors.middlename =
         "Middle name can only contain letters, spaces, hyphens, and apostrophes.";
@@ -175,11 +210,15 @@ export default function FinancialSignatory() {
     // EMAIL
     // =======================================================
 
-    const email = formData.get("email")?.trim();
+    const email =
+      formData.get("email")?.trim();
 
     if (!email) {
-      newErrors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email =
+        "Email is required.";
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
       newErrors.email =
         "Please enter a valid email address.";
     }
@@ -189,7 +228,8 @@ export default function FinancialSignatory() {
     // =======================================================
 
     if (!formData.get("birthdate")) {
-      newErrors.birthdate = "Birthdate is required.";
+      newErrors.birthdate =
+        "Birthdate is required.";
     }
 
     // =======================================================
@@ -197,7 +237,8 @@ export default function FinancialSignatory() {
     // =======================================================
 
     if (!formData.get("birth_place")?.trim()) {
-      newErrors.birth_place = "Birth place is required.";
+      newErrors.birth_place =
+        "Birth place is required.";
     }
 
     // =======================================================
@@ -205,7 +246,8 @@ export default function FinancialSignatory() {
     // =======================================================
 
     if (!formData.get("nationality")) {
-      newErrors.nationality = "Nationality is required.";
+      newErrors.nationality =
+        "Nationality is required.";
     }
 
     // =======================================================
@@ -260,7 +302,11 @@ export default function FinancialSignatory() {
     const signature =
       formData.get("signature");
 
-    if (!signature || signature.size === 0) {
+    if (
+      !signature ||
+      signature.size === 0 ||
+      !(signature instanceof File)
+    ) {
       newErrors.signature =
         "E-signature is required.";
     }
@@ -312,7 +358,7 @@ export default function FinancialSignatory() {
     }
 
     // =======================================================
-    // VALID ID
+    // VALID ID 1
     // =======================================================
 
     if (!formData.get("valid_id_type_id")) {
@@ -320,10 +366,14 @@ export default function FinancialSignatory() {
         "Valid ID type is required.";
     }
 
-    const idImage =
+    const idImage1 =
       formData.get("image");
 
-    if (!idImage || idImage.size === 0) {
+    if (
+      !idImage1 ||
+      idImage1.size === 0 ||
+      !(idImage1 instanceof File)
+    ) {
       newErrors.image =
         "Valid ID image is required.";
     }
@@ -335,6 +385,37 @@ export default function FinancialSignatory() {
 
     if (!formData.get("expiration_date")) {
       newErrors.expiration_date =
+        "Expiration date is required.";
+    }
+
+    // =======================================================
+    // VALID ID 2
+    // =======================================================
+
+    if (!formData.get("valid_id_type_id2")) {
+      newErrors.valid_id_type_id2 =
+        "Valid ID type is required.";
+    }
+
+    const idImage2 =
+      formData.get("image2");
+
+    if (
+      !idImage2 ||
+      idImage2.size === 0 ||
+      !(idImage2 instanceof File)
+    ) {
+      newErrors.image2 =
+        "Valid ID image is required.";
+    }
+
+    if (!formData.get("number2")?.trim()) {
+      newErrors.number2 =
+        "Valid ID number is required.";
+    }
+
+    if (!formData.get("expiration_date2")) {
+      newErrors.expiration_date2 =
         "Expiration date is required.";
     }
 
@@ -420,6 +501,8 @@ export default function FinancialSignatory() {
   const submitSignatory = async (event) => {
     event.preventDefault();
 
+    setLoading(true);
+
     const form = event.currentTarget;
 
     const formData = new FormData(form);
@@ -458,6 +541,10 @@ export default function FinancialSignatory() {
         "Validation errors:",
         validationErrors
       );
+
+      // FIX:
+      // Stop loading when client-side validation fails.
+      setLoading(false);
 
       return;
     }
@@ -581,251 +668,298 @@ export default function FinancialSignatory() {
       // =====================================================
 
       data.append(
-        "signature",
+        "signatures",
         formData.get("signature")
       );
 
-   // =====================================================
+      // =====================================================
       // PRESENT ADDRESS
-      // =====================================================     
+      // =====================================================
 
-     
-data.append(
-  "address[0][address_type_id]",
-  1
-);
+      data.append(
+        "address[0][address_type_id]",
+        1
+      );
 
-data.append(
-  "address[0][address_number]",
-  formData.get("present_address_number")
-);
+      data.append(
+        "address[0][address_number]",
+        formData.get(
+          "present_address_number"
+        )
+      );
 
-data.append(
-  "address[0][street]",
-  formData.get("present_street")
-);
+      data.append(
+        "address[0][street]",
+        formData.get("present_street")
+      );
 
-data.append(
-  "address[0][barangay]",
-  formData.get("present_barangay")
-);
+      data.append(
+        "address[0][barangay]",
+        formData.get("present_barangay")
+      );
 
-data.append(
-  "address[0][district]",
-  formData.get("present_district")
-);
+      data.append(
+        "address[0][district]",
+        formData.get("present_district")
+      );
 
-data.append(
-  "address[0][municipality]",
-  formData.get("present_municipality")
-);
+      data.append(
+        "address[0][municipality]",
+        formData.get("present_municipality")
+      );
 
-data.append(
-  "address[0][city]",
-  formData.get("present_city")
-);
+      data.append(
+        "address[0][city]",
+        formData.get("present_city")
+      );
 
-data.append(
-  "address[0][province]",
-  formData.get("present_province")
-);
+      data.append(
+        "address[0][province]",
+        formData.get("present_province")
+      );
 
-data.append(
-  "address[0][zip_code]",
-  formData.get("present_zip_code")
-);
+      data.append(
+        "address[0][zip_code]",
+        formData.get("present_zip_code")
+      );
 
+      // =====================================================
+      // PERMANENT ADDRESS
+      // =====================================================
 
-// =====================================================
-// PERMANENT ADDRESS
-// =====================================================
+      data.append(
+        "address[1][address_type_id]",
+        2
+      );
 
-data.append(
-  "address[1][address_type_id]",
-  2
-);
+      data.append(
+        "address[1][address_number]",
+        formData.get(
+          "permanent_address_number"
+        )
+      );
 
-data.append(
-  "address[1][address_number]",
-  formData.get("permanent_address_number")
-);
+      data.append(
+        "address[1][street]",
+        formData.get("permanent_street")
+      );
 
-data.append(
-  "address[1][street]",
-  formData.get("permanent_street")
-);
+      data.append(
+        "address[1][barangay]",
+        formData.get("permanent_barangay")
+      );
 
-data.append(
-  "address[1][barangay]",
-  formData.get("permanent_barangay")
-);
+      data.append(
+        "address[1][district]",
+        formData.get("permanent_district")
+      );
 
-data.append(
-  "address[1][district]",
-  formData.get("permanent_district")
-);
+      data.append(
+        "address[1][municipality]",
+        formData.get(
+          "permanent_municipality"
+        )
+      );
 
-data.append(
-  "address[1][municipality]",
-  formData.get("permanent_municipality")
-);
+      data.append(
+        "address[1][city]",
+        formData.get("permanent_city")
+      );
 
-data.append(
-  "address[1][city]",
-  formData.get("permanent_city")
-);
+      data.append(
+        "address[1][province]",
+        formData.get("permanent_province")
+      );
 
-data.append(
-  "address[1][province]",
-  formData.get("permanent_province")
-);
+      data.append(
+        "address[1][zip_code]",
+        formData.get("permanent_zip_code")
+      );
 
-data.append(
-  "address[1][zip_code]",
-  formData.get("permanent_zip_code")
-);
-// =====================================================
-// VALID ID 1
-// =====================================================
+      // =====================================================
+      // VALID ID 1
+      // =====================================================
 
-data.append(
-  "valid_id[0][valid_id_type_id]",
-  Number(formData.get("valid_id_type_id"))
-);
+      data.append(
+        "valid_id[0][valid_id_type_id]",
+        Number(
+          formData.get("valid_id_type_id")
+        )
+      );
 
-data.append(
-  "valid_id[0][number]",
-  formData.get("number")
-);
+      data.append(
+        "valid_id[0][number]",
+        formData.get("number")
+      );
 
-data.append(
-  "valid_id[0][expiration_date]",
-  formData.get("expiration_date")
-);
+      data.append(
+        "valid_id[0][expiration_date]",
+        formData.get(
+          "expiration_date"
+        )
+      );
 
+      // =====================================================
+      // VALID ID 2
+      // =====================================================
 
+      data.append(
+        "valid_id[1][valid_id_type_id]",
+        Number(
+          formData.get(
+            "valid_id_type_id2"
+          )
+        )
+      );
 
-// =====================================================
-// VALID ID 2
-// =====================================================
+      data.append(
+        "valid_id[1][number]",
+        formData.get("number2")
+      );
 
-data.append(
-  "valid_id[1][valid_id_type_id]",
-  Number(formData.get("valid_id_type_id2"))
-);
+      data.append(
+        "valid_id[1][expiration_date]",
+        formData.get(
+          "expiration_date2"
+        )
+      );
 
-data.append(
-  "valid_id[1][number]",
-  formData.get("number2")
-);
+      // =====================================================
+      // VALID ID IMAGES
+      // =====================================================
 
-data.append(
-  "valid_id[1][expiration_date]",
-  formData.get("expiration_date2")
-);
+      const image1 =
+        formData.get("image");
 
+      const image2 =
+        formData.get("image2");
 
-data.append(
-  "valid_id_images[0]",
-  formData.get("image")
-);
+      console.log(
+        "IMAGE 1:",
+        image1
+      );
 
-data.append(
-  "valid_id_images[1]",
-  formData.get("image2")
-);
+      console.log(
+        "IMAGE 2:",
+        image2
+      );
 
-const image1 = formData.get("image");
-const image2 = formData.get("image2");
+      console.log(
+        "IMAGE 1 IS FILE:",
+        image1 instanceof File
+      );
 
-console.log("IMAGE 1:", image1);
-console.log("IMAGE 2:", image2);
-console.log("IMAGE 1 IS FILE:", image1 instanceof File);
-console.log("IMAGE 2 IS FILE:", image2 instanceof File);
+      console.log(
+        "IMAGE 2 IS FILE:",
+        image2 instanceof File
+      );
 
-// =====================================================
-// REFERENCES
-// =====================================================
+      data.append(
+        "valid_id_images[0]",
+        image1
+      );
 
-// MOTHER - REFERENCE 1
-data.append(
-  "reference[0][reference_type_id]",
-  1
-);
+      data.append(
+        "valid_id_images[1]",
+        image2
+      );
 
-data.append(
-  "reference[0][name]",
-  formData.get("mother_name")
-);
+      // =====================================================
+      // REFERENCES - MOTHER
+      // =====================================================
 
-data.append(
-  "reference[0][birthdate]",
-  formData.get("mother_birthdate")
-);
+      data.append(
+        "reference[0][reference_type_id]",
+        1
+      );
 
-data.append(
-  "reference[0][birthplace]",
-  formData.get("mother_birthplace")
-);
+      data.append(
+        "reference[0][name]",
+        formData.get("mother_name")
+      );
 
-data.append(
-  "reference[0][nationality]",
-  formData.get("mother_nationality")
-);
+      data.append(
+        "reference[0][birthdate]",
+        formData.get(
+          "mother_birthdate"
+        )
+      );
 
-data.append(
-  "reference[0][profession]",
-  formData.get("mother_profession")
-);
+      data.append(
+        "reference[0][birthplace]",
+        formData.get(
+          "mother_birthplace"
+        )
+      );
 
+      data.append(
+        "reference[0][nationality]",
+        formData.get(
+          "mother_nationality"
+        )
+      );
 
-// =====================================================
-// SPOUSE - REFERENCE 2
-// =====================================================
+      data.append(
+        "reference[0][profession]",
+        formData.get(
+          "mother_profession"
+        )
+      );
 
+      // =====================================================
+      // REFERENCES - SPOUSE
+      // =====================================================
 
-  data.append(
-    "reference[1][reference_type_id]",
-    2
-  );
+      data.append(
+        "reference[1][reference_type_id]",
+        2
+      );
 
-  data.append(
-    "reference[1][name]",
-    formData.get("spouse_name")
-  );
+      data.append(
+        "reference[1][name]",
+        formData.get("spouse_name")
+      );
 
-  data.append(
-    "reference[1][birthdate]",
-    formData.get("spouse_birthdate")
-  );
+      data.append(
+        "reference[1][birthdate]",
+        formData.get(
+          "spouse_birthdate"
+        )
+      );
 
-  data.append(
-    "reference[1][birthplace]",
-    formData.get("spouse_birthplace")
-  );
+      data.append(
+        "reference[1][birthplace]",
+        formData.get(
+          "spouse_birthplace"
+        )
+      );
 
-  data.append(
-    "reference[1][nationality]",
-    formData.get("spouse_nationality")
-  );
+      data.append(
+        "reference[1][nationality]",
+        formData.get(
+          "spouse_nationality"
+        )
+      );
 
-  data.append(
-    "reference[1][profession]",
-    formData.get("spouse_profession")
-  );
+      data.append(
+        "reference[1][profession]",
+        formData.get(
+          "spouse_profession"
+        )
+      );
 
+      // =====================================================
+      // DEBUG FORM DATA
+      // =====================================================
 
-  
+      console.log(
+        "===== SIGNATORY DATA ====="
+      );
 
-// =====================================================
-// DEBUG FORM DATA
-// =====================================================
+      for (const [key, value] of data.entries()) {
+        console.log(key, value);
+      }
 
-console.log("===== SIGNATORY DATA =====");
-
-for (const [key, value] of data.entries()) {
-  console.log(key, value);
-}
       // =====================================================
       // POST
       // =====================================================
@@ -854,6 +988,8 @@ for (const [key, value] of data.entries()) {
       );
 
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -881,1294 +1017,1344 @@ for (const [key, value] of data.entries()) {
       : "";
   };
 
-
   // =========================================================
   // RENDER
   // =========================================================
 
   return (
-    <>
-      <PageHeader>
-        <div className="name-container">
-          <h1 className="page-title">
-            Hello,
-          </h1>
+    <div className="main-container">
+      <div className="form-card">
 
-          <h1 className="admin-name">
-            {user?.userdetail?.first_name ||
-              "Jamaica"}
-          </h1>
-        </div>
+        <Header>
+          <h1>Finance Signatory</h1>
+        </Header>
 
-        <p className="page-desc">
-          We’re happy to have you here. Let’s get
-          your merchant and company application
-          started!
-        </p>
-      </PageHeader>
+        <div className="form-container">
 
-      <div className="main-container">
-        <div className="form-card">
+          <form
+            className="form"
+            onSubmit={submitSignatory}
+          >
 
-          <Header>
-            <h1>Finance Signatory</h1>
-          </Header>
+            {/* =================================================
+                PERSONAL INFORMATION
+            ================================================= */}
 
-          <div className="form-container">
+            <div className="form-row">
 
-            <form
-              className="form"
-              onSubmit={submitSignatory}
-            >
-
-              {/* =================================================
-                  PERSONAL INFORMATION
-              ================================================= */}
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    First name{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="firstname"
-                    type="text"
-                    placeholder="Enter first name"
-                    defaultValue={
-                      user?.userdetail?.first_name ||
-                      ""
-                    }
-                    onInput={handleNameInput}
-                    className={getInputClass(
-                      "firstname"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="firstname"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Last Name{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="lastname"
-                    type="text"
-                    placeholder="Enter last name"
-                    defaultValue={
-                      user?.userdetail?.last_name ||
-                      ""
-                    }
-                    onInput={handleNameInput}
-                    className={getInputClass(
-                      "lastname"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="lastname"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Middle Name{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="middlename"
-                    type="text"
-                    placeholder="Enter middle name"
-                    defaultValue={
-                      user?.userdetail?.middle_name ||
-                      ""
-                    }
-                    onInput={handleNameInput}
-                    className={getInputClass(
-                      "middlename"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="middlename"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Email{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Enter email"
-                    defaultValue={
-                      user?.email || ""
-                    }
-                    className={getInputClass(
-                      "email"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="email"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Birthdate{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="birthdate"
-                    type="date"
-                    defaultValue={
-                      user?.userdetail?.birth_date ||
-                      ""
-                    }
-                    className={getInputClass(
-                      "birthdate"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="birthdate"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Birth Place{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="birth_place"
-                    type="text"
-                    placeholder="Enter birth place"
-                    className={getInputClass(
-                      "birth_place"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="birth_place"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Nationality{" "}
-                    <span>*</span>
-                  </label>
-
-                  <select
-                    name="nationality"
-                    className={getInputClass(
-                      "nationality"
-                    )}
-                  >
-                    <option value="">
-                      Select Nationality
-                    </option>
-
-                    <option value="filipino">
-                      Filipino
-                    </option>
-                  </select>
-
-                  <ErrorMessage
-                    field="nationality"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Citizenship{" "}
-                    <span>*</span>
-                  </label>
-
-                  <select
-                    name="citizenship"
-                    className={getInputClass(
-                      "citizenship"
-                    )}
-                  >
-                    <option value="">
-                      Select Citizenship
-                    </option>
-
-                    <option value="filipino">
-                      Filipino
-                    </option>
-                  </select>
-
-                  <ErrorMessage
-                    field="citizenship"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Contact Number{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="phone_number"
-                    type="tel"
-                    placeholder="09XXXXXXXXX"
-                    defaultValue={
-                      user?.userdetail?.mobile_number ||
-                      ""
-                    }
-                    maxLength="11"
-                    onInput={(event) => {
-                      event.target.value =
-                        event.target.value.replace(
-                          /\D/g,
-                          ""
-                        );
-                    }}
-                    className={getInputClass(
-                      "phone_number"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="phone_number"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Civil Status{" "}
-                    <span>*</span>
-                  </label>
-
-                  <select
-                    name="civil_status"
-                    className={getInputClass(
-                      "civil_status"
-                    )}
-                  >
-                    <option value="">
-                      Select status
-                    </option>
-
-                    <option value="single">
-                      Single
-                    </option>
-
-                    <option value="married">
-                      Married
-                    </option>
-
-                    <option value="widowed">
-                      Widowed
-                    </option>
-                  </select>
-
-                  <ErrorMessage
-                    field="civil_status"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Gender{" "}
-                    <span>*</span>
-                  </label>
-
-                  <select
-                    name="gender"
-                    className={getInputClass(
-                      "gender"
-                    )}
-                  >
-                    <option value="">
-                      Select gender
-                    </option>
-
-                    <option value="male">
-                      Male
-                    </option>
-
-                    <option value="female">
-                      Female
-                    </option>
-
-                    <option value="prefer_not_to_say">
-                      Prefer not to say
-                    </option>
-                  </select>
-
-                  <ErrorMessage
-                    field="gender"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Upload E-signature{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    name="signature"
-                    type="file"
-                    id="signature"
-                  />
-
-                  <label
-                    htmlFor="signature"
-                    className="file-label"
-                  >
-                    <PenLine />
-                  </label>
-
-                  <ErrorMessage
-                    field="signature"
-                  />
-                </div>
-
-              </div>
-
-              {/* =================================================
-                  PRESENT ADDRESS
-              ================================================= */}
-
-              <h3>Present Address</h3>
-              <hr />
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Address Number{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_address_number"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_address_number"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_address_number"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Street{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_street"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_street"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_street"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Barangay{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_barangay"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_barangay"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_barangay"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    District{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_district"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_district"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_district"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Municipality{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_municipality"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_municipality"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_municipality"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    City{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_city"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_city"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_city"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Province{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_province"
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_province"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_province"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Zip Code{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="present_zip_code"
-                    maxLength="4"
-                    onInput={(event) => {
-                      event.target.value =
-                        event.target.value.replace(
-                          /\D/g,
-                          ""
-                        );
-                    }}
-                    onChange={
-                      handlePresentAddressChange
-                    }
-                    className={getInputClass(
-                      "present_zip_code"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="present_zip_code"
-                  />
-                </div>
-
-              </div>
-
-              {/* =================================================
-                  PERMANENT ADDRESS
-              ================================================= */}
-
-              <div className="permanent-address-header">
-
-                <h3>
-                  Permanent Address
-                </h3>
-
-                <label className="same-address-checkbox">
-
-                  <input
-                    type="checkbox"
-                    checked={sameAsPresent}
-                    onChange={
-                      handleSameAsPresent
-                    }
-                  />
-
-                  <span>
-                    Same as Present Address
-                  </span>
-
+              <div className="input-field">
+                <label>
+                  First name{" "}
+                  <span>*</span>
                 </label>
 
+                <input
+                  name="firstname"
+                  type="text"
+                  placeholder="Enter first name"
+                  defaultValue={
+                    user?.userdetail?.first_name ||
+                    ""
+                  }
+                  onInput={handleNameInput}
+                  className={getInputClass(
+                    "firstname"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="firstname"
+                />
               </div>
 
-              <hr />
+              <div className="input-field">
+                <label>
+                  Last Name{" "}
+                  <span>*</span>
+                </label>
 
-              <div className="form-row">
+                <input
+                  name="lastname"
+                  type="text"
+                  placeholder="Enter last name"
+                  defaultValue={
+                    user?.userdetail?.last_name ||
+                    ""
+                  }
+                  onInput={handleNameInput}
+                  className={getInputClass(
+                    "lastname"
+                  )}
+                />
 
-                <div className="input-field">
-                  <label>
-                    Address Number{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="permanent_address_number"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_address_number"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="permanent_address_number"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Street{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="permanent_street"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_street"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="permanent_street"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="lastname"
+                />
               </div>
 
-              <div className="form-row">
+            </div>
 
-                <div className="input-field">
-                  <label>
-                    Barangay{" "}
-                    <span>*</span>
-                  </label>
+            <div className="form-row">
 
-                  <input
-                    type="text"
-                    name="permanent_barangay"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_barangay"
-                    )}
-                  />
+              <div className="input-field">
+                <label>
+                  Middle Name{" "}
+                  <span>*</span>
+                </label>
 
-                  <ErrorMessage
-                    field="permanent_barangay"
-                  />
-                </div>
+                <input
+                  name="middlename"
+                  type="text"
+                  placeholder="Enter middle name"
+                  defaultValue={
+                    user?.userdetail?.middle_name ||
+                    ""
+                  }
+                  onInput={handleNameInput}
+                  className={getInputClass(
+                    "middlename"
+                  )}
+                />
 
-                <div className="input-field">
-                  <label>
-                    District{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="permanent_district"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_district"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="permanent_district"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="middlename"
+                />
               </div>
 
-              <div className="form-row">
+              <div className="input-field">
+                <label>
+                  Email{" "}
+                  <span>*</span>
+                </label>
 
-                <div className="input-field">
-                  <label>
-                    Municipality{" "}
-                    <span>*</span>
-                  </label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Enter email"
+                  defaultValue={
+                    user?.email || ""
+                  }
+                  className={getInputClass(
+                    "email"
+                  )}
+                />
 
-                  <input
-                    type="text"
-                    name="permanent_municipality"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_municipality"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="permanent_municipality"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    City{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="permanent_city"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_city"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="permanent_city"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="email"
+                />
               </div>
 
-              <div className="form-row">
+            </div>
 
-                <div className="input-field">
-                  <label>
-                    Province{" "}
-                    <span>*</span>
-                  </label>
+            <div className="form-row">
 
-                  <input
-                    type="text"
-                    name="permanent_province"
-                    disabled={sameAsPresent}
-                    className={getInputClass(
-                      "permanent_province"
-                    )}
-                  />
+              <div className="input-field">
+                <label>
+                  Birthdate{" "}
+                  <span>*</span>
+                </label>
 
-                  <ErrorMessage
-                    field="permanent_province"
-                  />
-                </div>
+                <input
+                  name="birthdate"
+                  type="date"
+                  defaultValue={
+                    user?.userdetail?.birth_date ||
+                    ""
+                  }
+                  className={getInputClass(
+                    "birthdate"
+                  )}
+                />
 
-                <div className="input-field">
-                  <label>
-                    Zip Code{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="permanent_zip_code"
-                    maxLength="4"
-                    disabled={sameAsPresent}
-                    onInput={(event) => {
-                      event.target.value =
-                        event.target.value.replace(
-                          /\D/g,
-                          ""
-                        );
-                    }}
-                    className={getInputClass(
-                      "permanent_zip_code"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="permanent_zip_code"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="birthdate"
+                />
               </div>
 
-              {/* =================================================
-                  VALID ID
-              ================================================= */}
+              <div className="input-field">
+                <label>
+                  Birth Place{" "}
+                  <span>*</span>
+                </label>
 
-              <div className="form-row">
+                <input
+                  name="birth_place"
+                  type="text"
+                  placeholder="Enter birth place"
+                  className={getInputClass(
+                    "birth_place"
+                  )}
+                />
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Type{" "}
-                    <span>*</span>
-                  </label>
+                <ErrorMessage
+                  field="birth_place"
+                />
+              </div>
 
-                  <select
-                    name="valid_id_type_id"
-                    className={getInputClass(
-                      "valid_id_type_id"
-                    )}
-                  >
-                    <option value="">
-                      Select Id Type
-                    </option>
+            </div>
 
-                    {IdTypes.map((type) => (
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Nationality{" "}
+                  <span>*</span>
+                </label>
+
+                <select
+                  name="nationality"
+                  className={getInputClass(
+                    "nationality"
+                  )}
+                >
+                  <option value="">
+                    Select Nationality
+                  </option>
+
+                  {nationalities.map(
+                    (nationality) => (
                       <option
-                        key={type.id}
-                        value={type.id}
+                        key={nationality}
+                        value={nationality}
                       >
-                        {type.name}
+                        {nationality}
                       </option>
-                    ))}
-                  </select>
+                    )
+                  )}
+                </select>
 
-                  <ErrorMessage
-                    field="valid_id_type_id"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Valid Id Image{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                  />
-
-                  <label
-                    htmlFor="image"
-                    className="file-label"
-                  >
-                    <Upload />
-                  </label>
-
-                  <ErrorMessage
-                    field="image"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="nationality"
+                />
               </div>
 
-              <div className="form-row">
+              <div className="input-field">
+                <label>
+                  Citizenship{" "}
+                  <span>*</span>
+                </label>
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Number{" "}
-                    <span>*</span>
-                  </label>
+                <select
+                  name="citizenship"
+                  className={getInputClass(
+                    "citizenship"
+                  )}
+                >
+                  <option value="">
+                    Select Citizenship
+                  </option>
 
-                  <input
-                    type="text"
-                    name="number"
-                    placeholder="e.g XXX-XXX-XX"
-                    className={getInputClass(
-                      "number"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="number"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Expiration Date{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="date"
-                    name="expiration_date"
-                    className={getInputClass(
-                      "expiration_date"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="expiration_date"
-                  />
-                </div>
-
-              </div>
-
-              {/* VAID ID 22222 */}
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Valid Id Type{" "}
-                    <span>*</span>
-                  </label>
-
-                  <select
-                    name="valid_id_type_id2"
-                    className={getInputClass(
-                      "valid_id_type_id"
-                    )}
-                  >
-                    <option value="">
-                      Select Id Type
-                    </option>
-
-                    {IdTypes.map((type) => (
+                  {nationalities.map(
+                    (nationality) => (
                       <option
-                        key={type.id}
-                        value={type.id}
+                        key={nationality}
+                        value={nationality}
                       >
-                        {type.name}
+                        {nationality}
                       </option>
-                    ))}
-                  </select>
+                    )
+                  )}
+                </select>
 
-                  <ErrorMessage
-                    field="valid_id_type_id2"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Valid Id Image{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="file"
-                    id="image2"
-                    name="image2"
-                  />
-
-                  <label
-                    htmlFor="image2"
-                    className="file-label"
-                  >
-                    <Upload />
-                  </label>
-
-                  <ErrorMessage
-                    field="image"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="citizenship"
+                />
               </div>
 
-              <div className="form-row">
+            </div>
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Number{" "}
-                    <span>*</span>
-                  </label>
+            <div className="form-row">
 
-                  <input
-                    type="text"
-                    name="number2"
-                    placeholder="e.g XXX-XXX-XX"
-                    className={getInputClass(
-                      "number"
-                    )}
-                  />
+              <div className="input-field">
+                <label>
+                  Contact Number{" "}
+                  <span>*</span>
+                </label>
 
-                  <ErrorMessage
-                    field="number"
-                  />
-                </div>
+                <input
+                  name="phone_number"
+                  type="tel"
+                  placeholder="09XXXXXXXXX"
+                  defaultValue={
+                    user?.userdetail?.mobile_number ||
+                    ""
+                  }
+                  maxLength="11"
+                  onInput={(event) => {
+                    event.target.value =
+                      event.target.value.replace(
+                        /\D/g,
+                        ""
+                      );
+                  }}
+                  className={getInputClass(
+                    "phone_number"
+                  )}
+                />
 
-                <div className="input-field">
-                  <label>
-                    Expiration Date{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="date"
-                    name="expiration_date2"
-                    className={getInputClass(
-                      "expiration_date"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="expiration_date"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="phone_number"
+                />
               </div>
 
-              
+              <div className="input-field">
+                <label>
+                  Civil Status{" "}
+                  <span>*</span>
+                </label>
 
-              {/* =================================================
-                  MOTHER
-              ================================================= */}
+                <select
+                  name="civil_status"
+                  className={getInputClass(
+                    "civil_status"
+                  )}
+                >
+                  <option value="">
+                    Select status
+                  </option>
 
-              <h3>
-                Mother's Information
-              </h3>
+                  <option value="single">
+                    Single
+                  </option>
 
-              <hr />
+                  <option value="married">
+                    Married
+                  </option>
 
-              <div className="form-row">
+                  <option value="widowed">
+                    Widowed
+                  </option>
+                </select>
 
-                <div className="input-field">
-                  <label>
-                    Name{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    name="mother_name"
-                    onInput={handleNameInput}
-                    className={getInputClass(
-                      "mother_name"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="mother_name"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Birthdate{" "}
-                    <span>*</span>
-                  </label>
-
-                  <input
-                    type="date"
-                    name="mother_birthdate"
-                    className={getInputClass(
-                      "mother_birthdate"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="mother_birthdate"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="civil_status"
+                />
               </div>
 
-              <div className="form-row">
+            </div>
 
-                <div className="input-field">
-                  <label>
-                    Birth Place{" "}
-                    <span>*</span>
-                  </label>
+            <div className="form-row">
 
-                  <input
-                    type="text"
-                    name="mother_birthplace"
-                    className={getInputClass(
-                      "mother_birthplace"
-                    )}
-                  />
+              <div className="input-field">
+                <label>
+                  Gender{" "}
+                  <span>*</span>
+                </label>
 
-                  <ErrorMessage
-                    field="mother_birthplace"
-                  />
-                </div>
+                <select
+                  name="gender"
+                  className={getInputClass(
+                    "gender"
+                  )}
+                >
+                  <option value="">
+                    Select gender
+                  </option>
 
-                <div className="input-field">
-                  <label>
-                    Nationality{" "}
-                    <span>*</span>
-                  </label>
+                  <option value="male">
+                    Male
+                  </option>
 
-                  <select
-                    name="mother_nationality"
-                    className={getInputClass(
-                      "mother_nationality"
-                    )}
-                  >
-                    <option value="">
-                      Select nationality
-                    </option>
+                  <option value="female">
+                    Female
+                  </option>
 
-                    <option value="Filipino">
-                      Filipino
-                    </option>
+                  <option value="prefer_not_to_say">
+                    Prefer not to say
+                  </option>
+                </select>
 
-                    <option value="American">
-                      American
-                    </option>
-
-                    <option value="Canadian">
-                      Canadian
-                    </option>
-                  </select>
-
-                  <ErrorMessage
-                    field="mother_nationality"
-                  />
-                </div>
-
+                <ErrorMessage
+                  field="gender"
+                />
               </div>
 
-              <div className="form-field">
+              <div className="input-field">
 
                 <label>
-                  Profession{" "}
+                  Signature{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  ref={signatureInputRef}
+                  type="file"
+                  name="signature"
+                  id="signature"
+                  accept="image/*"
+                  style={{
+                    display: "none"
+                  }}
+                />
+
+                <button
+                  type="button"
+                  className="file-label"
+                  onClick={() =>
+                    signatureInputRef.current?.click()
+                  }
+                >
+                  <PenLine size={24} />
+                </button>
+
+                <ErrorMessage
+                  field="signature"
+                />
+
+              </div>
+
+            </div>
+
+            {/* =================================================
+                PRESENT ADDRESS
+            ================================================= */}
+
+            <h3>Present Address</h3>
+
+            <hr />
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Address Number{" "}
                   <span>*</span>
                 </label>
 
                 <input
                   type="text"
-                  name="mother_profession"
+                  name="present_address_number"
+                  onChange={
+                    handlePresentAddressChange
+                  }
                   className={getInputClass(
-                    "mother_profession"
+                    "present_address_number"
                   )}
                 />
 
                 <ErrorMessage
-                  field="mother_profession"
+                  field="present_address_number"
                 />
-
               </div>
 
-              {/* =================================================
-                  SPOUSE
-              ================================================= */}
-
-              <h3>
-                Spouse Information
-              </h3>
-
-              <hr />
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Name
-                  </label>
-
-                  <input
-                    type="text"
-                    name="spouse_name"
-                    onInput={handleNameInput}
-                    className={getInputClass(
-                      "spouse_name"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="spouse_name"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Birthdate
-                  </label>
-
-                  <input
-                    type="date"
-                    name="spouse_birthdate"
-                    className={getInputClass(
-                      "spouse_birthdate"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="spouse_birthdate"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-row">
-
-                <div className="input-field">
-                  <label>
-                    Birth Place
-                  </label>
-
-                  <input
-                    type="text"
-                    name="spouse_birthplace"
-                    className={getInputClass(
-                      "spouse_birthplace"
-                    )}
-                  />
-
-                  <ErrorMessage
-                    field="spouse_birthplace"
-                  />
-                </div>
-
-                <div className="input-field">
-                  <label>
-                    Nationality
-                  </label>
-
-                  <select
-                    name="spouse_nationality"
-                    className={getInputClass(
-                      "spouse_nationality"
-                    )}
-                  >
-                    <option value="">
-                      Select nationality
-                    </option>
-
-                    <option value="Filipino">
-                      Filipino
-                    </option>
-
-                    <option value="American">
-                      American
-                    </option>
-
-                    <option value="Canadian">
-                      Canadian
-                    </option>
-                  </select>
-
-                  <ErrorMessage
-                    field="spouse_nationality"
-                  />
-                </div>
-
-              </div>
-
-              <div className="form-field">
-
+              <div className="input-field">
                 <label>
-                  Profession
+                  Street{" "}
+                  <span>*</span>
                 </label>
 
                 <input
                   type="text"
-                  name="spouse_profession"
+                  name="present_street"
+                  onChange={
+                    handlePresentAddressChange
+                  }
                   className={getInputClass(
-                    "spouse_profession"
+                    "present_street"
                   )}
                 />
 
                 <ErrorMessage
-                  field="spouse_profession"
+                  field="present_street"
+                />
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Barangay{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="present_barangay"
+                  onChange={
+                    handlePresentAddressChange
+                  }
+                  className={getInputClass(
+                    "present_barangay"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="present_barangay"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  District{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="present_district"
+                  onChange={
+                    handlePresentAddressChange
+                  }
+                  className={getInputClass(
+                    "present_district"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="present_district"
+                />
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Municipality{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="present_municipality"
+                  onChange={
+                    handlePresentAddressChange
+                  }
+                  className={getInputClass(
+                    "present_municipality"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="present_municipality"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  City{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="present_city"
+                  onChange={
+                    handlePresentAddressChange
+                  }
+                  className={getInputClass(
+                    "present_city"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="present_city"
+                />
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Province{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="present_province"
+                  onChange={
+                    handlePresentAddressChange
+                  }
+                  className={getInputClass(
+                    "present_province"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="present_province"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  Zip Code{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="present_zip_code"
+                  maxLength="4"
+                  onInput={(event) => {
+                    event.target.value =
+                      event.target.value.replace(
+                        /\D/g,
+                        ""
+                      );
+                  }}
+                  onChange={
+                    handlePresentAddressChange
+                  }
+                  className={getInputClass(
+                    "present_zip_code"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="present_zip_code"
+                />
+              </div>
+
+            </div>
+
+            {/* =================================================
+                PERMANENT ADDRESS
+            ================================================= */}
+
+            <div className="permanent-address-header">
+
+              <h3>
+                Permanent Address
+              </h3>
+
+              <label className="same-address-checkbox">
+
+                <input
+                  type="checkbox"
+                  checked={sameAsPresent}
+                  onChange={
+                    handleSameAsPresent
+                  }
+                />
+
+                <span>
+                  Same as Present Address
+                </span>
+
+              </label>
+
+            </div>
+
+            <hr />
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Address Number{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_address_number"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_address_number"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_address_number"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  Street{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_street"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_street"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_street"
+                />
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Barangay{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_barangay"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_barangay"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_barangay"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  District{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_district"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_district"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_district"
+                />
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Municipality{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_municipality"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_municipality"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_municipality"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  City{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_city"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_city"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_city"
+                />
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+                <label>
+                  Province{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_province"
+                  disabled={sameAsPresent}
+                  className={getInputClass(
+                    "permanent_province"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_province"
+                />
+              </div>
+
+              <div className="input-field">
+                <label>
+                  Zip Code{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="permanent_zip_code"
+                  maxLength="4"
+                  disabled={sameAsPresent}
+                  onInput={(event) => {
+                    event.target.value =
+                      event.target.value.replace(
+                        /\D/g,
+                        ""
+                      );
+                  }}
+                  className={getInputClass(
+                    "permanent_zip_code"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="permanent_zip_code"
+                />
+              </div>
+
+            </div>
+
+            {/* =================================================
+                VALID ID 1
+            ================================================= */}
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Valid Id Type{" "}
+                  <span>*</span>
+                </label>
+
+                <select
+                  name="valid_id_type_id"
+                  className={getInputClass(
+                    "valid_id_type_id"
+                  )}
+                >
+                  <option value="">
+                    Select Id Type
+                  </option>
+
+                  {IdTypes.map((type) => (
+                    <option
+                      key={type.id}
+                      value={type.id}
+                    >
+                      {type.name}
+                    </option>
+                  ))}
+                </select>
+
+                <ErrorMessage
+                  field="valid_id_type_id"
                 />
 
               </div>
 
-              {/* =================================================
-                  SUBMIT
-              ================================================= */}
+              <div className="input-field">
 
-              <button type="submit">
-                Submit
-              </button>
+                <label>
+                  Valid Id Image{" "}
+                  <span>*</span>
+                </label>
 
-            </form>
+                {/* FIX:
+                    This input has a unique ID.
+                    Its name remains "image" because
+                    the API uses it as image index 0.
+                */}
+                <input
+                  type="file"
+                  id="image1"
+                  name="image"
+                  accept="image/*"
+                  style={{
+                    display: "none"
+                  }}
+                />
 
-          </div>
+                <label
+                  htmlFor="image1"
+                  className="file-label"
+                >
+                  <Upload size={24} />
+                </label>
+
+                <ErrorMessage
+                  field="image"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Valid Id Number{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="number"
+                  placeholder="e.g XXX-XXX-XX"
+                  className={getInputClass(
+                    "number"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="number"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Expiration Date{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="date"
+                  name="expiration_date"
+                  className={getInputClass(
+                    "expiration_date"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="expiration_date"
+                />
+
+              </div>
+
+            </div>
+
+            {/* =================================================
+                VALID ID 2
+            ================================================= */}
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Valid Id Type{" "}
+                  <span>*</span>
+                </label>
+
+                <select
+                  name="valid_id_type_id2"
+                  className={getInputClass(
+                    "valid_id_type_id2"
+                  )}
+                >
+                  <option value="">
+                    Select Id Type
+                  </option>
+
+                  {IdTypes.map((type) => (
+                    <option
+                      key={type.id}
+                      value={type.id}
+                    >
+                      {type.name}
+                    </option>
+                  ))}
+                </select>
+
+                <ErrorMessage
+                  field="valid_id_type_id2"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Valid Id Image{" "}
+                  <span>*</span>
+                </label>
+
+                {/* FIX:
+                    The second image MUST have its own
+                    unique ID and name.
+                */}
+                <input
+                  type="file"
+                  id="image2"
+                  name="image2"
+                  accept="image/*"
+                  style={{
+                    display: "none"
+                  }}
+                />
+
+                <label
+                  htmlFor="image2"
+                  className="file-label"
+                >
+                  <Upload size={24} />
+                </label>
+
+                <ErrorMessage
+                  field="image2"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Valid Id Number{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="number2"
+                  placeholder="e.g XXX-XXX-XX"
+                  className={getInputClass(
+                    "number2"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="number2"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Expiration Date{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="date"
+                  name="expiration_date2"
+                  className={getInputClass(
+                    "expiration_date2"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="expiration_date2"
+                />
+
+              </div>
+
+            </div>
+
+            {/* =================================================
+                MOTHER
+            ================================================= */}
+
+            <h3>
+              Mother's Information
+            </h3>
+
+            <hr />
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Name{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="mother_name"
+                  onInput={handleNameInput}
+                  className={getInputClass(
+                    "mother_name"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="mother_name"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Birthdate{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="date"
+                  name="mother_birthdate"
+                  className={getInputClass(
+                    "mother_birthdate"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="mother_birthdate"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Birth Place{" "}
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="mother_birthplace"
+                  className={getInputClass(
+                    "mother_birthplace"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="mother_birthplace"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Nationality{" "}
+                  <span>*</span>
+                </label>
+
+                <select
+                  name="mother_nationality"
+                  className={getInputClass(
+                    "mother_nationality"
+                  )}
+                >
+                  <option value="">
+                    Select nationality
+                  </option>
+
+                  {nationalities.map(
+                    (nationality) => (
+                      <option
+                        key={nationality}
+                        value={nationality}
+                      >
+                        {nationality}
+                      </option>
+                    )
+                  )}
+                </select>
+
+                <ErrorMessage
+                  field="mother_nationality"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-field">
+
+              <label>
+                Profession{" "}
+                <span>*</span>
+              </label>
+
+              <input
+                type="text"
+                name="mother_profession"
+                className={getInputClass(
+                  "mother_profession"
+                )}
+              />
+
+              <ErrorMessage
+                field="mother_profession"
+              />
+
+            </div>
+
+            {/* =================================================
+                SPOUSE
+            ================================================= */}
+
+            <h3>
+              Spouse Information
+            </h3>
+
+            <hr />
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Name
+                </label>
+
+                <input
+                  type="text"
+                  name="spouse_name"
+                  onInput={handleNameInput}
+                  className={getInputClass(
+                    "spouse_name"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="spouse_name"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Birthdate
+                </label>
+
+                <input
+                  type="date"
+                  name="spouse_birthdate"
+                  className={getInputClass(
+                    "spouse_birthdate"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="spouse_birthdate"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="input-field">
+
+                <label>
+                  Birth Place
+                </label>
+
+                <input
+                  type="text"
+                  name="spouse_birthplace"
+                  className={getInputClass(
+                    "spouse_birthplace"
+                  )}
+                />
+
+                <ErrorMessage
+                  field="spouse_birthplace"
+                />
+
+              </div>
+
+              <div className="input-field">
+
+                <label>
+                  Nationality
+                </label>
+
+                <select
+                  name="spouse_nationality"
+                  className={getInputClass(
+                    "spouse_nationality"
+                  )}
+                >
+                  <option value="">
+                    Select nationality
+                  </option>
+
+                  {nationalities.map(
+                    (nationality) => (
+                      <option
+                        key={nationality}
+                        value={nationality}
+                      >
+                        {nationality}
+                      </option>
+                    )
+                  )}
+                </select>
+
+                <ErrorMessage
+                  field="spouse_nationality"
+                />
+
+              </div>
+
+            </div>
+
+            <div className="form-field">
+
+              <label>
+                Profession
+              </label>
+
+              <input
+                type="text"
+                name="spouse_profession"
+                className={getInputClass(
+                  "spouse_profession"
+                )}
+              />
+
+              <ErrorMessage
+                field="spouse_profession"
+              />
+
+            </div>
+
+            <button type="submit">
+              {loading ? (
+                <Spinner />
+              ) : (
+                "Submit"
+              )}
+            </button>
+
+          </form>
+
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};

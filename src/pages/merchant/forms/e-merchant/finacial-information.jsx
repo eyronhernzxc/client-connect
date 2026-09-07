@@ -1,20 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Header from "../header/header";
 import "../form-style.css";
 import { getCurrentUser } from "../../../../api/auth";
 import { postFinancial } from "../../../../api/postFinancial";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "../../../../components/admin/header/page-header";
+import Spinner from "../../../../loader/spinner";
 
 
 export default function FinancialInformation() {
 
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const submitFinancial = async (event) =>{
   event.preventDefault();
-
+  setLoading(true);
   const formData = new FormData(event.currentTarget);
 
   try{
@@ -23,13 +24,13 @@ export default function FinancialInformation() {
     
           console.log("Authenticated User:", user);
     
-          if(!user?.id){
+          if(!user?.data?.id){
     
             throw new Error("User not authenticated");
     
           }
     
-          const personal_detail_id = user.personal_detail_id || user.personal_detail?.id;
+          const personal_detail_id = user?.data?.personal_detail_id || user?.data?.personal_detail?.id;
     
           console.log("Personal Detail ID:", personal_detail_id);
     
@@ -49,10 +50,14 @@ export default function FinancialInformation() {
 
           }
 
-          const response = await postFinancial(data);
-          console.log("Financial Information submitted successfully:", response);
-        alert("Financial Information submitted successfully");
-        navigate("/form/employment");
+
+        const response = await postFinancial(data);
+
+console.log("Financial Information submitted successfully:", response);
+
+alert("Financial Information submitted successfully");
+
+navigate("/form/employment");
 
 
   }catch(error){
@@ -61,22 +66,14 @@ export default function FinancialInformation() {
         console.error("RESPONSE:", error.response?.data);
         console.error("ERRORS:", error.response?.data?.errors);
         console.error("Error Message:", error.message);
+  }finally{
+
+    setLoading(false);
   }
 }
 
 
   return (
-<>
-     <PageHeader>
-                    <div className="name-container">
-                      <h1 className="page-title">Hello,</h1>
-                      <h1 className="admin-name">Jamaica</h1>
-                    </div>
-                    
-                    <p className="page-desc">
-                     We’re happy to have you here. Let’s get your merchant and company application started!
-                    </p>
-      </PageHeader>
 
     <div className="main-container">
       <div className="form-card">
@@ -259,7 +256,7 @@ export default function FinancialInformation() {
                     />
                     <label htmlFor="source_of_wealth">
                     Business
-                  </label>
+                  </label>  
                 </div>
                 <div className="radio-field">
                 
@@ -515,11 +512,17 @@ export default function FinancialInformation() {
               </div>
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit">
+            {loading ? (
+            <Spinner/>
+            ): (
+            "Submit"
+            )}
+            </button>
           </form>
         </div>
       </div>
     </div>
-    </>
+
   );
 }

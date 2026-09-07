@@ -3,10 +3,20 @@ import {postCompany} from "../../../../api/postCompany";
 import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
 import {useNavigate} from "react-router-dom";
-import '../form-style.css'
-import PageHeader from '../../../../components/admin/header/page-header';
+import './company-register.css'
+import Spinner from '../../../../loader/spinner';
+
+/*
+ * Caps a local Philippine phone number input at 11 digits
+ * (the standard format including the leading zero, e.g. 09171234567).
+ * Strips any non-digit characters as the user types.
+ */
+const handlePHNumberInput = (event) => {
+  event.target.value = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
 
 export default function CompanyRegistration() {
+const [loading, setLoading] = useState(false);
 
 const navigate = useNavigate();
 
@@ -32,6 +42,7 @@ useEffect(() => {
 const handleCompanyRegistration = async (event) => {
 
     event.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(event.currentTarget);
 
@@ -74,22 +85,13 @@ const handleCompanyRegistration = async (event) => {
   console.log("DATA:", error.response?.data);
   console.log("MESSAGE:", error.response?.data?.message);
   console.log("FULL ERROR:", error);
+    }finally{
+        setLoading(false);
     }
 
 }
 
 return (
-<>
-    <PageHeader>
-        <div className="name-container">
-          <h1 className="page-title">Hello,</h1>
-          <h1 className="admin-name">Jamaica</h1>
-        </div>
-        
-        <p className="page-desc">
-         We’re happy to have you here. Let’s get your merchant and company application started!
-        </p>
-    </PageHeader>
 
 <div className='main-container'>
 <div className='form-card'>
@@ -155,6 +157,8 @@ return (
             type='tel'
             placeholder="e.g 09XXXXXXXXX"
             name='phone'
+            onInput={handlePHNumberInput}
+            maxLength={11}
             />
         </div>
 
@@ -249,12 +253,23 @@ return (
         
     </div>
 
-    <button type='submit'>Submit</button>
+<div className="registration-actions">
+
+    <div></div>
+
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
+            "Submit"
+        )
+        }
+    </button>
+</div>
 
 </form>
 </div>
 </div>
 </div>
-</>
 )
 }
