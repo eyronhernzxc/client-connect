@@ -1,154 +1,49 @@
+
 import React, { useEffect, useState } from "react";
+
+import { getRequirements } from "../../../../../api/getRequirements.js";
 
 export default function ReqDocs({ company }) {
   const [documents, setDocuments] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const requirementsByCompanyType = {
-    1: [
-       {
-      id: 1,
-      name: "Latest version of Enabling Law/Charter/Presidential Decree (copy)",
-    },
-    {
-      id: 2,
-      name: "e-Merchant's Form (4 pages)",
-    },
-    {
-      id: 3,
-      name: "Risk Assessment Questionnaire",
-    },
-    {
-      id: 4,
-      name: "GOCC Website",
-    },
-    {
-      id: 5,
-      name: "GOCC Profile/Background",
-    },
-    {
-      id: 6,
-      name: "Latest Business Permit",
-    },
-    {
-      id: 7,
-      name: "SEC Certificate of Registration w/ Articles of Incorporation & By-Laws",
-    },
-    {
-      id: 8,
-      name: "BIR Certificate of Registration (Form 2303)",
-    },
-    {
-      id: 9,
-      name: "Latest Government Corporate Information Sheet (GCIS)/General Information Sheet",
-    },
-    {
-      id: 10,
-      name: "Beneficial Owner Declaration Form",
-    },
-    {
-      id: 11,
-      name: "Latest Audited Financial Statement",
-    },
-    {
-      id: 12,
-      name: "Latest Income Tax Return",
-    },
-    {
-      id: 13,
-      name: "(2) Valid ID of signatory/representative with 3 specimen signatures",
-    },
-    {
-      id: 14,
-      name: "Notarized approved resolution for authorized person/signatory & MOA engagement between Pisopay and GOCC",
-    },
-
-    // Additional requirements for Financial Institutions
-    {
-      id: 15,
-      name: "BSP License",
-      additional: true,
-    },
-    {
-      id: 16,
-      name: "AMLC Certificate of Registration",
-      additional: true,
-    },
-    {
-      id: 17,
-      name: "KYC-AML Questionnaire for Financial Institution",
-      additional: true,
-    },
-    {
-      id: 18,
-      name: "Latest MIPP",
-      additional: true,
-    },
-    ],
-
-    2: [
-      {
-        id: 9,
-        name: "Government Authorization",
-      },
-      {
-        id: 10,
-        name: "BIR Certificate/Registration",
-      },
-      {
-        id: 11,
-        name: "Mayor's Permit/Business Permit",
-      },
-      {
-        id: 12,
-        name: "NBI Clearance",
-      },
-    ],
-
-    3: [
-      {
-        id: 13,
-        name: "DTI Certificate of Registration",
-      },
-      {
-        id: 14,
-        name: "BIR Certificate/Registration",
-      },
-      {
-        id: 15,
-        name: "Mayor's Permit/Business Permit",
-      },
-      {
-        id: 16,
-        name: "ITR (Certificate of Income Tax Return)",
-      },
-      {
-        id: 17,
-        name: "NBI Clearance",
-      },
-    ],
-  };
+  const companyTypeId = company?.company_type_id;
 
   useEffect(() => {
-    if (!company?.company_type_id) {
-      setDocuments([]);
-      return;
-    }
+    const fetchRequirements = async () => {
+      if (!companyTypeId) {
+        setDocuments([]);
+        return;
+      }
 
-    const requirements =
-      requirementsByCompanyType[company.company_type_id] || [];
+      try {
+        setLoading(true);
 
-    setDocuments(requirements);
-  }, [company]);
+        const response = await getRequirements(companyTypeId);
 
-  const handleViewDocument = (docId) => {
-    console.log("View document:", docId);
+        setDocuments(response?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch requirements:", error);
+        setDocuments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRequirements();
+  }, [companyTypeId]);
+
+  const handleViewDocument = (doc) => {
+    console.log("View document:", doc);
   };
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
 
     setUploadedFiles((prev) => [...prev, ...files]);
+
+    e.target.value = "";
   };
 
   const handleRemoveFile = (index) => {
@@ -158,7 +53,8 @@ export default function ReqDocs({ company }) {
   };
 
   const handleSaveDraft = () => {
-    console.log("Save Draft - Uploaded files:", uploadedFiles);
+    console.log("Save Draft");
+    console.log("Uploaded files:", uploadedFiles);
   };
 
   const handleUploadDocuments = () => {
@@ -167,7 +63,6 @@ export default function ReqDocs({ company }) {
 
   return (
     <div className="req-documents-form">
-
       <div className="documents-list">
         <h3 className="section-title">
           Required Documents
@@ -180,8 +75,12 @@ export default function ReqDocs({ company }) {
           </p>
         )}
 
-        {documents.length === 0 ? (
-          <p>No requirements available for this company type.</p>
+        {loading ? (
+          <p>Loading requirements...</p>
+        ) : documents.length === 0 ? (
+          <p>
+            No requirements available for this company type.
+          </p>
         ) : (
           <div className="documents-grid">
             {documents.map((doc) => (
@@ -202,12 +101,16 @@ export default function ReqDocs({ company }) {
                   {doc.name}
                 </label>
 
+                {doc.additional && (
+                  <span className="additional-badge">
+                    Additional
+                  </span>
+                )}
+
                 <button
                   type="button"
                   className="btn-view"
-                  onClick={() =>
-                    handleViewDocument(doc.id)
-                  }
+                  onClick={() => handleViewDocument(doc)}
                 >
                   VIEW
                 </button>
@@ -227,7 +130,9 @@ export default function ReqDocs({ company }) {
             htmlFor="file-input"
             className="upload-label"
           >
-            <div className="upload-icon">📁</div>
+            <div className="upload-icon">
+              📁
+            </div>
 
             <p>
               Drag and drop files here or click to select
@@ -260,14 +165,14 @@ export default function ReqDocs({ company }) {
                   key={`${file.name}-${index}`}
                   className="uploaded-file-item"
                 >
-                  <span>{file.name}</span>
+                  <span>
+                    {file.name}
+                  </span>
 
                   <button
                     type="button"
                     className="btn-remove"
-                    onClick={() =>
-                      handleRemoveFile(index)
-                    }
+                    onClick={() => handleRemoveFile(index)}
                   >
                     ✕
                   </button>
@@ -305,3 +210,4 @@ export default function ReqDocs({ company }) {
     </div>
   );
 }
+

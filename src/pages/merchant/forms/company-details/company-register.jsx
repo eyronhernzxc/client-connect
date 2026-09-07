@@ -4,7 +4,8 @@ import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
 import {useNavigate} from "react-router-dom";
 import './company-register.css'
-import PageHeader from '../../../../components/admin/header/page-header';
+import Spinner from '../../../../loader/spinner';
+
 
 export default function CompanyRegistration() {
 const [loading, setLoading] = useState(false);
