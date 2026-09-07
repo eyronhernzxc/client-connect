@@ -64,7 +64,7 @@ const hasDeveloper = personalDetails.some(
 
  const roleId = Number(user?.data?.userdetail?.role_id);
 
-if (roleId !== 3) {
+if (roleId == 3) {
   navigate("/401");
   return;
 }
