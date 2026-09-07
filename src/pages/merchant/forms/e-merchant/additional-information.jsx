@@ -7,6 +7,15 @@ import Header from "../header/header";
 import "../form-style.css";
 import Spinner from "../../../../loader/spinner";
 
+/*
+ * Caps a local Philippine mobile/landline number input at 11 digits
+ * (the standard format including the leading zero, e.g. 09171234567).
+ * Strips any non-digit characters as the user types.
+ */
+const handlePHNumberInput = (event) => {
+  event.target.value = event.target.value.replace(/\D/g, "").slice(0, 11);
+};
+
 export default function AdditionalInformation() {
 
     const [bankCategory, setBankCategory] = useState([]);
@@ -217,6 +226,8 @@ export default function AdditionalInformation() {
                     type="tel"
                     name="phone"
                     placeholder="e.g 09XXXXXXXXX"
+                    onInput={handlePHNumberInput}
+                    maxLength={11}
                     />
                              </div>
              </div>
@@ -360,6 +371,8 @@ export default function AdditionalInformation() {
                         type="tel"
                         name="cs_number"
                         placeholder="e.g 09XXXXXXXXX"
+                        onInput={handlePHNumberInput}
+                        maxLength={11}
                         />
                 </div>
     

@@ -41,6 +41,21 @@ const BUSINESS_TYPES = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────
+// PHONE HELPERS
+// ─────────────────────────────────────────────────────────────────────
+
+/*
+ * Caps a local Philippine telephone/mobile number input at 11 digits
+ * (the standard format including the leading zero, e.g. 09171234567).
+ * Strips any non-digit characters as the user types.
+ */
+function handlePHNumberInput(event) {
+    event.target.value = event.target.value
+        .replace(/\D/g, "")
+        .slice(0, 11);
+}
+
+// ─────────────────────────────────────────────────────────────────────
 // AUTOSAVE
 // ─────────────────────────────────────────────────────────────────────
 
@@ -2270,6 +2285,12 @@ export default function KnowYourCustomer() {
                                             .fields
                                             .telephone_no ||
                                         ""
+                                    }
+                                    onInput={
+                                        handlePHNumberInput
+                                    }
+                                    maxLength={
+                                        11
                                     }
                                     required
                                 />

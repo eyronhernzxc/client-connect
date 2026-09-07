@@ -7,6 +7,31 @@ import pisopayName from "../../assets/pisopay_name.png";
 import {createUser} from "../../api/userApi";
 import Spinner from "../../loader/spinner";
 
+/*
+ * Max number of digits allowed in the local phone_num field,
+ * keyed by the selected country dial code.
+ *
+ * PH (+63): local mobile numbers are 11 digits with the leading
+ * zero (e.g. 09171234567) or 10 digits without it (9171234567).
+ * Since the dial code +63 already replaces the leading 0, the
+ * phone_num field itself should cap at 10 digits so that
+ * "+63" + phone_num == "+639171234567" (12 chars total).
+ *
+ * Add/adjust entries here if other countries need their own cap.
+ */
+const PHONE_MAX_LENGTH = {
+  "+63": 10, // Philippines
+  "+1": 10,  // US/Canada
+  "+44": 10, // UK
+  "+61": 9,  // Australia
+  "+81": 10, // Japan
+  "+82": 10, // South Korea
+  "+65": 8,  // Singapore
+  "+91": 10, // India
+};
+
+const DEFAULT_PHONE_MAX_LENGTH = 12;
+
 function MerchantRegister() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -20,6 +45,10 @@ function MerchantRegister() {
    const [errorMessage, setErrorMessage] = useState("");
 const [showErrorModal, setShowErrorModal] = useState(false);
 
+  // Tracks the currently selected dial code so the phone_num
+  // input's maxLength/onInput cap can be recalculated.
+  const [countryCode, setCountryCode] = useState("");
+
     const handleTextInput = (event) => {
     event.target.value = event.target.value.replace(
       /[^\p{L}\s'-]/gu,
@@ -28,8 +57,21 @@ const [showErrorModal, setShowErrorModal] = useState(false);
   };
 
   const handleNumberInput = (e) => {
-  e.target.value = e.target.value.replace(/\D/g, "");
-};
+    const digitsOnly = e.target.value.replace(/\D/g, "");
+    const max =
+      PHONE_MAX_LENGTH[countryCode] || DEFAULT_PHONE_MAX_LENGTH;
+
+    e.target.value = digitsOnly.slice(0, max);
+  };
+
+  /*
+   * Hard-caps whatever is typed into a password field at 16 characters.
+   * Paired with minLength={8} + required on the input for the
+   * browser's native "too short" validation on submit.
+   */
+  const handlePasswordInput = (event) => {
+    event.target.value = event.target.value.slice(0, 16);
+  };
 
   useEffect(() => {
     document.title = "Pisopay | Merchant Register";
@@ -148,7 +190,11 @@ const [showErrorModal, setShowErrorModal] = useState(false);
               </div>
 
               <div className="phone-container">
-                <select name="country-code">
+                <select
+                  name="country-code"
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                >
                   <option hidden value="">+</option>
                   <option value="+63">+63</option>
                   <option value="+1">+1</option>
@@ -160,9 +206,16 @@ const [showErrorModal, setShowErrorModal] = useState(false);
                   <option value="+91">+91</option>
                 </select>
 
-                <input className="phone_num" name="phone_num" type="tel"
-                onInput={handleNumberInput}
-                placeholder="Phone Number"
+                <input
+                  className="phone_num"
+                  name="phone_num"
+                  type="tel"
+                  onInput={handleNumberInput}
+                  maxLength={
+                    PHONE_MAX_LENGTH[countryCode] ||
+                    DEFAULT_PHONE_MAX_LENGTH
+                  }
+                  placeholder="Phone Number"
                 />
               </div>
 
@@ -228,6 +281,9 @@ const [showErrorModal, setShowErrorModal] = useState(false);
                 className="register-input"
                 name="password"
                 required
+                minLength={8}
+                maxLength={16}
+                onInput={handlePasswordInput}
               />
 
               <input
@@ -236,6 +292,9 @@ const [showErrorModal, setShowErrorModal] = useState(false);
                 name="confirm_password"
                 className="register-input"
                 required
+                minLength={8}
+                maxLength={16}
+                onInput={handlePasswordInput}
               />
 
               <div className="terms-container">
