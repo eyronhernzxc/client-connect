@@ -21,6 +21,7 @@ export default function FinancialSignatory() {
   const [sameAsPresent, setSameAsPresent] = useState(false);
   const [loading, setLoading] = useState(false);
   const signatureInputRef = useRef(null);
+  const imageInputRef = useRef(null)
 
   // =========================================================
   // FETCH CURRENT USER
@@ -1736,32 +1737,33 @@ for (const [key, value] of data.entries()) {
                   <ErrorMessage
                     field="valid_id_type_id"
                   />
+                  
                 </div>
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Image{" "}
-                    <span>*</span>
-                  </label>
+<div className="input-field">
+  <label>
+    Valid Id Image <span>*</span>
+  </label>
 
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                  />
+  {/* Hidden actual file input */}
+  <input
+    type="file"
+    id="image"
+    name="image"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
 
-                  <label
-                    htmlFor="image"
-                    className="file-label"
-                  >
-                    <Upload />
-                  </label>
+  {/* Custom upload button */}
+  <label
+    htmlFor="image"
+    className="file-label"
+  >
+    <Upload size={24} />
+  </label>
 
-                  <ErrorMessage
-                    field="image"
-                  />
-                </div>
-
+  <ErrorMessage field="image" />
+</div>
               </div>
 
               <div className="form-row">
@@ -1842,29 +1844,30 @@ for (const [key, value] of data.entries()) {
                   />
                 </div>
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Image{" "}
-                    <span>*</span>
-                  </label>
+<div className="input-field">
+  <label>
+    Valid Id Image <span>*</span>
+  </label>
 
-                  <input
-                    type="file"
-                    id="image2"
-                    name="image2"
-                  />
+  {/* Hidden actual file input */}
+  <input
+    type="file"
+    id="image"
+    name="image"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
 
-                  <label
-                    htmlFor="image2"
-                    className="file-label"
-                  >
-                    <Upload />
-                  </label>
+  {/* Custom upload button */}
+  <label
+    htmlFor="image"
+    className="file-label"
+  >
+    <Upload size={24} />
+  </label>
 
-                  <ErrorMessage
-                    field="image"
-                  />
-                </div>
+  <ErrorMessage field="image" />
+</div>
 
               </div>
 
