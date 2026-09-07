@@ -15,7 +15,7 @@ export default function FinancialInformation() {
 
   const submitFinancial = async (event) =>{
   event.preventDefault();
-  setLoading(false);
+  setLoading(true);
   const formData = new FormData(event.currentTarget);
 
   try{
