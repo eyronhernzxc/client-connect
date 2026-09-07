@@ -18,7 +18,14 @@ const [showErrorModal, setShowErrorModal] = useState(false);
     document.title = "Pisopay | Merchant Login";
   }, []);
 
-  
+  /*
+   * Hard-caps whatever is typed into a password field at 16 characters.
+   * Paired with minLength={8} + required on the input for the
+   * browser's native "too short" validation on submit.
+   */
+  const handlePasswordInput = (event) => {
+    event.target.value = event.target.value.slice(0, 16);
+  };
 
   const handleMerchantLog = async (event) => {
     event.preventDefault();
@@ -141,6 +148,9 @@ console.error("ERROR:", error);
                 placeholder="Password"
                 required
                 name="password"
+                minLength={8}
+                maxLength={16}
+                onInput={handlePasswordInput}
               />
             </div>
             <div className="forgot-container">
