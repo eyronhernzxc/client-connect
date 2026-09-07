@@ -161,7 +161,7 @@ export default function Onboarding() {
         <td>{company.id}</td>
         <td>{company.name}</td>
         <td>{company.status}</td>
-        <td>{company.created_at}</td>
+        <td>{company.created_at?.split("T")[0]}</td>
         
                       {/* View / Open */}
                       <td>

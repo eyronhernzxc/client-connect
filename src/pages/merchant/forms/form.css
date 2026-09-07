@@ -87,3 +87,245 @@ body {
 
     color: white;
 }
+
+/* =========================
+   MODAL OVERLAY
+========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* =========================
+   MODAL CONTAINER
+========================= */
+.requirement-modal {
+  width: 100%;
+  max-width: 500px;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+
+  overflow: hidden;
+
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+/* =========================
+   MODAL HEADER
+========================= */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 22px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Close button */
+.modal-close {
+  border: none;
+  background: transparent;
+
+  font-size: 24px;
+  line-height: 1;
+
+  color: #6b7280;
+
+  cursor: pointer;
+
+  padding: 4px 8px;
+
+  transition: 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #111827;
+}
+
+/* =========================
+   MODAL BODY
+========================= */
+.modal-body {
+  padding: 24px 22px;
+}
+
+.modal-body label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #374151;
+}
+
+/* File input */
+.modal-body input[type="file"] {
+  width: 100%;
+
+  padding: 12px;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+
+  background: #f8fafc;
+
+  font-size: 14px;
+  color: #475569;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+.modal-body input[type="file"]:hover {
+  border-color: #2563eb;
+  background: #f1f5f9;
+}
+
+/* Selected file text */
+.modal-body p {
+  margin-top: 14px;
+  margin-bottom: 0;
+
+  padding: 10px 12px;
+
+  background: #f3f4f6;
+  border-radius: 6px;
+
+  font-size: 13px;
+  color: #4b5563;
+
+  word-break: break-word;
+}
+
+.modal-body p strong {
+  color: #111827;
+}
+
+/* =========================
+   MODAL ACTIONS
+========================= */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  padding: 16px 22px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Cancel button */
+.btn-cancel {
+  padding: 10px 18px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+
+  background: #ffffff;
+
+  color: #374151;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+/* Save button */
+.btn-continue {
+  padding: 10px 20px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-continue:hover {
+  background: #1d4ed8;
+}
+
+.btn-continue:active,
+.btn-cancel:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 600px) {
+  .requirement-modal {
+    max-width: 100%;
+  }
+
+  .modal-header {
+    padding: 16px 18px;
+  }
+
+  .modal-body {
+    padding: 20px 18px;
+  }
+
+  .modal-actions {
+    padding: 14px 18px;
+  }
+
+  .btn-cancel,
+  .btn-continue {
+    flex: 1;
+  }
+}

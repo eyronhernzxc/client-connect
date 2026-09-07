@@ -43,7 +43,6 @@ export default function OnboardingDrawer({
         
         <div className="modal-content">
           {activeTab === "company" && <CompanyDetails company={company} />}
-          {activeTab === "emerchant" && <EMerchantForm company={company} />}
           {activeTab === "categorize" && <Categorize company={company} />}
           {activeTab === "req-documents" && <ReqDocs company={company} />}
         </div>

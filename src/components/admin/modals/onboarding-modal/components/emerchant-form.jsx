@@ -1,23 +1,16 @@
 import React, { useState } from "react";
 
-export default function EMerchantForm({ item }) {
-  const [formData, setFormData] = useState({
-    companyType: "",
-    email: item?.email || "",
-    category: item?.category || "",
-    contactPerson: "",
-    phone: item?.phone || "",
-    submitted: item?.date || "",
-    accountNumber: "",
-    bankName: "",
-    accountHolder: ""
-  });
+export default function EMerchantForm({ company }) {
+
+  const signatory = company?.personal_detail?.find(
+  (detail) => detail.personal_detail_type_id === 1
+);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { company } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [company]: value
     }));
   };
 
@@ -33,19 +26,13 @@ export default function EMerchantForm({ item }) {
     <div className="emerchant-form">
       <div className="form-grid">
         <div className="form-group">
-          <label htmlFor="companyType">Company Type *</label>
-          <select
-            id="companyType"
-            name="companyType"
-            value={formData.companyType}
+          <label htmlFor="signatory">Signatory</label>
+          <input
+            type="text"
+            name="signatory"
+             value={`${signatory?.first_name || ""} ${signatory?.middle_name || ""} ${signatory?.last_name || ""}`}
             onChange={handleChange}
-          >
-            <option value="">Select...</option>
-            <option value="retail">Retail</option>
-            <option value="wholesale">Wholesale</option>
-            <option value="service">Service</option>
-            <option value="other">Other</option>
-          </select>
+          />
         </div>
 
         <div className="form-group">
@@ -53,47 +40,45 @@ export default function EMerchantForm({ item }) {
           <input
             type="email"
             id="email"
-            name="email"
-            value={formData.email}
+            value={signatory?.email}
+           
             onChange={handleChange}
             placeholder=""
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="category">Category *</label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-          >
-            <option value="">Select...</option>
-            <option value="government">Government</option>
-            <option value="private">Private</option>
-            <option value="nonprofit">Non-Profit</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="contactPerson">Contact Person *</label>
+          <label htmlFor="phone">Phone Number</label>
           <input
             type="text"
-            id="contactPerson"
-            name="contactPerson"
-            value={formData.contactPerson}
+            id="phone"
+            value={signatory?.phone_number}
+
             onChange={handleChange}
-            placeholder=""
           />
+
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Phone Number *</label>
+          <label htmlFor="birthdate">Birthdate</label>
           <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
+            type="text"
+            id="birthdate"
+            value={signatory?.birthdate}
+
+            onChange={handleChange}
+            placeholder=""
+          />
+
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="nationality">Nationality</label>
+          <input
+            type="text"
+            id="nationality"
+            value={signatory?.nationality}
+
             onChange={handleChange}
             placeholder=""
           />
@@ -105,7 +90,7 @@ export default function EMerchantForm({ item }) {
             type="date"
             id="submitted"
             name="submitted"
-            value={formData.submitted}
+
             onChange={handleChange}
           />
         </div>
@@ -116,7 +101,7 @@ export default function EMerchantForm({ item }) {
             type="text"
             id="bankName"
             name="bankName"
-            value={formData.bankName}
+
             onChange={handleChange}
             placeholder=""
           />
@@ -128,7 +113,6 @@ export default function EMerchantForm({ item }) {
             type="text"
             id="accountHolder"
             name="accountHolder"
-            value={formData.accountHolder}
             onChange={handleChange}
             placeholder=""
           />
@@ -140,7 +124,6 @@ export default function EMerchantForm({ item }) {
             type="text"
             id="accountNumber"
             name="accountNumber"
-            value={formData.accountNumber}
             onChange={handleChange}
             placeholder=""
           />

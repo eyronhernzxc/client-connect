@@ -3,7 +3,7 @@ import {postCompany} from "../../../../api/postCompany";
 import {getCompanyTypes} from "../../../../api/getCompanyTypes";
 import Header from '../header/header';
 import {useNavigate} from "react-router-dom";
-import '../form-style.css'
+import './company-register.css'
 import Spinner from '../../../../loader/spinner';
 
 /*
@@ -16,7 +16,6 @@ const handlePHNumberInput = (event) => {
 };
 
 export default function CompanyRegistration() {
-
 const [loading, setLoading] = useState(false);
 
 const navigate = useNavigate();
@@ -254,6 +253,10 @@ return (
         
     </div>
 
+<div className="registration-actions">
+
+    <div></div>
+
     <button type='submit'>
         {loading?(
             <Spinner />
@@ -262,6 +265,7 @@ return (
         )
         }
     </button>
+</div>
 
 </form>
 </div>

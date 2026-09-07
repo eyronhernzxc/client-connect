@@ -1572,11 +1572,14 @@ const handleFileChange = (e) => {
               <ErrorMessage field="spouse_profession" />
             </div>
 
-            {/* =================================================
-                  SUBMIT
-              ================================================= */}
-
-            <button type="submit">{loading ? <Spinner /> : "Submit"}</button>
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
+            "Submit"
+        )
+        }
+    </button>
           </form>
         </div>
       </div>

@@ -17,7 +17,7 @@ export default function PageHeader({children}) {
           <BellDot />
           </button>
         <button className='profile-btn' title='Profile'>
-          <h2>JM</h2>
+          <h2>AD</h2>
         </button>
         
     </div>

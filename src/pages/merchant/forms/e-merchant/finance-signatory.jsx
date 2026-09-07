@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import Header from "../header/header";
 import "../form-style.css";
@@ -20,6 +20,8 @@ export default function FinancialSignatory() {
   const [errors, setErrors] = useState({});
   const [sameAsPresent, setSameAsPresent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const signatureInputRef = useRef(null);
+  const imageInputRef = useRef(null)
 
   // =========================================================
   // FETCH CURRENT USER
@@ -1251,25 +1253,27 @@ for (const [key, value] of data.entries()) {
                   />
                 </div>
 
-                <div className="input-field">
-                  <label>
-                    Upload E-signature{" "}
-                    <span>*</span>
-                  </label>
+<div className="input-field">
+  <label>Signature <span>*</span></label>
 
-                  <input
-                    name="signature"
-                    type="file"
-                    id="signature"
-                  />
+  {/* Hidden file input */}
+  <input
+    ref={signatureInputRef}
+    type="file"
+    name="signature"
+    id="signature"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
 
-                  <label
-                    htmlFor="signature"
-                    className="file-label"
-                  >
-                    <PenLine />
-                  </label>
-
+  {/* Pen button */}
+  <button
+    type="button"
+    className="file-label"
+    onClick={() => signatureInputRef.current?.click()}
+  >
+    <PenLine size={24} />
+  </button>
                   <ErrorMessage
                     field="signature"
                   />
@@ -1733,32 +1737,33 @@ for (const [key, value] of data.entries()) {
                   <ErrorMessage
                     field="valid_id_type_id"
                   />
+                  
                 </div>
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Image{" "}
-                    <span>*</span>
-                  </label>
+<div className="input-field">
+  <label>
+    Valid Id Image <span>*</span>
+  </label>
 
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                  />
+  {/* Hidden actual file input */}
+  <input
+    type="file"
+    id="image"
+    name="image"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
 
-                  <label
-                    htmlFor="image"
-                    className="file-label"
-                  >
-                    <Upload />
-                  </label>
+  {/* Custom upload button */}
+  <label
+    htmlFor="image"
+    className="file-label"
+  >
+    <Upload size={24} />
+  </label>
 
-                  <ErrorMessage
-                    field="image"
-                  />
-                </div>
-
+  <ErrorMessage field="image" />
+</div>
               </div>
 
               <div className="form-row">
@@ -1839,29 +1844,30 @@ for (const [key, value] of data.entries()) {
                   />
                 </div>
 
-                <div className="input-field">
-                  <label>
-                    Valid Id Image{" "}
-                    <span>*</span>
-                  </label>
+<div className="input-field">
+  <label>
+    Valid Id Image <span>*</span>
+  </label>
 
-                  <input
-                    type="file"
-                    id="image2"
-                    name="image2"
-                  />
+  {/* Hidden actual file input */}
+  <input
+    type="file"
+    id="image"
+    name="image"
+    accept="image/*"
+    style={{ display: "none" }}
+  />
 
-                  <label
-                    htmlFor="image2"
-                    className="file-label"
-                  >
-                    <Upload />
-                  </label>
+  {/* Custom upload button */}
+  <label
+    htmlFor="image"
+    className="file-label"
+  >
+    <Upload size={24} />
+  </label>
 
-                  <ErrorMessage
-                    field="image"
-                  />
-                </div>
+  <ErrorMessage field="image" />
+</div>
 
               </div>
 
@@ -2155,18 +2161,14 @@ for (const [key, value] of data.entries()) {
 
               </div>
 
-              {/* =================================================
-                  SUBMIT
-              ================================================= */}
-
-              <button type="submit">
-               {loading ? (
-                <Spinner/>
-               ): (
-                "Submit"
-               )}
-              </button>
-
+    <button type='submit'>
+        {loading?(
+            <Spinner />
+        ):(
+            "Submit"
+        )
+        }
+    </button>
             </form>
 
           </div>

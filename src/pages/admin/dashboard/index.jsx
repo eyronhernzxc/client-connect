@@ -37,7 +37,7 @@ export default function Dashboard() {
       <PageHeader>
         <div className="name-container">
           <h1 className="page-title">Hello,</h1>
-          <h1 className="admin-name">Jamaica</h1>
+          <h1 className="admin-name">Admin</h1>
         </div>
 
         <p className="page-desc">
