@@ -26,7 +26,7 @@ export default function FinancialInformation() {
       }
 
       const personal_detail_id =
-        user?.data?.personal_detail_id || user?.data?.personal_detail?.id;
+        user?.data?.personal_detail[0].id || user?.data?.personal_detail?.id;
 
       console.log("Personal Detail ID:", personal_detail_id);
 
@@ -74,8 +74,7 @@ export default function FinancialInformation() {
                 style={{
                   fontSize: "18px",
                   fontWeight: "600",
-                }}
-              >
+                }}>
                 Occupation <span>*</span>
               </label>
 
@@ -205,8 +204,7 @@ export default function FinancialInformation() {
                 style={{
                   fontSize: "18px",
                   fontWeight: "600",
-                }}
-              >
+                }}>
                 Source of Wealth <span>*</span>
               </label>
               <hr />
@@ -340,8 +338,7 @@ export default function FinancialInformation() {
                 style={{
                   fontSize: "18px",
                   fontWeight: "600",
-                }}
-              >
+                }}>
                 Others <span>*</span>
               </label>
               <input
@@ -356,8 +353,22 @@ export default function FinancialInformation() {
                 style={{
                   fontSize: "18px",
                   fontWeight: "600",
-                }}
-              >
+                }}>
+                Tax ID <span>*</span>
+              </label>
+              <input
+                type="text"
+                name="tax_id_number"
+                placeholder="Please specify"
+              />
+            </div>
+
+            <div className="form-field">
+              <label
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                }}>
                 Monthly Gross Income/Pension/Allowance <span>*</span>
               </label>
               <hr />
@@ -427,8 +438,7 @@ export default function FinancialInformation() {
                 style={{
                   fontSize: "18px",
                   fontWeight: "600",
-                }}
-              >
+                }}>
                 Annual Gross Income/Pension/Allowance <span>*</span>
               </label>
               <hr />

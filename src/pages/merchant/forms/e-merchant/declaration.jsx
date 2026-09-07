@@ -23,12 +23,12 @@ export default function Declaration() {
 
       console.log("Authenticated User:", user);
 
-      if (!user?.id) {
+      if (!user?.data?.id) {
         throw new Error("User not authenticated");
       }
 
       const business_information_id =
-        user.business_information_id || user.business_information?.id;
+        user?.data?.business_information_id || user?.data?.business_information?.id;
 
       console.log(
         "Authenticated business information ID:",

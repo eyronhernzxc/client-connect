@@ -67,8 +67,8 @@ console.log("================================");
 if (!user?.data?.id) {
     throw new Error("User not authenticated");
 }
-
-const personal_detail_id = user.data.personal_detail?.id;
+  const personal_detail_id =
+    user?.data?.personal_detail[0].id || user?.data?.personal_detail?.id;
 
 if (!personal_detail_id) {
     throw new Error("Personal detail not found.");
